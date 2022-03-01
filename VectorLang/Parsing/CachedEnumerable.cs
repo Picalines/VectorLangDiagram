@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace VectorLang.Parsing;
 
-internal sealed class CachedEnumerable<T> : IEnumerable<T>
+internal sealed class CachedEnumerable<T> : IEnumerable<T>, IDisposable
 {
     private readonly List<T> _CachedItems = new();
 
@@ -16,17 +17,28 @@ internal sealed class CachedEnumerable<T> : IEnumerable<T>
 
     public IEnumerator<T> GetEnumerator()
     {
-        foreach (var cachedItem in _CachedItems)
-        {
-            yield return cachedItem;
-        }
-
         if (_Enumerator is null)
         {
-            yield break;
+            return _CachedItems.GetEnumerator();
         }
 
-        while (_Enumerator.MoveNext())
+        return GetCachingEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public void Dispose()
+    {
+        _Enumerator?.Dispose();
+        _Enumerator = null;
+    }
+
+    private IEnumerator<T> GetCachingEnumerator()
+    {
+        while (_Enumerator!.MoveNext())
         {
             var current = _Enumerator.Current;
 
@@ -35,12 +47,6 @@ internal sealed class CachedEnumerable<T> : IEnumerable<T>
             yield return current;
         }
 
-        _Enumerator.Dispose();
-        _Enumerator = null;
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
+        Dispose();
     }
 }
