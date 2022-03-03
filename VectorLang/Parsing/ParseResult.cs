@@ -56,6 +56,6 @@ internal class ParseResult<T> : IParseResult<T>
     {
         Debug.Assert(!otherFailure.IsSuccessfull);
 
-        return new ParseResult<U>(default!, otherFailure.ErrorMessage, otherFailure.Remainder);
+        return new ParseResult<T>(default!, otherFailure.ErrorMessage, otherFailure.Remainder);
     }
 }
