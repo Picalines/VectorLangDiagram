@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace VectorLang.Parsing;
 
@@ -8,6 +9,7 @@ internal interface IParseResult<out T>
 
     T Value { get; }
 
+    [MemberNotNullWhen(false, nameof(ErrorMessage))]
     bool IsSuccessfull { get; }
 
     string? ErrorMessage { get; }
@@ -49,5 +51,11 @@ internal class ParseResult<T> : IParseResult<T>
     {
         return new ParseResult<T>(default!, errorMessage, remainder);
     }
-}
 
+    public static IParseResult<T> CastFailure<U>(IParseResult<U> otherFailure)
+    {
+        Debug.Assert(!otherFailure.IsSuccessfull);
+
+        return new ParseResult<U>(default!, otherFailure.ErrorMessage, otherFailure.Remainder);
+    }
+}
