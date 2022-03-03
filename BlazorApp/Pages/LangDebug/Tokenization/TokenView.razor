@@ -2,11 +2,6 @@
 
 <div style="background-color: @BackgroundColor; color: white">
     @Token.Type.ToString()
-
-    @if (Token.Type is TokenType.Comment or TokenType.Identifier)
-    {
-        <span> "@Token.Value"</span>
-    }
 </div>
 
 @code {
