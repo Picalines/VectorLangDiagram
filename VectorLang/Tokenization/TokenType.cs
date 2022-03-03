@@ -16,6 +16,7 @@ public enum TokenType
     [Description("open brace"), TokenRegex(@"\{")] CurlyBraceOpen,
     [Description("closing brace"), TokenRegex(@"\}")] CurlyBraceClose,
 
+    [Description("keyword 'vector'"), TokenRegex(@"\bvector\b")] KeywordVector,
     [Description("keyword 'def"), TokenRegex(@"\bdef\b")] KeywordDef,
     [Description("keyword 'external"), TokenRegex(@"\bextenal\b")] KeywordExternal,
     [Description("keyword 'val"), TokenRegex(@"\bval\b")] KeywordVal,
@@ -29,9 +30,9 @@ public enum TokenType
     [Description("operator '/'"), TokenRegex(@"\/")] OperatorDivide,
     [Description("operator '%'"), TokenRegex(@"\%")] OperatorModulo,
 
-    [Description("number literal"), TokenRegex(@"(\d+(\.\d+)?|\.\d+)\w*")] LiteralNumber,
+    [Description("number literal"), TokenRegex(@"(?<value>\d+(\.\d+)?|\.\d+)(?<unit>\w*)", true)] LiteralNumber,
     [Description("string literal"), TokenRegex(@"""""|''|([""']).*?[^\\]\1")] LiteralString,
-    [Description("color literal"), TokenRegex(@"#[\da-fA-F]{6}")] LiteralColor,
+    [Description("color literal"), TokenRegex(@"#(?<r>[a-fA-F\d]{2})(?<g>[a-fA-F\d]{2})(?<b>[a-fA-F\d]{2})", true)] LiteralColor,
 
     [Description("identifier"), TokenRegex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b")] Identifier,
 }

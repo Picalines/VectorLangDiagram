@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace VectorLang.Tokenization;
 
 public static class Tokenizer
 {
-    private static readonly Dictionary<TokenType, Regex> _TokenRegexes;
+    private static readonly Dictionary<TokenType, TokenRegexAttribute> _TokenRegexes;
 
     static Tokenizer()
     {
@@ -16,7 +15,7 @@ public static class Tokenizer
 
         foreach (var member in tokenTypeValues)
         {
-            _TokenRegexes[member] = member.GetRegex();
+            _TokenRegexes[member] = member.GetRegexAttribute();
         }
     }
 
@@ -44,13 +43,16 @@ public static class Tokenizer
 
         foreach (var (tokenType, regex) in _TokenRegexes)
         {
-            var match = regex.Match(code, index);
+            var match = regex.Regex.Match(code, index);
             if (!match.Success || match.Index != index)
             {
                 continue;
             }
 
-            var token = new Token(location, match.Value, tokenType);
+            var token = new Token(location, match.Value, tokenType)
+            {
+                RegexGroups = regex.SaveGroups ? match.Groups : null
+            };
 
             index += match.Length;
 
