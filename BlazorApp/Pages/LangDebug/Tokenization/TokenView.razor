@@ -1,0 +1,32 @@
+﻿@using VectorLang.Tokenization
+
+<div style="background-color: @BackgroundColor; color: white">
+    @Token.Type.ToString()
+
+    @if (Token.Type is TokenType.Comment or TokenType.Identifier)
+    {
+        <span> "@Token.Value"</span>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Token Token { get; set; } = new(new TextLocation(1, 1), "", TokenType.Space);
+
+    private string BackgroundColor => Token.Type switch
+    {
+        TokenType.Identifier => "#8B008B",
+
+        TokenType.LiteralNumber => "#1E90FF",
+
+        TokenType.LiteralString => "#D2691E",
+
+        TokenType.LiteralColor => "green",
+
+        var type when type.ToString().StartsWith("Operator") => "#483D8B",
+
+        var type when type.ToString().StartsWith("Keyword") => "#DC143C",
+
+        _ => "grey",
+    };
+}

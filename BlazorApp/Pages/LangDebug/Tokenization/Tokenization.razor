@@ -1,0 +1,52 @@
+﻿@page "/debug/tokenization"
+
+@using VectorLang.Tokenization;
+
+<PageTitle>Tokenization</PageTitle>
+
+<input type="checkbox" @bind="IncludeSpaces" /> Include spaces <br/>
+
+<div id="sections">
+    <section id="code-section">
+        <textarea @oninput="args => CodeChanged(args.Value!.ToString()!)" />
+    </section>
+    <section id="tokens-section">
+        @if (ErrorMessage is not null)
+        {
+            <div class="alert-danger">@ErrorMessage</div>
+        }
+        else
+        {
+            @foreach (var token in FilteredTokens)
+            {
+                <TokenView Token=token />
+            }
+        }
+    </section>
+</div>
+
+@code {
+    private bool IncludeSpaces = true;
+
+    private string? ErrorMessage;
+
+    private List<Token> Tokens = new();
+
+    private IEnumerable<Token> FilteredTokens => Tokens
+        .Where(token => IncludeSpaces || token.Type is not TokenType.Space);
+
+    private void CodeChanged(string code)
+    {
+        ErrorMessage = null;
+
+        try
+        {
+            Tokens.Clear();
+            Tokens.AddRange(Tokenizer.Tokenize(code));
+        }
+        catch (UnknownTokenException unknownTokenException)
+        {
+            ErrorMessage = unknownTokenException.Message;
+        }
+    }
+}
