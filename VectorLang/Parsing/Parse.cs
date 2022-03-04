@@ -55,6 +55,11 @@ internal static class Parse
         return input => ParseResult<T>.Success(value, input);
     }
 
+    public static Parser<T> ReturnNew<T>(Func<T> create)
+    {
+        return input => ParseResult<T>.Success(create(), input);
+    }
+
     public static Parser<T> Throw<T>(string error)
     {
         return input => ParseResult<T>.Failure(error, input);
@@ -73,6 +78,11 @@ internal static class Parse
     public static Parser<U> As<T, U>(this Parser<T> parser, U value)
     {
         return parser.Select(() => value);
+    }
+
+    public static Parser<(T, U)> With<T, U>(this Parser<T> parser, U info)
+    {
+        return parser.Select(value => (value, info));
     }
 
     public static Parser<T> MaybeThen<T>(this Parser<T> current, Parser<T> optionalNext)
@@ -125,6 +135,28 @@ internal static class Parse
 
         return ParseResult<List<T>>.Success(resultValues, lastRemainder);
     };
+
+    public static Parser<List<T>> AtLeastOnce<T>(this Parser<T> parser, string itemDescription = "item")
+    {
+        return parser.Many()
+            .Then(list => list.Count >= 1
+                ? Return(list)
+                : Throw<List<T>>($"at least one {itemDescription} expected")
+            );
+    }
+
+    public static Parser<List<T>> DelimitedBy<T, U>(this Parser<T> element, Parser<U> delimiter)
+    {
+        return element.FollowedBy(delimiter).Many()
+            .Then(tail =>
+                element.Select(last =>
+                {
+                    tail.Add(last);
+                    return tail;
+                })
+            )
+            .Or(ReturnNew(() => new List<T>()));
+    }
 
     public static Parser<List<T>> Until<T, U>(this Parser<T> parser, Parser<U> stop, int listCapacity = 0) => input =>
     {
