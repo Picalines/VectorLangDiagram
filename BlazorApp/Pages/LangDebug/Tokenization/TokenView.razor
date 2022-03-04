@@ -2,11 +2,6 @@
 
 <div style="background-color: @BackgroundColor; color: white">
     @Token.Type.ToString()
-
-    @if (Token.Type is TokenType.Comment or TokenType.Identifier)
-    {
-        <span> "@Token.Value"</span>
-    }
 </div>
 
 @code {
@@ -23,9 +18,9 @@
 
         TokenType.LiteralColor => "green",
 
-        var type when type.ToString().StartsWith("Operator") => "#483D8B",
+        var type when type.IsOperator() => "#483D8B",
 
-        var type when type.ToString().StartsWith("Keyword") => "#DC143C",
+        var type when type.IsKeyword() => "#DC143C",
 
         _ => "grey",
     };
