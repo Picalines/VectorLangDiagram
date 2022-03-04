@@ -18,15 +18,6 @@ internal static partial class ParseValueExpression
             from token in ParseToken.LiteralString
             select new StringNode(token.Value[1..^1], token);
 
-        public static readonly Parser<VectorNode> Vector =
-            from vectorKeyword in ParseToken.KeywordVector
-            from openParen in ParseToken.OpenParenthesis
-            from x in Number // TODO: ValueExpression
-            from comma in ParseToken.Comma
-            from y in Number
-            from closeParenToken in ParseToken.CloseParenthesis
-            select new VectorNode(x.Value, y.Value, TextSelection.FromTokens(vectorKeyword, closeParenToken));
-
         public static readonly Parser<ColorNode> Color =
             from literalToken in ParseToken.LiteralColor
             from color in ParseColorLiteral(literalToken)

@@ -16,7 +16,6 @@ public enum TokenType
     [Description("open brace"), TokenRegex(@"\{")] CurlyBraceOpen,
     [Description("closing brace"), TokenRegex(@"\}")] CurlyBraceClose,
 
-    [Description("keyword 'vector'"), TokenRegex(@"\bvector\b")] KeywordVector,
     [Description("keyword 'def"), TokenRegex(@"\bdef\b")] KeywordDef,
     [Description("keyword 'external"), TokenRegex(@"\bextenal\b")] KeywordExternal,
     [Description("keyword 'val"), TokenRegex(@"\bval\b")] KeywordVal,
