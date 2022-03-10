@@ -1,0 +1,8 @@
+﻿﻿div {
+    width: fit-content;
+    height: fit-content;
+    padding: 4px 7px 4px 7px;
+    margin: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}

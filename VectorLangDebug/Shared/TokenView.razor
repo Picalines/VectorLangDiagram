@@ -1,0 +1,27 @@
+﻿@using VectorLang.Tokenization
+
+<div style="background-color: @BackgroundColor; color: white">
+    @Token.Type.ToString()
+</div>
+
+@code {
+    [Parameter]
+    public Token Token { get; set; } = new(new TextLocation(1, 1), "", TokenType.Space);
+
+    private string BackgroundColor => Token.Type switch
+    {
+        TokenType.Identifier => "#8B008B",
+
+        TokenType.LiteralNumber => "#1E90FF",
+
+        TokenType.LiteralString => "#D2691E",
+
+        TokenType.LiteralColor => "green",
+
+        var type when type.IsOperator() => "#483D8B",
+
+        var type when type.IsKeyword() => "#DC143C",
+
+        _ => "grey",
+    };
+}
