@@ -38,6 +38,7 @@ internal static partial class ParseValueExpression
 
             return unit switch
             {
+                "" => Parse.Return(value),
                 "deg" => Parse.Return(value * Math.PI / 180.0),
                 "rad" => Parse.Return(value),
                 _ => Parse.Throw<double>($"unknown number unit '{unit}'"),
