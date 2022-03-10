@@ -26,7 +26,7 @@ internal static partial class ParseValueExpression
         .Or(ParseConstant.String)
         .Or(Variable)
         .Or(InnerExpression)
-        .Or(Parse.Throw<ValueExpressionNode>("expression expected"));
+        .WithError("expression term expected");
 
     private static readonly Parser<CallInfo> Call =
         from openParen in ParseToken.OpenParenthesis
