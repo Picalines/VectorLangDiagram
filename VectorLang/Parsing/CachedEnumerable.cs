@@ -38,6 +38,11 @@ internal sealed class CachedEnumerable<T> : IEnumerable<T>, IDisposable
 
     private IEnumerator<T> GetCachingEnumerator()
     {
+        foreach (var cachedItem in _CachedItems)
+        {
+            yield return cachedItem;
+        }
+
         while (_Enumerator!.MoveNext())
         {
             var current = _Enumerator.Current;
