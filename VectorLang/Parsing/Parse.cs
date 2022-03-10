@@ -45,10 +45,20 @@ internal static class Parse
         return firstResult;
     };
 
-    private static IParseResult<T> DetermineBestError<T>(IParseResult<T> firstFailure, IParseResult<T> secondFailure) =>
-        secondFailure.Remainder.Position > firstFailure.Remainder.Position
+    private static IParseResult<T> DetermineBestError<T>(IParseResult<T> firstFailure, IParseResult<T> secondFailure)
+    {
+        var firstRemainder = firstFailure.Remainder;
+        var secondRemainder = secondFailure.Remainder;
+
+        if (firstRemainder.Position == secondRemainder.Position)
+        {
+            return firstFailure.MergeFailure(secondFailure);
+        }
+
+        return secondRemainder.Position > firstRemainder.Position
             ? secondFailure
             : firstFailure;
+    }
 
     public static Parser<T> Return<T>(T value)
     {
@@ -65,14 +75,24 @@ internal static class Parse
         return input => ParseResult<T>.Failure(error, input);
     }
 
+    public static Parser<T> WithError<T>(this Parser<T> parser, string errorMessage)
+    {
+        return input => parser(input).IfFailure(error => ParseResult<T>.Failure(errorMessage, error.Remainder));
+    }
+
+    public static Parser<T> WithAdditionalError<T>(this Parser<T> parser, string additionalErrorMessage)
+    {
+        return input => parser(input).IfFailure(error => error.MergeFailure(additionalErrorMessage));
+    }
+
     public static Parser<U> Select<T, U>(this Parser<T> parser, Func<U> create)
     {
-        return input => parser(input).IfSuccess(r => ParseResult<U>.Success(create(), r.Remainder));
+        return parser.Then(result => Return(create()));
     }
 
     public static Parser<U> Select<T, U>(this Parser<T> parser, Func<T, U> convert)
     {
-        return input => parser(input).IfSuccess(r => ParseResult<U>.Success(convert(r.Value), r.Remainder));
+        return parser.Then(result => Return(convert(result)));
     }
 
     public static Parser<U> As<T, U>(this Parser<T> parser, U value)
@@ -136,13 +156,13 @@ internal static class Parse
         return ParseResult<List<T>>.Success(resultValues, lastRemainder);
     };
 
-    public static Parser<List<T>> AtLeastOnce<T>(this Parser<T> parser, string itemDescription = "item")
+    public static Parser<List<T>> AtLeastOnce<T>(this Parser<T> parser)
     {
-        return parser.Many()
-            .Then(list => list.Count >= 1
-                ? Return(list)
-                : Throw<List<T>>($"at least one {itemDescription} expected")
-            );
+        return parser.Then(first => parser.Many().Select(rest =>
+        {
+            rest.Insert(0, first);
+            return rest;
+        }));
     }
 
     public static Parser<List<T>> DelimitedBy<T, U>(this Parser<T> element, Parser<U> delimiter)
@@ -154,8 +174,8 @@ internal static class Parse
                     tail.Add(last);
                     return tail;
                 })
-            )
-            .Or(ReturnNew(() => new List<T>()));
+                .XOr(ReturnNew(() => new List<T>()))
+            );
     }
 
     public static Parser<List<T>> Until<T, U>(this Parser<T> parser, Parser<U> stop, int listCapacity = 0) => input =>
