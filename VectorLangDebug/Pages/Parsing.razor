@@ -1,0 +1,64 @@
+﻿@page "/parsing"
+
+<PageTitle>Parsing</PageTitle>
+
+@using VectorLang.SyntaxTree;
+@using VectorLang.Parsing;
+
+<div id="sections">
+    <section id="code-section">
+        <textarea @oninput="args => OnCodeChanged(args.Value!.ToString()!)" >@ExampleProgram</textarea>
+    </section>
+    <section id="syntax-tree-section">
+        @if (ErrorMessage is not null)
+        {
+            <div class="alert-danger">@ErrorMessage</div>
+        }
+        else
+        {
+            <SyntaxTreeView SyntaxTree=ParsedProgram! />
+        }
+    </section>
+</div>
+
+@code {
+    private const string ExampleProgram = "def sum(vector a, vector b) -> vector = a + b";
+
+    private string? ErrorMessage;
+
+    private Program? ParsedProgram;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        OnCodeChanged(ExampleProgram);
+    }
+
+    private void OnCodeChanged(string code)
+    {
+        ParsedProgram = null;
+        ErrorMessage = null;
+
+        IParseResult<Program> parseResult;
+
+        try
+        {
+            parseResult = ParseProgram.Program.Parse(code);
+        }
+        catch (Exception exception)
+        {
+            ErrorMessage = $"Unexpected {exception.GetType().Name}: {exception.Message}\n{exception.StackTrace}";
+            return;
+        }
+
+        if (parseResult.IsSuccessfull)
+        {
+            ParsedProgram = parseResult.Value;
+        }
+        else
+        {
+            ErrorMessage = $"Error at {parseResult.Remainder.Location}: {parseResult.ErrorMessage}";
+        }
+    }
+}
