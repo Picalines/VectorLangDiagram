@@ -52,6 +52,11 @@ internal class ParseInput
                 return _Current!.Location;
             }
 
+            if (!_Tokens.Any())
+            {
+                return new TextLocation(1, 1);
+            }
+
             var lastToken = _Tokens.Last();
 
             return lastToken.Location with
