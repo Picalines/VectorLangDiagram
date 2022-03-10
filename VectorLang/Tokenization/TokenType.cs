@@ -16,10 +16,10 @@ public enum TokenType
     [Description("open brace"), TokenRegex(@"\{")] CurlyBraceOpen,
     [Description("closing brace"), TokenRegex(@"\}")] CurlyBraceClose,
 
-    [Description("keyword 'def"), TokenRegex(@"\bdef\b")] KeywordDef,
-    [Description("keyword 'external"), TokenRegex(@"\bextenal\b")] KeywordExternal,
-    [Description("keyword 'val"), TokenRegex(@"\bval\b")] KeywordVal,
-    [Description("keyword 'plot"), TokenRegex(@"\bplot\b")] KeywordPlot,
+    [Description("keyword 'def'"), TokenRegex(@"\bdef\b")] KeywordDef,
+    [Description("keyword 'external'"), TokenRegex(@"\bextenal\b")] KeywordExternal,
+    [Description("keyword 'val'"), TokenRegex(@"\bval\b")] KeywordVal,
+    [Description("keyword 'plot'"), TokenRegex(@"\bplot\b")] KeywordPlot,
 
     [Description("operator '!='"), TokenRegex(@"!=")] OperatorNotEquals,
     [Description("operator '='"), TokenRegex(@"=")] OperatorEquals,
