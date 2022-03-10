@@ -5,4 +5,5 @@ namespace VectorLang.SyntaxTree;
 internal sealed record FunctionDefinition(
     string Name,
     TypeNode ReturnType,
-    IReadOnlyList<ArgumentDefinition> Arguments) : Definition;
+    IReadOnlyList<ArgumentDefinition> Arguments,
+    ValueExpressionNode ValueExpression) : Definition;
