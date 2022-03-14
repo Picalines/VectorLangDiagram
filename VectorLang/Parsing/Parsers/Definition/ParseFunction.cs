@@ -14,5 +14,6 @@ internal static partial class ParseDefinition
         from returnType in ParseType.Type
         from equalsOp in ParseToken.OperatorEquals
         from expression in ParseValueExpression.Lambda
+        from semicolon in ParseToken.Semicolon
         select new FunctionDefinition(name.Value, returnType, arguments, expression);
 }
