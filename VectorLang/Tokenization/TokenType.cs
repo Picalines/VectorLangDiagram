@@ -7,6 +7,7 @@ public enum TokenType
     [Description("whitespace"), TokenRegex(@"\s+")] Space,
     [Description("comment"), TokenRegex(@"\/\/.*\n?")] Comment,
 
+    [Description("semicolon ';'"), TokenRegex(@";")] Semicolon,
     [Description("comma"), TokenRegex(@",")] Comma,
     [Description("dot"), TokenRegex(@"\.")] Dot,
     [Description("arrow '->'"), TokenRegex(@"->")] Arrow,
