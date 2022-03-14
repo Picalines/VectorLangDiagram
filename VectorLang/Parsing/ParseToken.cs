@@ -14,6 +14,7 @@ internal static class ParseToken
         return ParseResult<Token>.Success(input.Current, input.Advance());
     };
 
+    public static readonly Parser<Token> Semicolon = TokenType.Semicolon.Parser();
     public static readonly Parser<Token> Space = TokenType.Space.Parser();
     public static readonly Parser<Token> Comment = TokenType.Comment.Parser();
 
