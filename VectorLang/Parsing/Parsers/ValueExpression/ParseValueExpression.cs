@@ -24,6 +24,7 @@ internal static partial class ParseValueExpression
     private static readonly Parser<ValueExpressionNode> PrimaryTerm =
         (ParseConstant.Number as Parser<ValueExpressionNode>)
         .Or(ParseConstant.String)
+        .Or(ParseConstant.Color)
         .Or(Variable)
         .Or(InnerExpression)
         .WithError("expression term expected");
