@@ -156,6 +156,28 @@ internal static class Parse
         return ParseResult<List<T>>.Success(resultValues, lastRemainder);
     };
 
+    public static Parser<List<T>> UntilEnd<T>(this Parser<T> parser, int listCapacity = 0) => input =>
+    {
+        ParseInput lastRemainder = input;
+        List<T> resultValues = new(listCapacity);
+        IParseResult<T> result;
+
+        while (!lastRemainder.AtEnd)
+        {
+            result = parser(lastRemainder);
+
+            if (!result.IsSuccessfull)
+            {
+                return ParseResult<List<T>>.CastFailure(result);
+            }
+
+            resultValues.Add(result.Value);
+            lastRemainder = result.Remainder;
+        }
+
+        return ParseResult<List<T>>.Success(resultValues, lastRemainder);
+    };
+
     public static Parser<List<T>> AtLeastOnce<T>(this Parser<T> parser)
     {
         return parser.Then(first => parser.Many().Select(rest =>
