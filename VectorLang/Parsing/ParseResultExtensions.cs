@@ -22,7 +22,7 @@ internal static class ParseResultExtensions
 
     private static string MergeErrorMessages(string first, string second)
     {
-        return $"{first} | {second}";
+        return $"{second} | {first}";
     }
 
     public static IParseResult<U> IfSuccess<T, U>(this IParseResult<T> result, Func<IParseResult<T>, IParseResult<U>> next)

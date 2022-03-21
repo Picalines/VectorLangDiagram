@@ -85,6 +85,11 @@ internal static class Parse
         return input => parser(input).IfFailure(error => error.MergeFailure(additionalErrorMessage));
     }
 
+    public static Parser<T> Named<T>(this Parser<T> parser, string name)
+    {
+        return parser.WithAdditionalError($"{name} expected");
+    }
+
     public static Parser<U> Select<T, U>(this Parser<T> parser, Func<U> create)
     {
         return parser.Then(result => Return(create()));
