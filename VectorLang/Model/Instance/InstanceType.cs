@@ -87,6 +87,12 @@ internal abstract class InstanceType
         DefineMethod(name, signature, (thisInstance, arguments) => callable((TThis)thisInstance, arguments));
     }
 
+    protected void DefineMethod<TThis>(string name, CallSignature signature, Func<TThis, Instance> callable)
+        where TThis : Instance
+    {
+        DefineMethod(name, signature, (thisInstance, _) => callable((TThis)thisInstance));
+    }
+
     protected void DefineOperator(UnaryOperator unaryOperator, InstanceType returnType, InstanceUnaryOperator.CallableDelegate callable)
     {
         AssertNotDefined();
