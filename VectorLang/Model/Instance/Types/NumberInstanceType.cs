@@ -1,4 +1,6 @@
-﻿namespace VectorLang.Model;
+﻿using System;
+
+namespace VectorLang.Model;
 
 internal sealed class NumberInstance : Instance
 {
@@ -27,8 +29,24 @@ internal sealed class NumberInstanceType : InstanceType
         DefineOperator(BinaryOperator.Minus, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value - b.Value));
         DefineOperator(BinaryOperator.Multiply, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value * b.Value));
 
-        // TODO: zero division?
-        DefineOperator(BinaryOperator.Divide, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value / b.Value));
-        DefineOperator(BinaryOperator.Modulo, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value % b.Value));
+        DefineOperator(BinaryOperator.Divide, this, this, (NumberInstance a, NumberInstance b) =>
+        {
+            AssertZeroDivision(b.Value);
+            return new NumberInstance(a.Value / b.Value);
+        });
+
+        DefineOperator(BinaryOperator.Modulo, this, this, (NumberInstance a, NumberInstance b) =>
+        {
+            AssertZeroDivision(b.Value);
+            return new NumberInstance(a.Value % b.Value);
+        });
+    }
+
+    private static void AssertZeroDivision(double denominator)
+    {
+        if (denominator == 0.0)
+        {
+            throw new DivideByZeroException();
+        }
     }
 }

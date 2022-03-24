@@ -18,35 +18,29 @@ internal sealed class CallSignature
     }
 
     public CallSignature(InstanceType returnType, params (string Name, InstanceType Type)[] arguments)
-        : this(returnType, arguments as IReadOnlyList<(string, InstanceType)>)
-    {
-    }
+        : this(returnType, arguments as IReadOnlyList<(string, InstanceType)>) { }
 
     public CallSignature(InstanceType returnType)
-        : this(returnType, Array.Empty<(string, InstanceType)>())
-    {
-    }
+        : this(returnType, Array.Empty<(string, InstanceType)>()) { }
 
     public bool Equals(CallSignature otherSignature)
     {
-        return otherSignature.ReturnType == ReturnType
+        return otherSignature.ReturnType.IsAssignableTo(ReturnType)
             && Arguments.Zip(otherSignature.Arguments).All(argPair => argPair.First.Type == argPair.Second.Type);
     }
 
     public void AssertArguments(params Instance[] arguments)
     {
-        // TODO: exceptions
-
         if (arguments.Length != Arguments.Count)
         {
-            throw new InvalidOperationException($"{Arguments.Count} arguments expected");
+            throw new ArgumentCountException(arguments.Length, Arguments.Count);
         }
 
-        foreach (var ((name, defType), givenValue) in Arguments.Zip(arguments))
+        foreach (var ((_, defType), givenValue) in Arguments.Zip(arguments))
         {
             if (!givenValue.Type.IsAssignableTo(defType))
             {
-                throw new InvalidCastException($"value of type {defType} expected for argument '{name}'");
+                throw new NotAssignableTypeException(givenValue.Type, defType);
             }
         }
     }
