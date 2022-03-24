@@ -33,10 +33,15 @@ internal abstract class InstanceType
 
     public override string ToString() => Name;
 
-    public bool IsAssignableTo(InstanceType otherType)
-    {
-        return this == otherType;
-    }
+    public bool IsAssignableTo(InstanceType otherType) => this == otherType;
+
+    public string FormatMember(string fieldOrMethod) => $"{Name}.{fieldOrMethod}";
+
+    public string FormatMember(string method, params object[] arguments) => $"{Name}.{method}({string.Join(", ", arguments)})";
+
+    public string FormatMember(UnaryOperator unaryOperator) => unaryOperator.GetFormatted(Name);
+
+    public string FormatMember(BinaryOperator binaryOperator, object right) => binaryOperator.GetFormatted(Name, right);
 
     protected abstract void DefineMembersInternal();
 
@@ -86,7 +91,7 @@ internal abstract class InstanceType
     {
         AssertNotDefined();
 
-        Debug.Assert(!_UnaryOperators.ContainsKey(unaryOperator), $"unary operator {unaryOperator.GetDescription()} is already defined in type {this}");
+        Debug.Assert(!_UnaryOperators.ContainsKey(unaryOperator), $"unary operator {FormatMember(unaryOperator)} is already defined in type {this}");
 
         _UnaryOperators[unaryOperator] = new InstanceUnaryOperator(this, returnType, callable);
     }
@@ -101,8 +106,7 @@ internal abstract class InstanceType
     {
         AssertNotDefined();
 
-        // TODO: formatted operators
-        Debug.Assert(!_BinaryOperators.ContainsKey((binaryOperator, rightType)), $"binary operator {this} {binaryOperator.GetDescription()} {rightType} is already defined");
+        Debug.Assert(!_BinaryOperators.ContainsKey((binaryOperator, rightType)), $"binary operator {FormatMember(binaryOperator, rightType)} is already defined");
 
         _BinaryOperators[(binaryOperator, rightType)] = new InstanceBinaryOperator(this, returnType, rightType, callable);
     }

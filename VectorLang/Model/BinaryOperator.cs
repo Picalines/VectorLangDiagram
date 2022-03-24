@@ -4,9 +4,9 @@ namespace VectorLang.Model;
 
 public enum BinaryOperator
 {
-    [Description("+")] Plus,
-    [Description("-")] Minus,
-    [Description("*")] Multiply,
-    [Description("/")] Divide,
-    [Description("%")] Modulo,
+    [Description("+"), Format("{} + {}")] Plus,
+    [Description("-"), Format("{} - {}")] Minus,
+    [Description("*"), Format("{} * {}")] Multiply,
+    [Description("/"), Format("{} / {}")] Divide,
+    [Description("%"), Format("{} % {}")] Modulo,
 }

@@ -4,6 +4,6 @@ namespace VectorLang.Model;
 
 public enum UnaryOperator
 {
-    [Description("+")] Plus,
-    [Description("-")] Minus,
+    [Description("+"), Format("+{}")] Plus,
+    [Description("-"), Format("-{}")] Minus,
 }
