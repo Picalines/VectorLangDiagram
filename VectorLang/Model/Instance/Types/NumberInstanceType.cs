@@ -23,8 +23,8 @@ internal sealed class NumberInstanceType : InstanceType
         DefineOperator(UnaryOperator.Plus, this, thisInstance => thisInstance);
         DefineOperator(UnaryOperator.Minus, this, (NumberInstance thisInstance) => new NumberInstance(-thisInstance.Value));
 
-        DefineOperator(BinaryOperator.Add, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value + b.Value));
-        DefineOperator(BinaryOperator.Subtract, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value - b.Value));
+        DefineOperator(BinaryOperator.Plus, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value + b.Value));
+        DefineOperator(BinaryOperator.Minus, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value - b.Value));
         DefineOperator(BinaryOperator.Multiply, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value * b.Value));
 
         // TODO: zero division?

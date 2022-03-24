@@ -74,8 +74,8 @@ internal static partial class ParseValueExpression
 
     private static readonly Parser<ValueExpressionNode> Addition =
         Parse.ChainOperator(
-            ParseToken.OperatorPlus.As(BinaryOperator.Add)
-            .Or(ParseToken.OperatorMinus.As(BinaryOperator.Subtract)),
+            ParseToken.OperatorPlus.As(BinaryOperator.Plus)
+            .Or(ParseToken.OperatorMinus.As(BinaryOperator.Minus)),
             Multiplication,
             CreateBinaryExpression
         );
