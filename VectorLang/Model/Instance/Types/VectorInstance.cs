@@ -24,7 +24,7 @@ internal sealed class VectorInstance : Instance
 
     protected override Instance? GetFieldInternal(string name) => name switch
     {
-        XFieldName => new NumberInstance(X),
+        XFieldName => new NumberInstance(X), // TODO: lazy
         YFieldName => new NumberInstance(Y),
         LengthFieldName => new NumberInstance(Length),
         _ => null,
