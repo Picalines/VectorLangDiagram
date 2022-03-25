@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace VectorLang.Model;
+﻿namespace VectorLang.Model;
 
 internal sealed class NumberInstanceType : InstanceType
 {
@@ -12,31 +10,18 @@ internal sealed class NumberInstanceType : InstanceType
 
     protected override void DefineMembersInternal()
     {
-        DefineOperator(UnaryOperator.Plus, this, thisInstance => thisInstance);
-        DefineOperator(UnaryOperator.Minus, this, (NumberInstance thisInstance) => new NumberInstance(-thisInstance.Value));
+        DefineOperator(UnaryOperator.Plus, this, (NumberInstance thisInstance) => +thisInstance);
+        DefineOperator(UnaryOperator.Minus, this, (NumberInstance thisInstance) => -thisInstance);
 
-        DefineOperator(BinaryOperator.Plus, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value + b.Value));
-        DefineOperator(BinaryOperator.Minus, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value - b.Value));
-        DefineOperator(BinaryOperator.Multiply, this, this, (NumberInstance a, NumberInstance b) => new NumberInstance(a.Value * b.Value));
+        DefineOperator(BinaryOperator.Plus, this, this, (NumberInstance a, NumberInstance b) => a + b);
+        DefineOperator(BinaryOperator.Minus, this, this, (NumberInstance a, NumberInstance b) => a - b);
+        DefineOperator(BinaryOperator.Multiply, this, this, (NumberInstance a, NumberInstance b) => a * b);
+        DefineOperator(BinaryOperator.Divide, this, this, (NumberInstance a, NumberInstance b) => a / b);
+        DefineOperator(BinaryOperator.Modulo, this, this, (NumberInstance a, NumberInstance b) => a % b);
 
-        DefineOperator(BinaryOperator.Divide, this, this, (NumberInstance a, NumberInstance b) =>
-        {
-            AssertZeroDivision(b.Value);
-            return new NumberInstance(a.Value / b.Value);
-        });
+        var vectorType = VectorInstanceType.Instance;
 
-        DefineOperator(BinaryOperator.Modulo, this, this, (NumberInstance a, NumberInstance b) =>
-        {
-            AssertZeroDivision(b.Value);
-            return new NumberInstance(a.Value % b.Value);
-        });
-    }
-
-    private static void AssertZeroDivision(double denominator)
-    {
-        if (denominator == 0.0)
-        {
-            throw new DivideByZeroException();
-        }
+        DefineOperator(BinaryOperator.Multiply, vectorType, vectorType, (NumberInstance number, VectorInstance vector) => number * vector);
+        DefineOperator(BinaryOperator.Divide, vectorType, vectorType, (NumberInstance number, VectorInstance vector) => number / vector);
     }
 }
