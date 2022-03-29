@@ -15,34 +15,19 @@ internal sealed class NumberInstance : ReflectionInstance
     }
 
     [InstanceOperator]
-    public static NumberInstance operator +(NumberInstance right)
-    {
-        return right;
-    }
+    public static NumberInstance operator +(NumberInstance right) => right;
 
     [InstanceOperator]
-    public static NumberInstance operator -(NumberInstance right)
-    {
-        return new NumberInstance(-right.Value);
-    }
+    public static NumberInstance operator -(NumberInstance right) => new(-right.Value);
 
     [InstanceOperator]
-    public static NumberInstance operator +(NumberInstance left, NumberInstance right)
-    {
-        return new NumberInstance(left.Value + right.Value);
-    }
+    public static NumberInstance operator +(NumberInstance left, NumberInstance right) => new(left.Value + right.Value);
 
     [InstanceOperator]
-    public static NumberInstance operator -(NumberInstance left, NumberInstance right)
-    {
-        return new NumberInstance(left.Value - right.Value);
-    }
+    public static NumberInstance operator -(NumberInstance left, NumberInstance right) => new(left.Value - right.Value);
 
     [InstanceOperator]
-    public static NumberInstance operator *(NumberInstance left, NumberInstance right)
-    {
-        return new NumberInstance(left.Value * right.Value);
-    }
+    public static NumberInstance operator *(NumberInstance left, NumberInstance right) => new(left.Value * right.Value);
 
     [InstanceOperator]
     public static NumberInstance operator /(NumberInstance left, NumberInstance right)
@@ -52,7 +37,7 @@ internal sealed class NumberInstance : ReflectionInstance
             throw new DivideByZeroException();
         }
 
-        return new NumberInstance(left.Value / right.Value);
+        return new(left.Value / right.Value);
     }
 
     [InstanceOperator]
@@ -63,18 +48,12 @@ internal sealed class NumberInstance : ReflectionInstance
             throw new DivideByZeroException();
         }
 
-        return new NumberInstance(left.Value % right.Value);
+        return new(left.Value % right.Value);
     }
 
     [InstanceOperator]
-    public static VectorInstance operator *(NumberInstance number, VectorInstance vector)
-    {
-        return vector * number;
-    }
+    public static VectorInstance operator *(NumberInstance number, VectorInstance vector) => vector * number;
 
     [InstanceOperator]
-    public static VectorInstance operator /(NumberInstance number, VectorInstance vector)
-    {
-        return vector / number;
-    }
+    public static VectorInstance operator /(NumberInstance number, VectorInstance vector) => vector / number;
 }
