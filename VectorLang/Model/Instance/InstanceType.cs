@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace VectorLang.Model;
@@ -47,7 +46,7 @@ internal abstract class InstanceType
 
     internal void DefineMembers()
     {
-        Debug.Assert(!IsDefined);
+        AssertNotDefined();
 
         try
         {
@@ -81,18 +80,6 @@ internal abstract class InstanceType
         _Methods[name] = new InstanceMethod(this, signature, callable);
     }
 
-    protected void DefineMethod<TThis>(string name, CallSignature signature, Func<TThis, Instance[], Instance> callable)
-        where TThis : Instance
-    {
-        DefineMethod(name, signature, (thisInstance, arguments) => callable((TThis)thisInstance, arguments));
-    }
-
-    protected void DefineMethod<TThis>(string name, CallSignature signature, Func<TThis, Instance> callable)
-        where TThis : Instance
-    {
-        DefineMethod(name, signature, (thisInstance, _) => callable((TThis)thisInstance));
-    }
-
     protected void DefineOperator(UnaryOperator unaryOperator, InstanceType returnType, InstanceUnaryOperator.CallableDelegate callable)
     {
         AssertNotDefined();
@@ -102,12 +89,6 @@ internal abstract class InstanceType
         _UnaryOperators[unaryOperator] = new InstanceUnaryOperator(this, returnType, callable);
     }
 
-    protected void DefineOperator<TThis>(UnaryOperator unaryOperator, InstanceType returnType, Func<TThis, Instance> callable)
-        where TThis : Instance
-    {
-        DefineOperator(unaryOperator, returnType, thisInstance => callable((TThis)thisInstance));
-    }
-
     protected void DefineOperator(BinaryOperator binaryOperator, InstanceType returnType, InstanceType rightType, InstanceBinaryOperator.CallableDelegate callable)
     {
         AssertNotDefined();
@@ -115,13 +96,6 @@ internal abstract class InstanceType
         Debug.Assert(!_BinaryOperators.ContainsKey((binaryOperator, rightType)), $"binary operator {FormatMember(binaryOperator, rightType)} is already defined");
 
         _BinaryOperators[(binaryOperator, rightType)] = new InstanceBinaryOperator(this, returnType, rightType, callable);
-    }
-
-    protected void DefineOperator<TThis, TRight>(BinaryOperator binaryOperator, InstanceType returnType, InstanceType rightType, Func<TThis, TRight, Instance> callable)
-        where TThis : Instance
-        where TRight : Instance
-    {
-        DefineOperator(binaryOperator, returnType, rightType, (thisInstance, rightInstance) => callable((TThis)thisInstance, (TRight)rightInstance));
     }
 
     [Conditional("DEBUG")]

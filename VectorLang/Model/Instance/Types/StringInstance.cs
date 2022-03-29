@@ -1,22 +1,23 @@
 ﻿namespace VectorLang.Model;
 
-internal sealed class StringInstance : Instance
+internal sealed class StringInstance : ReflectionInstance
 {
-    public const string LengthFieldName = "length";
+    [ReflectionInstanceType]
+    public static readonly ReflectionInstanceType InstanceType = ReflectionInstanceType.Of<StringInstance>("string");
 
     public string Value { get; }
 
-    public StringInstance(string value) : base(StringInstanceType.Instance)
+    [InstanceField("length")]
+    public NumberInstance LengthInstance { get; }
+
+    public StringInstance(string value) : base(InstanceType)
     {
         Value = value;
+
+        LengthInstance = new(Value.Length);
     }
 
-    protected override Instance? GetFieldInternal(string name) => name switch
-    {
-        LengthFieldName => new NumberInstance(Value.Length), // TODO: lazy
-        _ => null,
-    };
-
+    [InstanceOperator]
     public static StringInstance operator +(StringInstance left, StringInstance right)
     {
         return new StringInstance(left.Value + right.Value);
