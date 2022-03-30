@@ -105,7 +105,7 @@ internal sealed class ReflectionInstanceType : InstanceType
         return instaceType;
     }
 
-    private static CallSignature GetSignatureFromMethod(MethodInfo methodInfo)
+    public static CallSignature GetSignatureFromMethod(MethodInfo methodInfo)
     {
         var returnInstanceType = GetInstanceTypeOf(methodInfo.ReturnType);
 
