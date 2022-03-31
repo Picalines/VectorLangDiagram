@@ -16,4 +16,8 @@ internal sealed record NumberNode(double Value, Token Token) : ConstantNode(Text
 
 internal sealed record StringNode(string Value, Token Token) : ConstantNode(TextSelection.FromToken(Token));
 
+// TODO: add parsing for that
+// (make blocks in [], vector literals in {X, Y})
+internal sealed record VectorNode(double X, double Y, TextSelection Selection) : ConstantNode(Selection);
+
 internal sealed record ColorNode(double R, double G, double B, TextSelection Selection) : ConstantNode(Selection);
