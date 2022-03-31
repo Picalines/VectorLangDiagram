@@ -9,7 +9,7 @@ internal sealed class ReflectionFunction : Function
     private readonly MethodInfo _Method;
 
     private ReflectionFunction(MethodInfo method)
-        : base(method.Name, ReflectionInstanceType.GetSignatureFromMethod(method))
+        : base(method.Name, CallSignature.From(method))
     {
         _Method = method;
     }

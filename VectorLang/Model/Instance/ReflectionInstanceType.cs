@@ -8,7 +8,7 @@ namespace VectorLang.Model;
 
 internal sealed class ReflectionInstanceType : InstanceType
 {
-    private readonly Type InstanceReflectionType;
+    private readonly Type _InstanceReflectionType;
 
     private readonly Dictionary<string, PropertyInfo> _FieldProperties = new();
 
@@ -17,7 +17,7 @@ internal sealed class ReflectionInstanceType : InstanceType
     private ReflectionInstanceType(string name, Type instanceReflectionType)
         : base(name)
     {
-        InstanceReflectionType = instanceReflectionType;
+        _InstanceReflectionType = instanceReflectionType;
     }
 
     public static ReflectionInstanceType Of<TInstance>(string name) where TInstance : ReflectionInstance
@@ -27,62 +27,68 @@ internal sealed class ReflectionInstanceType : InstanceType
 
     public Instance GetInstanceField(ReflectionInstance instance, string fieldName)
     {
-        Debug.Assert(instance.GetType() == InstanceReflectionType);
+        Debug.Assert(instance.GetType() == _InstanceReflectionType);
 
         return (_FieldProperties[fieldName].GetValue(instance) as Instance)!;
     }
 
     protected override void DefineMembersInternal()
     {
-        var instanceMembers = InstanceReflectionType.GetMembers(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+        const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
-        foreach (var member in instanceMembers)
+        var properties = _InstanceReflectionType.GetProperties(bindingFlags);
+
+        foreach (var propertyInfo in properties)
         {
-            switch (member)
+            if (propertyInfo.GetCustomAttribute<InstanceFieldAttribute>() is { FieldName: var fieldName })
             {
-                case PropertyInfo propertyInfo:
-                    if (member.GetCustomAttribute<InstanceFieldAttribute>() is { FieldName: var fieldName })
-                    {
-                        DefineField(fieldName, GetInstanceTypeOf(propertyInfo.PropertyType));
-                        _FieldProperties[fieldName] = propertyInfo;
-                    }
-                    break;
+                DefineField(fieldName, From(propertyInfo.PropertyType));
+                _FieldProperties[fieldName] = propertyInfo;
+            }
+        }
 
-                case MethodInfo methodInfo:
-                    if (member.GetCustomAttribute<InstanceMethodAttribute>() is { MethodName: var methodName })
-                    {
-                        DefineMethod(methodName, GetSignatureFromMethod(methodInfo), (thisInstance, arguments) =>
-                        {
-                            return (methodInfo.Invoke(thisInstance, arguments) as Instance)!;
-                        });
-                    }
+        var methodOrOperators = _InstanceReflectionType.GetMethods(bindingFlags);
 
-                    if (member.GetCustomAttribute<InstanceOperatorAttribute>() is not null)
-                    {
-                        if (MethodNameToUnaryOperator(methodInfo.Name) is { } unaryOperator)
-                        {
-                            DefineOperator(unaryOperator, GetInstanceTypeOf(methodInfo.ReturnType), thisInstance =>
-                            {
-                                return (methodInfo.Invoke(null, new[] { thisInstance }) as Instance)!;
-                            });
-                        }
+        foreach (var methodInfo in methodOrOperators)
+        {
+            if (methodInfo.GetCustomAttribute<InstanceMethodAttribute>() is { MethodName: var langMethodName })
+            {
+                DefineMethod(langMethodName, CallSignature.From(methodInfo), (thisInstance, arguments) =>
+                {
+                    return (methodInfo.Invoke(thisInstance, arguments) as Instance)!;
+                });
+            }
 
-                        if (MethodNameToBinaryOperator(methodInfo.Name) is { } binaryOperator)
-                        {
-                            var returnInstanceType = GetInstanceTypeOf(methodInfo.ReturnType);
-                            var rightInstanceType = GetInstanceTypeOf(methodInfo.GetParameters()[1].ParameterType);
-                            DefineOperator(binaryOperator, returnInstanceType, rightInstanceType, (thisInstance, rightInstance) =>
-                            {
-                                return (methodInfo.Invoke(null, new[] { thisInstance, rightInstance }) as Instance)!;
-                            });
-                        }
-                    }
-                    break;
+            if (methodInfo.GetCustomAttribute<InstanceOperatorAttribute>() is not null)
+            {
+                const string invalidAttributeUsageMessage = $"{nameof(InstanceOperatorAttribute)} can be used only on operator declarations";
+
+                if (MethodNameToUnaryOperator(methodInfo.Name) is { } unaryOperator)
+                {
+                    Debug.Assert(methodInfo.GetParameters().Length == 1, invalidAttributeUsageMessage);
+
+                    DefineOperator(unaryOperator, From(methodInfo.ReturnType), thisInstance =>
+                    {
+                        return (methodInfo.Invoke(null, new[] { thisInstance }) as Instance)!;
+                    });
+                }
+
+                if (MethodNameToBinaryOperator(methodInfo.Name) is { } binaryOperator)
+                {
+                    var (returnType, arguments) = CallSignature.From(methodInfo);
+
+                    Debug.Assert(arguments.Count == 2, invalidAttributeUsageMessage);
+
+                    DefineOperator(binaryOperator, returnType, arguments[1].Type, (thisInstance, rightInstance) =>
+                    {
+                        return (methodInfo.Invoke(null, new[] { thisInstance, rightInstance }) as Instance)!;
+                    });
+                }
             }
         }
     }
 
-    public static ReflectionInstanceType GetInstanceTypeOf(Type instanceReflectionType)
+    public static ReflectionInstanceType From(Type instanceReflectionType)
     {
         if (_CachedInstanceTypes.TryGetValue(instanceReflectionType, out var instaceType))
         {
@@ -103,17 +109,6 @@ internal sealed class ReflectionInstanceType : InstanceType
         _CachedInstanceTypes.Add(instanceReflectionType, instaceType);
 
         return instaceType;
-    }
-
-    public static CallSignature GetSignatureFromMethod(MethodInfo methodInfo)
-    {
-        var returnInstanceType = GetInstanceTypeOf(methodInfo.ReturnType);
-
-        var parameters = methodInfo.GetParameters()
-            .Where(param => param is { Name: not null, IsOut: false, IsIn: false })
-            .Select(param => (param.Name!, GetInstanceTypeOf(param.ParameterType) as InstanceType));
-
-        return new CallSignature(returnInstanceType, parameters.ToArray());
     }
 
     private static UnaryOperator? MethodNameToUnaryOperator(string methodName) => methodName switch

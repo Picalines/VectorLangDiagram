@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace VectorLang.Model;
 
@@ -49,5 +50,22 @@ internal sealed class CallSignature
     public void AssertArgumentsDebug(params Instance[] arguments)
     {
         AssertArguments(arguments);
+    }
+
+    public static CallSignature From(MethodInfo methodInfo)
+    {
+        var returnInstanceType = ReflectionInstanceType.From(methodInfo.ReturnType);
+
+        var parameters = methodInfo.GetParameters()
+            .Where(param => param is { Name: not null, IsOut: false, IsIn: false })
+            .Select(param => (param.Name!, ReflectionInstanceType.From(param.ParameterType) as InstanceType));
+
+        return new CallSignature(returnInstanceType, parameters.ToArray());
+    }
+
+    public void Deconstruct(out InstanceType returnType, out IReadOnlyList<(string Name, InstanceType Type)> arguments)
+    {
+        returnType = ReturnType;
+        arguments = Arguments;
     }
 }
