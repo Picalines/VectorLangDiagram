@@ -51,7 +51,9 @@ internal static partial class ParseValueExpression
 
             double ParseGroup(string name)
             {
-                return int.Parse(token.RegexGroups![name].ValueSpan, System.Globalization.NumberStyles.HexNumber);
+                var parsedPart = int.Parse(token.RegexGroups![name].ValueSpan, System.Globalization.NumberStyles.HexNumber);
+
+                return parsedPart / 255.0;
             }
 
             return Parse.Return((ParseGroup("r"), ParseGroup("g"), ParseGroup("b")));
