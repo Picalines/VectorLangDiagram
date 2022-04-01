@@ -21,11 +21,20 @@ internal static partial class ValueExpressionParser
         from closeParen in ParseToken.CloseParenthesis
         select innerExpression;
 
+    private static readonly Parser<VectorNode> Vector =
+        from openBrace in ParseToken.OpenCurlyBrace
+        from x in Parse.Ref(() => Lambda)
+        from comma in ParseToken.Comma
+        from y in Parse.Ref(() => Lambda)
+        from closeBrace in ParseToken.CloseCurlyBrace
+        select new VectorNode(x, y, openBrace, closeBrace);
+
     private static readonly Parser<ValueExpressionNode> PrimaryTerm =
         (ConstantParser.Number as Parser<ValueExpressionNode>)
         .Or(ConstantParser.String)
         .Or(ConstantParser.Color)
         .Or(Variable)
+        .Or(Vector)
         .Or(InnerExpression)
         .WithError("expression term expected");
 

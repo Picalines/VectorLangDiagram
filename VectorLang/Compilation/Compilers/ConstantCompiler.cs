@@ -13,8 +13,6 @@ internal static class ConstantCompiler
 
         StringNode { Value: var str } => new PushStringInstruction(new StringInstance(str)).Yield(),
 
-        VectorNode { X: var x, Y: var y } => new PushVectorInstruction(new VectorInstance(x, y)).Yield(),
-
         ColorNode { R: var r, G: var g, B: var b } => new PushColorInstruction(new ColorInstance(r, g, b)).Yield(),
 
         _ => throw new NotImplementedException(),
