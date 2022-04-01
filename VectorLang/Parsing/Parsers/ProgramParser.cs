@@ -2,10 +2,10 @@
 
 namespace VectorLang.Parsing;
 
-internal static class ParseProgram
+internal static class ProgramParser
 {
     private static readonly Parser<Definition> Definition =
-        (ParseDefinition.Function as Parser<Definition>).XOr(ParseDefinition.Plot);
+        (DefinitionParser.Function as Parser<Definition>).XOr(DefinitionParser.Plot);
 
     public static readonly Parser<Program> Program =
         from definitions in Definition.UntilEnd()

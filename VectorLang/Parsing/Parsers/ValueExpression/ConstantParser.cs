@@ -5,9 +5,9 @@ using VectorLang.Tokenization;
 
 namespace VectorLang.Parsing;
 
-internal static partial class ParseValueExpression
+internal static partial class ValueExpressionParser
 {
-    internal static class ParseConstant
+    internal static class ConstantParser
     {
         public static readonly Parser<NumberNode> Number =
             from literalToken in ParseToken.LiteralNumber

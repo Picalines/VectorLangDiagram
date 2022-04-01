@@ -7,7 +7,7 @@ using VectorLang.Tokenization;
 
 namespace VectorLang.Parsing;
 
-internal static partial class ParseValueExpression
+internal static partial class ValueExpressionParser
 {
     private record CallInfo(IReadOnlyList<ValueExpressionNode> Arguments, Token ClosingParenthesis);
 
@@ -22,9 +22,9 @@ internal static partial class ParseValueExpression
         select innerExpression;
 
     private static readonly Parser<ValueExpressionNode> PrimaryTerm =
-        (ParseConstant.Number as Parser<ValueExpressionNode>)
-        .Or(ParseConstant.String)
-        .Or(ParseConstant.Color)
+        (ConstantParser.Number as Parser<ValueExpressionNode>)
+        .Or(ConstantParser.String)
+        .Or(ConstantParser.Color)
         .Or(Variable)
         .Or(InnerExpression)
         .WithError("expression term expected");
