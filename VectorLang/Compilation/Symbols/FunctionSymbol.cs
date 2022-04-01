@@ -1,5 +1,5 @@
 ﻿using VectorLang.Model;
 
-namespace VectorLang.Compilation.Symbols;
+namespace VectorLang.Compilation;
 
 internal sealed record FunctionSymbol(Function Function) : Symbol(Function.Name);
