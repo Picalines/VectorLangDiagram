@@ -23,6 +23,8 @@ internal abstract class Instance
         return value;
     }
 
+    // TODO: call methods not needed?
+
     public Instance CallMethod(string name, params Instance[] arguments)
     {
         Debug.Assert(Type.Methods.ContainsKey(name));
