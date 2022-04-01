@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace VectorLang.Model;
 
@@ -36,11 +37,11 @@ internal abstract class InstanceType
 
     public string FormatMember(string fieldOrMethod) => $"{Name}.{fieldOrMethod}";
 
-    public string FormatMember(string method, params object[] arguments) => $"{Name}.{method}({string.Join(", ", arguments)})";
+    public string FormatMember(string method, params InstanceType[] argumentTypes) => $"{Name}.{method}({string.Join(", ", argumentTypes.Select(type => type.ToString()))})";
 
     public string FormatMember(UnaryOperator unaryOperator) => unaryOperator.GetFormatted(Name);
 
-    public string FormatMember(BinaryOperator binaryOperator, object right) => binaryOperator.GetFormatted(Name, right);
+    public string FormatMember(BinaryOperator binaryOperator, InstanceType rightType) => binaryOperator.GetFormatted(Name, rightType);
 
     protected abstract void DefineMembersInternal();
 
