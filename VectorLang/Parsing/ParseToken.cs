@@ -24,8 +24,10 @@ internal static class ParseToken
 
     public static readonly Parser<Token> OpenParenthesis = TokenType.OpenParenthesis.Parser();
     public static readonly Parser<Token> CloseParenthesis = TokenType.CloseParenthesis.Parser();
-    public static readonly Parser<Token> CurlyBraceOpen = TokenType.CurlyBraceOpen.Parser();
-    public static readonly Parser<Token> CurlyBraceClose = TokenType.CurlyBraceClose.Parser();
+    public static readonly Parser<Token> OpenSquareBracket = TokenType.OpenSquareBracket.Parser();
+    public static readonly Parser<Token> CloseSquareBracket = TokenType.CloseSquareBracket.Parser();
+    public static readonly Parser<Token> OpenCurlyBrace = TokenType.OpenCurlyBrace.Parser();
+    public static readonly Parser<Token> CloseCurlyBrace = TokenType.CloseCurlyBrace.Parser();
 
     public static readonly Parser<Token> KeywordDef = TokenType.KeywordDef.Parser();
     public static readonly Parser<Token> KeywordExternal = TokenType.KeywordExternal.Parser();

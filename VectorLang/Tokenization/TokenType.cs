@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace VectorLang.Tokenization;
 
@@ -12,10 +12,12 @@ public enum TokenType
     [Description("dot"), TokenRegex(@"\.")] Dot,
     [Description("arrow '->'"), TokenRegex(@"->")] Arrow,
 
-    [Description("open parenthesis"), TokenRegex(@"\(")] OpenParenthesis,
-    [Description("close parenthesis"), TokenRegex(@"\)")] CloseParenthesis,
-    [Description("open brace"), TokenRegex(@"\{")] CurlyBraceOpen,
-    [Description("closing brace"), TokenRegex(@"\}")] CurlyBraceClose,
+    [Description("opening parenthesis"), TokenRegex(@"\(")] OpenParenthesis,
+    [Description("closing parenthesis"), TokenRegex(@"\)")] CloseParenthesis,
+    [Description("opening square bracket"), TokenRegex(@"\[")] OpenSquareBracket,
+    [Description("closing square bracket"), TokenRegex(@"\]")] CloseSquareBracket,
+    [Description("opening curly brace"), TokenRegex(@"\{")] OpenCurlyBrace,
+    [Description("closing curly brace"), TokenRegex(@"\}")] CloseCurlyBrace,
 
     [Description("keyword 'def'"), TokenRegex(@"\bdef\b")] KeywordDef,
     [Description("keyword 'external'"), TokenRegex(@"\bextenal\b")] KeywordExternal,

@@ -1,4 +1,4 @@
-namespace VectorLang.Tokenization;
+﻿namespace VectorLang.Tokenization;
 
 public sealed record TextSelection(TextLocation Start, TextLocation End)
 {
@@ -11,8 +11,8 @@ public sealed record TextSelection(TextLocation Start, TextLocation End)
 
     public static TextSelection FromToken(Token token) => FromTokens(token, token);
 
-    public static TextSelection FromTokens(Token first, Token second) => new(
-        first.Location,
-        second.Location.Shifted(0, second.Value.Length)
+    public static TextSelection FromTokens(Token start, Token end) => new(
+        start.Location,
+        end.Location.Shifted(0, end.Value.Length)
     );
 }
