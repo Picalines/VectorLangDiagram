@@ -30,20 +30,34 @@ internal sealed class CallSignature
             && Arguments.Zip(otherSignature.Arguments).All(argPair => argPair.First.Type == argPair.Second.Type);
     }
 
-    public void AssertArguments(params Instance[] arguments)
+    public void AssertArguments(IEnumerable<InstanceType> arguments)
     {
-        if (arguments.Length != Arguments.Count)
+        int index = 0;
+
+        foreach (var ((defName, defType), givenType) in Arguments.Zip(arguments))
         {
-            throw new ArgumentCountException(arguments.Length, Arguments.Count);
+            if (index >= Arguments.Count)
+            {
+                throw new ArgumentCountException(index, Arguments.Count);
+            }
+
+            if (!givenType.IsAssignableTo(defType))
+            {
+                throw new ArgumentTypeException(index, defName, givenType, defType);
+            }
+
+            index++;
         }
 
-        foreach (var ((_, defType), givenValue) in Arguments.Zip(arguments))
+        if (index != Arguments.Count)
         {
-            if (!givenValue.Type.IsAssignableTo(defType))
-            {
-                throw new NotAssignableTypeException(givenValue.Type, defType);
-            }
+            throw new ArgumentCountException(index, Arguments.Count);
         }
+    }
+
+    public void AssertArguments(IEnumerable<Instance> arguments)
+    {
+        AssertArguments(arguments.Select(arg => arg.Type));
     }
 
     [Conditional("DEBUG")]
