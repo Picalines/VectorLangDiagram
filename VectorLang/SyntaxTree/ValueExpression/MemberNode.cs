@@ -6,5 +6,5 @@ internal record MemberNode(ValueExpressionNode Object, Token MemberToken) : Valu
 {
     public string Member => MemberToken.Value;
 
-    public override TextSelection Selection { get; } = Object.Selection.Merged(TextSelection.FromToken(MemberToken));
+    public override TextSelection Selection { get; } = Object.Selection.Merged(MemberToken.Selection);
 }

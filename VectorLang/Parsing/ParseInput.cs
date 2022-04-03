@@ -30,7 +30,7 @@ internal class ParseInput
 
         Selection = AtEnd
             ? new TextSelection(Location, 1)
-            : TextSelection.FromToken(Current);
+            : Current.Selection;
     }
 
     public Token Current

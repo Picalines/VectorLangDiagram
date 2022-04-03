@@ -10,7 +10,4 @@ internal sealed record FunctionDefinition(
     ValueExpressionNode ValueExpression) : Definition
 {
     public string Name => NameToken.Value;
-
-    // TODO: lazy?
-    public TextSelection NameSelection { get; } = TextSelection.FromToken(NameToken);
 }

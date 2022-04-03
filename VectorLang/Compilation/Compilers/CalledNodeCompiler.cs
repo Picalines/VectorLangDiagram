@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
-using VectorLang.Tokenization;
 
 namespace VectorLang.Compilation;
 
@@ -28,7 +27,7 @@ internal static class CalledNodeCompiler
 
         if (!objectType.Methods.TryGetValue(methodName, out var instanceMethod))
         {
-            throw ProgramException.At(TextSelection.FromToken(method.MemberToken), UndefinedException.TypeMember(objectType, methodName, Array.Empty<InstanceType>()));
+            throw ProgramException.At(method.MemberToken.Selection, UndefinedException.TypeMember(objectType, methodName, Array.Empty<InstanceType>()));
         }
 
         var compiledArguments = ArgumentsCompiler.Compile(symbols, method.Object.Selection, instanceMethod.Signature, arguments);
@@ -48,9 +47,7 @@ internal static class CalledNodeCompiler
 
         if (functionSymbol is not FunctionSymbol { Function: { Signature: var signature } function })
         {
-            // TODO: lazy Token.Selection
-
-            throw ProgramException.At(TextSelection.FromToken(functionNode.Token), new UndefinedException($"function '{functionName}'"));
+            throw ProgramException.At(functionNode.Token.Selection, new UndefinedException($"function '{functionName}'"));
         }
 
         var compiledArguments = ArgumentsCompiler.Compile(symbols, functionNode.Selection, signature, arguments);

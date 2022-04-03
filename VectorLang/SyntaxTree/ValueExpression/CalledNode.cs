@@ -16,6 +16,6 @@ internal sealed record CalledNode : ValueExpressionNode
         CalledValue = calledValue;
         Arguments = arguments;
 
-        Selection = CalledValue.Selection.Merged(TextSelection.FromToken(closeParen));
+        Selection = CalledValue.Selection.Merged(closeParen.Selection);
     }
 }

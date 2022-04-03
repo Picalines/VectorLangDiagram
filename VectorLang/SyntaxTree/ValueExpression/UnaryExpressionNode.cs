@@ -16,6 +16,6 @@ internal sealed record UnaryExpressionNode : ValueExpressionNode
         Right = right;
         Operator = @operator;
 
-        Selection = TextSelection.FromToken(operatorToken).Merged(right.Selection);
+        Selection = operatorToken.Selection.Merged(right.Selection);
     }
 }

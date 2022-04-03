@@ -11,7 +11,7 @@ internal static class UserFunctionCompiler
     {
         if (symbols.ContainsLocal(definition.Name))
         {
-            throw ProgramException.At(definition.NameSelection, new RedefenitionException(definition.Name));
+            throw ProgramException.At(definition.NameToken.Selection, new RedefenitionException(definition.Name));
         }
 
         var redefinedArgument = definition.Arguments
@@ -22,7 +22,7 @@ internal static class UserFunctionCompiler
 
         if (redefinedArgument is not null)
         {
-            throw ProgramException.At(definition.NameSelection, new RedefenitionException($"argument '{redefinedArgument}'"));
+            throw ProgramException.At(definition.NameToken.Selection, new RedefenitionException($"argument '{redefinedArgument}'"));
         }
 
         var returnType = symbols.Lookup<InstanceTypeSymbol>(definition.ReturnType.Name).Type;

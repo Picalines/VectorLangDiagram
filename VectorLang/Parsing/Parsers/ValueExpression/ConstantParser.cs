@@ -21,7 +21,7 @@ internal static partial class ValueExpressionParser
         public static readonly Parser<ColorNode> Color =
             from literalToken in ParseToken.LiteralColor
             from color in ParseColorLiteral(literalToken)
-            select new ColorNode(color.R, color.G, color.B, TextSelection.FromToken(literalToken));
+            select new ColorNode(color.R, color.G, color.B, literalToken.Selection);
 
         private static Parser<double> ParseNumberLiteral(Token token)
         {
