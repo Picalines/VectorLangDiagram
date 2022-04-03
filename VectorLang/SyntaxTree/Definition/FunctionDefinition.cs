@@ -1,9 +1,16 @@
 ﻿using System.Collections.Generic;
+using VectorLang.Tokenization;
 
 namespace VectorLang.SyntaxTree;
 
 internal sealed record FunctionDefinition(
-    string Name,
+    Token NameToken,
     TypeNode ReturnType,
     IReadOnlyList<ArgumentDefinition> Arguments,
-    ValueExpressionNode ValueExpression) : Definition;
+    ValueExpressionNode ValueExpression) : Definition
+{
+    public string Name => NameToken.Value;
+
+    // TODO: lazy?
+    public TextSelection NameSelection { get; } = TextSelection.FromToken(NameToken);
+}

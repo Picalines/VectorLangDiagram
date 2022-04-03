@@ -20,7 +20,7 @@ internal static class DefinitionParser
         from equalsOp in ParseToken.OperatorEquals
         from expression in ValueExpressionParser.Lambda.Named("function value expression")
         from semicolon in ParseToken.Semicolon
-        select new FunctionDefinition(name.Value, returnType, arguments, expression);
+        select new FunctionDefinition(name, returnType, arguments, expression);
 
     public static readonly Parser<PlotDefinition> Plot =
         from plotKeyword in ParseToken.KeywordPlot
