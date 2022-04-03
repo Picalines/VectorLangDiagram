@@ -28,7 +28,7 @@ internal sealed class UserFunction : Function
             return;
         }
 
-        _Instructions = UserFunctionCompiler.Compile(programSymbols, this, _Body!);
+        _Instructions = UserFunctionCompiler.CompileBody(programSymbols, this, _Body!);
         _Body = null;
     }
 

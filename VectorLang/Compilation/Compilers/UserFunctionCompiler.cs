@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
 
@@ -6,7 +7,34 @@ namespace VectorLang.Compilation;
 
 internal static class UserFunctionCompiler
 {
-    public static IReadOnlyList<Instruction> Compile(SymbolTable symbols, UserFunction function, ValueExpressionNode functionBody)
+    public static UserFunction CompileDefinition(SymbolTable symbols, FunctionDefinition definition)
+    {
+        if (symbols.ContainsLocal(definition.Name))
+        {
+            throw ProgramException.At(definition.NameSelection, new RedefenitionException(definition.Name));
+        }
+
+        var redefinedArgument = definition.Arguments
+            .GroupBy(arg => arg.Name)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .FirstOrDefault();
+
+        if (redefinedArgument is not null)
+        {
+            throw ProgramException.At(definition.NameSelection, new RedefenitionException($"argument '{redefinedArgument}'"));
+        }
+
+        var returnType = symbols.Lookup<InstanceTypeSymbol>(definition.ReturnType.Name).Type;
+
+        var arguments = definition.Arguments.Select(arg => (arg.Name, symbols.Lookup<InstanceTypeSymbol>(arg.Type.Name).Type));
+
+        var signature = new CallSignature(returnType, arguments.ToArray());
+
+        return new UserFunction(definition.Name, signature, definition.ValueExpression);
+    }
+
+    public static IReadOnlyList<Instruction> CompileBody(SymbolTable symbols, UserFunction function, ValueExpressionNode functionBody)
     {
         symbols = symbols.Child();
 
@@ -25,14 +53,11 @@ internal static class UserFunctionCompiler
             functionInstructions.Add(new StoreInstruction(address));
         }
 
-        var (bodyReturnType, bodyInstructions) = ValueExpressionCompiler.Compile(symbols, functionBody);
+        var compiledBody = ValueExpressionCompiler.Compile(symbols, functionBody);
 
-        if (!bodyReturnType.IsAssignableTo(function.Signature.ReturnType))
-        {
-            throw ProgramException.At(functionBody.Selection, new NotAssignableTypeException(bodyReturnType, function.Signature.ReturnType));
-        }
+        compiledBody.AssertIsAssignableTo(function.Signature.ReturnType, functionBody.Selection);
 
-        functionInstructions.AddRange(bodyInstructions);
+        functionInstructions.AddRange(compiledBody.Instructions);
 
         return functionInstructions;
     }

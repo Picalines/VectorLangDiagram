@@ -35,6 +35,14 @@ internal abstract class InstanceType
 
     public bool IsAssignableTo(InstanceType otherType) => this == otherType;
 
+    public void AssertIsAssignableTo(InstanceType expectedType)
+    {
+        if (!IsAssignableTo(expectedType))
+        {
+            throw new NotAssignableTypeException(this, expectedType);
+        }
+    }
+
     public string FormatMember(string fieldOrMethod) => $"{Name}.{fieldOrMethod}";
 
     public string FormatMember(string method, params InstanceType[] argumentTypes) => $"{Name}.{method}({string.Join(", ", argumentTypes.Select(type => type.ToString()))})";
