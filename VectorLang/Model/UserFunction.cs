@@ -1,4 +1,8 @@
-﻿using VectorLang.SyntaxTree;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using VectorLang.Compilation;
+using VectorLang.SyntaxTree;
 
 namespace VectorLang.Model;
 
@@ -6,24 +10,32 @@ namespace VectorLang.Model;
 
 internal sealed class UserFunction : Function
 {
-    private bool _Compiled = false;
+    private ValueExpressionNode? _Body;
+
+    private IReadOnlyList<Instruction>? _Instructions = null;
 
     public UserFunction(string name, CallSignature signature, ValueExpressionNode valueExpression) : base(name, signature)
     {
+        _Body = valueExpression;
     }
 
-    public void Compile()
+    private bool IsCompiled => _Instructions is not null;
+
+    public void Compile(SymbolTable programSymbols)
     {
-        if (_Compiled)
+        if (IsCompiled)
         {
             return;
         }
 
-        _Compiled = true;
+        _Instructions = UserFunctionCompiler.Compile(programSymbols, this, _Body!);
+        _Body = null;
     }
 
     protected override Instance CallInternal(params Instance[] arguments)
     {
-        throw new System.NotImplementedException();
+        Debug.Assert(IsCompiled);
+
+        throw new NotImplementedException();
     }
 }
