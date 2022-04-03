@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using VectorLang.Tokenization;
 
 namespace VectorLang.Parsing;
@@ -10,9 +11,9 @@ internal static class ParserExtensions
         return first.Then(firstResult => second(firstResult).Select(secondResult => select(firstResult, secondResult)));
     }
 
-    public static IParseResult<T> Parse<T>(this Parser<T> parser, string input)
+    public static IParseResult<T> Parse<T>(this Parser<T> parser, IEnumerable<Token> tokens)
     {
-        var parseInput = new ParseInput(Tokenizer.Tokenize(input));
+        var parseInput = new ParseInput(tokens);
 
         try
         {
