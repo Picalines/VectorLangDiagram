@@ -7,7 +7,17 @@ internal static class ValueExpressionCompiler
 {
     public static CompiledExpression Compile(SymbolTable symbols, ValueExpressionNode expression) => expression switch
     {
-        // TODO
+        ConstantNode constantNode => ConstantCompiler.Compile(constantNode),
+
+        VariableNode variable => VariableNodeCompiler.Compile(symbols, variable),
+
+        UnaryExpressionNode unaryExpression => UnaryExpressionCompiler.Compile(symbols, unaryExpression),
+
+        BinaryExpressionNode binaryExpression => BinaryExpressionCompiler.Compile(symbols, binaryExpression),
+
+        CalledNode calledNode => CalledNodeCompiler.Compile(symbols, calledNode),
+
+        // TODO: block compilation
 
         _ => throw new NotImplementedException(),
     };
