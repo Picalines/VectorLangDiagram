@@ -13,6 +13,8 @@ public sealed class ProgramException : Exception
     internal ProgramException(Exception innerException)
         : base(innerException.Message, innerException) { }
 
+    internal static ProgramException At(TextSelection selection, string message) => new(message) { Location = selection };
+
     internal static ProgramException At(TextSelection selection, Exception exception) => new(exception) { Location = selection };
 
     internal static T MaybeAt<T>(TextSelection selection, Func<T> func)
