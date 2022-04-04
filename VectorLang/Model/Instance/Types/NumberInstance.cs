@@ -14,6 +14,12 @@ internal sealed class NumberInstance : ReflectionInstance
         Value = value;
     }
 
+    [InstanceMethod("abs")]
+    public NumberInstance Abs() => new(Math.Abs(Value));
+
+    [InstanceMethod("sign")]
+    public NumberInstance Sign() => new(Math.Sign(Value));
+
     [InstanceMethod("sqr")]
     public NumberInstance Sqr() => new(Value * Value);
 
@@ -41,6 +47,12 @@ internal sealed class NumberInstance : ReflectionInstance
     [InstanceMethod("atan")]
     public NumberInstance Atan() => new(Math.Atan(Value));
 
+    [InstanceMethod("ln")]
+    public NumberInstance Ln() => new(Math.Log(Value));
+
+    [InstanceMethod("log")]
+    public NumberInstance Log(NumberInstance newBase) => new(Math.Log(Value, newBase.Value));
+
     [InstanceMethod("lerp")]
     public NumberInstance Lerp(NumberInstance to, NumberInstance progress) => this + progress * (to - this);
 
@@ -52,6 +64,18 @@ internal sealed class NumberInstance : ReflectionInstance
 
     [InstanceMethod("clamp")]
     public NumberInstance Clamp(NumberInstance min, NumberInstance max) => Max(min).Min(max);
+
+    [InstanceMethod("round")]
+    public NumberInstance Round() => new(Math.Round(Value));
+
+    [InstanceMethod("floor")]
+    public NumberInstance Floor() => new(Math.Floor(Value));
+
+    [InstanceMethod("ceil")]
+    public NumberInstance Ceil() => new(Math.Ceiling(Value));
+
+    [InstanceMethod("roundDigits")]
+    public NumberInstance RoundDigits(NumberInstance digits) => new(Math.Round(Value, (int)digits.Value));
 
     [InstanceOperator]
     public static NumberInstance operator +(NumberInstance right) => right;
