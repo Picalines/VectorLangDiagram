@@ -8,11 +8,11 @@ internal static class ConstantCompiler
 {
     public static CompiledExpression Compile(ConstantNode constant) => constant switch
     {
-        NumberNode { Value: var number } => new(NumberInstance.InstanceType, new PushNumberInstruction(new NumberInstance(number))),
+        NumberNode { Value: var number } => new(NumberInstance.InstanceType, new PushInstruction(new NumberInstance(number))),
 
-        StringNode { Value: var str } => new(StringInstance.InstanceType, new PushStringInstruction(new StringInstance(str))),
+        StringNode { Value: var str } => new(StringInstance.InstanceType, new PushInstruction(new StringInstance(str))),
 
-        ColorNode { R: var r, G: var g, B: var b } => new(ColorInstance.InstanceType, new PushColorInstruction(new ColorInstance(r, g, b))),
+        ColorNode { R: var r, G: var g, B: var b } => new(ColorInstance.InstanceType, new PushInstruction(new ColorInstance(r, g, b))),
 
         _ => throw new NotImplementedException(),
     };
