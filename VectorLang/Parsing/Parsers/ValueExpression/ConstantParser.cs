@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using VectorLang.SyntaxTree;
 using VectorLang.Tokenization;
 
@@ -29,7 +30,7 @@ internal static partial class ValueExpressionParser
 
             var valueLiteral = token.RegexGroups["value"].ValueSpan;
 
-            if (!double.TryParse(valueLiteral, out double value))
+            if (!double.TryParse(valueLiteral, NumberStyles.Number, CultureInfo.InvariantCulture, out double value))
             {
                 return Parse.Throw<double>($"invalid number value '{valueLiteral}'");
             }
@@ -39,7 +40,7 @@ internal static partial class ValueExpressionParser
             return unit switch
             {
                 "" => Parse.Return(value),
-                "deg" => Parse.Return(value * Math.PI / 180.0),
+                "deg" => Parse.Return(value * (Math.PI / 180.0)),
                 "rad" => Parse.Return(value),
                 _ => Parse.Throw<double>($"unknown number unit '{unit}'"),
             };
@@ -51,7 +52,7 @@ internal static partial class ValueExpressionParser
 
             double ParseGroup(string name)
             {
-                var parsedPart = int.Parse(token.RegexGroups![name].ValueSpan, System.Globalization.NumberStyles.HexNumber);
+                var parsedPart = int.Parse(token.RegexGroups![name].ValueSpan, NumberStyles.HexNumber);
 
                 return parsedPart / 255.0;
             }
