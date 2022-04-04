@@ -64,7 +64,7 @@ public static class ProgramCompiler
         {
             if (functionSymbol is { Function: UserFunction userFunction })
             {
-                userFunction.Compile(symbols);
+                userFunction.Compile();
             }
         }
     }
@@ -73,7 +73,7 @@ public static class ProgramCompiler
     {
         foreach (var function in program.Definitions.OfType<FunctionDefinition>())
         {
-            var userFunction = UserFunctionCompiler.CompileDefinition(symbols, function);
+            var userFunction = UserFunctionCompiler.Compile(symbols, function);
 
             symbols.Insert(new FunctionSymbol(userFunction));
         }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using VectorLang.Compilation;
-using VectorLang.SyntaxTree;
 
 namespace VectorLang.Model;
 
@@ -10,26 +9,23 @@ namespace VectorLang.Model;
 
 internal sealed class UserFunction : Function
 {
-    private ValueExpressionNode? _Body;
+    private readonly Lazy<IReadOnlyList<Instruction>> _Instructions;
 
-    private IReadOnlyList<Instruction>? _Instructions = null;
-
-    public UserFunction(string name, CallSignature signature, ValueExpressionNode valueExpression) : base(name, signature)
+    public UserFunction(string name, CallSignature signature, Lazy<IReadOnlyList<Instruction>> instructions) : base(name, signature)
     {
-        _Body = valueExpression;
+        _Instructions = instructions;
     }
 
-    private bool IsCompiled => _Instructions is not null;
+    private bool IsCompiled => _Instructions.IsValueCreated;
 
-    public void Compile(SymbolTable programSymbols)
+    public void Compile()
     {
         if (IsCompiled)
         {
             return;
         }
 
-        _Instructions = UserFunctionCompiler.CompileBody(programSymbols, this, _Body!);
-        _Body = null;
+        _ = _Instructions.Value;
     }
 
     protected override Instance CallInternal(params Instance[] arguments)
