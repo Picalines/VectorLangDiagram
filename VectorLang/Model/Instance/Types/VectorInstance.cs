@@ -49,8 +49,8 @@ internal sealed class VectorInstance : ReflectionInstance
 
     [InstanceMethod("rotate")]
     public VectorInstance Rotate(NumberInstance angle) => new(
-        (X * angle).Cos() - (Y * angle).Sin(),
-        (X * angle).Sin() + (Y * angle).Cos()
+        X * angle.Cos() - Y * angle.Sin(),
+        X * angle.Sin() + Y * angle.Cos()
     );
 
     [InstanceOperator]
