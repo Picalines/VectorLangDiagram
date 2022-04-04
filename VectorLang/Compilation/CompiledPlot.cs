@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using VectorLang.Interpretation;
 using VectorLang.Model;
 
 namespace VectorLang.Compilation;
@@ -27,8 +27,28 @@ internal sealed class CompiledPlot
 
     public PlottedVector Plot()
     {
-        // TODO (requirers interpretation)
+        var vector = Interpreter.Interpret(_VectorInstructions) as VectorInstance;
+        Debug.Assert(vector is not null);
 
-        throw new NotImplementedException();
+        StringInstance? label = null;
+        ColorInstance? color = null;
+
+        if (_LabelInstructions is not null)
+        {
+            label = Interpreter.Interpret(_LabelInstructions) as StringInstance;
+            Debug.Assert(label is not null);
+        }
+
+        if (_ColorInstructions is not null)
+        {
+            color = Interpreter.Interpret(_ColorInstructions) as ColorInstance;
+            Debug.Assert(color is not null);
+        }
+
+        return new PlottedVector(
+            Coordinates: (vector.X.Value, vector.Y.Value),
+            Label: label?.Value,
+            Color: color is not null ? (color.R.Value, color.G.Value, color.B.Value) : null
+        );
     }
 }

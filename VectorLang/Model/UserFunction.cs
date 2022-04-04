@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using VectorLang.Compilation;
+using VectorLang.Interpretation;
 
 namespace VectorLang.Model;
-
-// TODO: add compilation and interpretation when these modules are finished
 
 internal sealed class UserFunction : Function
 {
@@ -32,6 +31,6 @@ internal sealed class UserFunction : Function
     {
         Debug.Assert(IsCompiled);
 
-        throw new NotImplementedException();
+        return Interpreter.Interpret(_Instructions.Value, arguments);
     }
 }
