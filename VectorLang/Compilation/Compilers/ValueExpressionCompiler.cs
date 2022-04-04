@@ -17,6 +17,8 @@ internal static class ValueExpressionCompiler
 
         CalledNode calledNode => CalledNodeCompiler.Compile(symbols, calledNode),
 
+        VectorNode vectorNode => VectorNodeCompiler.Compile(symbols, vectorNode),
+
         // TODO: block compilation
 
         _ => throw new NotImplementedException(),
