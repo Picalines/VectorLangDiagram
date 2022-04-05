@@ -30,7 +30,7 @@ internal static class CalledNodeCompiler
             throw ProgramException.At(method.MemberToken.Selection, UndefinedException.TypeMember(objectType, methodName, Array.Empty<InstanceType>()));
         }
 
-        var compiledArguments = ArgumentsCompiler.Compile(symbols, method.Object.Selection, instanceMethod.Signature, arguments);
+        var compiledArguments = ArgumentsCompiler.Compile(symbols, method.MemberToken.Selection, instanceMethod.Signature, arguments);
 
         return new(
             instanceMethod.Signature.ReturnType,
