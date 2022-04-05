@@ -9,7 +9,7 @@
 
 <div id="sections">
     <section id="code-section">
-        <textarea id="code" @onchange="args => OnCodeChanged(args.Value!.ToString()!)">@ExampleProgram</textarea>
+        <CodeEditor @ref="CodeEditor" InitialProgram=@ExampleProgram CodeChanged=OnCodeChanged />
     </section>
     <section id="plot-result-section">
         @if (ErrorMessage is not null)
@@ -41,38 +41,20 @@
 </div>
 
 @code {
-    private const string ExampleProgram = "def sum(vector a, vector b) -> vector = a + b;\n\nplot 'S', #00ff00 -> sum({ 1, 2 }, { 4, 5 });";
+    private const string ExampleProgram = "def sum(vector a, vector b) -> vector = a + b;\n\nplot 'S', #00ff00 -> sum({ 1, 2 }, { 4, 5 });\n";
+
+    private CodeEditor CodeEditor;
 
     private string? ErrorMessage;
 
-    private IJSObjectReference? CodeEditor;
-
     private List<PlottedVector> PlottedVectors = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        await OnCodeChanged(ExampleProgram);
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            CodeEditor = await JSRuntime.InvokeAsync<IJSObjectReference>("JsLib.initializeCodeMirror", "#code", ExampleProgram);
-        }
-    }
 
     private async Task OnCodeChanged(string code)
     {
         ErrorMessage = null;
         PlottedVectors.Clear();
 
-        if (CodeEditor is not null)
-        {
-            await JSRuntime.InvokeVoidAsync("JsLib.clearErrors", CodeEditor);
-        }
+        await CodeEditor.ClearErrorsAsync();
 
         try
         {
@@ -86,9 +68,9 @@
                 ? $"error at {programException.Location}: {programException.Message}"
                 : $"error: {programException.Message}";
 
-            if (CodeEditor is not null && programException.Location is not null)
+            if (programException.Location is not null)
             {
-                await JSRuntime.InvokeVoidAsync("JsLib.markError", CodeEditor, programException.Location);
+                await CodeEditor.MarkError(programException.Location);
             }
         }
         catch (Exception exception)
