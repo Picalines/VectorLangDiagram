@@ -4,10 +4,20 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <JsLibPath>jsLib\</JsLibPath>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\VectorLang\VectorLang.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <!--build jsLib-->
+    <Exec Command="cd $(JsLibPath) &amp;&amp; npm run build" />
+  </Target>
 
 </Project>
