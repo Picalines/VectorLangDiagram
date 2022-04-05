@@ -11,6 +11,8 @@ internal static class ValueExpressionCompiler
 
         VariableNode variable => VariableNodeCompiler.Compile(symbols, variable),
 
+        MemberNode memberNode => MemberNodeCompiler.Compile(symbols, memberNode),
+
         UnaryExpressionNode unaryExpression => UnaryExpressionCompiler.Compile(symbols, unaryExpression),
 
         BinaryExpressionNode binaryExpression => BinaryExpressionCompiler.Compile(symbols, binaryExpression),

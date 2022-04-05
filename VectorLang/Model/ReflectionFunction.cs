@@ -23,6 +23,6 @@ internal sealed class ReflectionFunction : Function
 
     protected override Instance CallInternal(params Instance[] arguments)
     {
-        return (_Method.Invoke(null, arguments) as Instance)!;
+        return (_Method.InvokeAndRethrow(null, arguments) as Instance)!;
     }
 }

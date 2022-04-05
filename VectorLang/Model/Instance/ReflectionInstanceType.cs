@@ -55,7 +55,7 @@ internal sealed class ReflectionInstanceType : InstanceType
             {
                 DefineMethod(langMethodName, CallSignature.From(methodInfo), (thisInstance, arguments) =>
                 {
-                    return (methodInfo.Invoke(thisInstance, arguments) as Instance)!;
+                    return (methodInfo.InvokeAndRethrow(thisInstance, arguments) as Instance)!;
                 });
             }
 
@@ -69,7 +69,7 @@ internal sealed class ReflectionInstanceType : InstanceType
 
                     DefineOperator(unaryOperator, From(methodInfo.ReturnType), thisInstance =>
                     {
-                        return (methodInfo.Invoke(null, new[] { thisInstance }) as Instance)!;
+                        return (methodInfo.InvokeAndRethrow(null, new[] { thisInstance }) as Instance)!;
                     });
                 }
 
@@ -81,7 +81,7 @@ internal sealed class ReflectionInstanceType : InstanceType
 
                     DefineOperator(binaryOperator, returnType, arguments[1].Type, (thisInstance, rightInstance) =>
                     {
-                        return (methodInfo.Invoke(null, new[] { thisInstance, rightInstance }) as Instance)!;
+                        return (methodInfo.InvokeAndRethrow(null, new[] { thisInstance, rightInstance }) as Instance)!;
                     });
                 }
             }

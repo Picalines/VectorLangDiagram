@@ -25,7 +25,7 @@ public static class ProgramCompiler
 
         if (!syntaxTree.IsSuccessfull)
         {
-            throw new ProgramException(syntaxTree.ErrorMessage);
+            throw ProgramException.At(syntaxTree.Remainder.Selection, syntaxTree.ErrorMessage);
         }
 
         return Compile(syntaxTree.Value);

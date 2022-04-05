@@ -1,0 +1,78 @@
+﻿@page "/interpretation"
+
+<PageTitle>Interpretation</PageTitle>
+
+@using VectorLang.Compilation
+@using VectorLang.Model
+
+<div id="sections">
+    <section id="code-section">
+        <textarea @oninput="args => OnCodeChanged(args.Value!.ToString()!)" >@ExampleProgram</textarea>
+    </section>
+    <section id="plot-result-section">
+        @if (ErrorMessage is not null)
+        {
+            <div class="alert-danger">@ErrorMessage</div>
+        }
+        else
+        {
+            <span>plottedVectors:</span>
+            foreach (var vector in PlottedVectors)
+            {
+                var color = vector.Color switch
+                {
+                    (var r, var g, var b) => $"rgb({r * 255}, {g * 255}, {b * 255})",
+                    _ => "black"
+                };
+
+                <p style="color: @color">
+                    @if (vector.Label is not null)
+                    {
+                        <span>@vector.Label: </span>
+                    }
+
+                    { @vector.Coordinates.X, @vector.Coordinates.Y }
+                </p>
+            }
+        }
+    </section>
+</div>
+
+@code {
+    private const string ExampleProgram = "def sum(vector a, vector b) -> vector = a + b;\n\nplot 'S', #00ff00 -> sum({ 1, 2 }, { 4, 5 });";
+
+    private string? ErrorMessage;
+
+    private List<PlottedVector> PlottedVectors = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        OnCodeChanged(ExampleProgram);
+    }
+
+    private void OnCodeChanged(string code)
+    {
+        ErrorMessage = null;
+        PlottedVectors.Clear();
+
+        try
+        {
+            var compiledProgram = ProgramCompiler.Compile(code);
+
+            PlottedVectors.AddRange(compiledProgram.PlotVectors());
+        }
+        catch (ProgramException programException)
+        {
+            ErrorMessage = programException.Location is not null
+                ? $"error at {programException.Location}: {programException.Message}"
+                : $"error: {programException.Message}";
+        }
+        catch (Exception exception)
+        {
+            ErrorMessage = $"Unexpected {exception.GetType().Name}: {exception.Message}\n{exception.StackTrace}";
+            return;
+        }
+    }
+}

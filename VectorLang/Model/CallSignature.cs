@@ -34,12 +34,14 @@ internal sealed class CallSignature
     {
         int index = 0;
 
-        foreach (var ((defName, defType), givenType) in Arguments.Zip(arguments))
+        foreach (var givenType in arguments)
         {
             if (index >= Arguments.Count)
             {
-                throw new ArgumentCountException(index, Arguments.Count);
+                throw new ArgumentCountException(index + 1, Arguments.Count);
             }
+
+            var (defName, defType) = Arguments[index];
 
             if (!givenType.IsAssignableTo(defType))
             {

@@ -112,12 +112,12 @@ internal static class Parse
 
     public static Parser<T> MaybeThen<T>(this Parser<T> current, Parser<T> optionalNext)
     {
-        return current.Then(result => optionalNext.Or(Return(result)));
+        return current.Then(result => optionalNext.XOr(Return(result)));
     }
 
     public static Parser<T> MaybeThen<T>(this Parser<T> current, Func<T, Parser<T>> optionalNext)
     {
-        return current.Then(result => optionalNext(result).Or(Return(result)));
+        return current.Then(result => optionalNext(result).XOr(Return(result)));
     }
 
     public static Parser<T> FollowedBy<T, U>(this Parser<T> current, Parser<U> next)
@@ -165,11 +165,10 @@ internal static class Parse
     {
         ParseInput lastRemainder = input;
         List<T> resultValues = new(listCapacity);
-        IParseResult<T> result;
 
         while (!lastRemainder.AtEnd)
         {
-            result = parser(lastRemainder);
+            var result = parser(lastRemainder);
 
             if (!result.IsSuccessfull)
             {
@@ -201,8 +200,8 @@ internal static class Parse
                     tail.Add(last);
                     return tail;
                 })
-                .XOr(ReturnNew(() => new List<T>()))
-            );
+            )
+            .XOr(ReturnNew(() => new List<T>()));
     }
 
     public static Parser<List<T>> Until<T, U>(this Parser<T> parser, Parser<U> stop, int listCapacity = 0) => input =>
