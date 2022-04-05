@@ -17,7 +17,10 @@
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <!--build jsLib-->
-    <Exec Command="cd $(JsLibPath) &amp;&amp; npm run build" />
+    <Exec Condition="$(Configuration) == 'Debug'" Command="cd $(JsLibPath) &amp;&amp; npm run dev" />
+    <Exec Condition="$(Configuration) == 'Release'" Command="cd $(JsLibPath) &amp;&amp; npm run build" />
   </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties jslib_4package_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

@@ -5,9 +5,11 @@
 @using VectorLang.Compilation
 @using VectorLang.Model
 
+@inject IJSRuntime JSRuntime
+
 <div id="sections">
     <section id="code-section">
-        <textarea @oninput="args => OnCodeChanged(args.Value!.ToString()!)" >@ExampleProgram</textarea>
+        <textarea id="code" @onchange="args => OnCodeChanged(args.Value!.ToString()!)">@ExampleProgram</textarea>
     </section>
     <section id="plot-result-section">
         @if (ErrorMessage is not null)
@@ -50,6 +52,14 @@
         base.OnInitialized();
 
         OnCodeChanged(ExampleProgram);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("JsLib.initializeCodeMirror", "#code", ExampleProgram);
+        }
     }
 
     private void OnCodeChanged(string code)
