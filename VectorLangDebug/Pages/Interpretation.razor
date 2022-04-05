@@ -45,27 +45,34 @@
 
     private string? ErrorMessage;
 
+    private IJSObjectReference? CodeEditor;
+
     private List<PlottedVector> PlottedVectors = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
-        OnCodeChanged(ExampleProgram);
+        await OnCodeChanged(ExampleProgram);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("JsLib.initializeCodeMirror", "#code", ExampleProgram);
+            CodeEditor = await JSRuntime.InvokeAsync<IJSObjectReference>("JsLib.initializeCodeMirror", "#code", ExampleProgram);
         }
     }
 
-    private void OnCodeChanged(string code)
+    private async Task OnCodeChanged(string code)
     {
         ErrorMessage = null;
         PlottedVectors.Clear();
+
+        if (CodeEditor is not null)
+        {
+            await JSRuntime.InvokeVoidAsync("JsLib.clearErrors", CodeEditor);
+        }
 
         try
         {
@@ -78,6 +85,11 @@
             ErrorMessage = programException.Location is not null
                 ? $"error at {programException.Location}: {programException.Message}"
                 : $"error: {programException.Message}";
+
+            if (CodeEditor is not null && programException.Location is not null)
+            {
+                await JSRuntime.InvokeVoidAsync("JsLib.markError", CodeEditor, programException.Location);
+            }
         }
         catch (Exception exception)
         {
