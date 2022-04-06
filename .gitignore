@@ -5,6 +5,7 @@
 
 # Webpack generated files
 *.bundle.js
+**/wwwroot/bundle/
 
 # User-specific files
 *.rsuser

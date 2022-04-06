@@ -1,0 +1,15 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div id="monaco-container" style="height: 100%"></div>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("interop.createMonacoEditor", "#monaco-container");
+        }
+    }
+}
