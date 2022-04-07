@@ -1,5 +1,6 @@
 ﻿import * as monaco from 'monaco-editor';
 import { DotNetObjectReference } from '../DotNetObjectReference';
+import { MonacoEditorInterop } from './monacoEditorInterop';
 import { vectorLangId } from './vectorLang';
 
 export function createMonacoEditor(dotNetRef: DotNetObjectReference, containterSelector: string, initialCode: string = '') {
@@ -23,9 +24,5 @@ export function createMonacoEditor(dotNetRef: DotNetObjectReference, containterS
         },
     });
 
-    const model = editor.getModel();
-
-    model?.onDidChangeContent(async () => {
-        await dotNetRef.invokeMethodAsync('OnDidChangeContent');
-    });
+    return new MonacoEditorInterop(editor, dotNetRef);
 }

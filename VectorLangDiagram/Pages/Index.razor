@@ -1,8 +1,9 @@
 ﻿@page "/"
+@using VectorLang.Compilation
 
 <PageTitle>Index</PageTitle>
 
-<CodeEditor InitialCode=@ExampleProgram OnChange="OnCodeChanged" />
+<CodeEditor InitialCode=@ExampleProgram OnProgramCompiled="OnProgramCompiled" />
 
 @code {
     private const string ExampleProgram = @"
@@ -13,8 +14,8 @@ def sum(vector a, vector b) -> vector = a + b;
 plot 'S', #ff0000 -> sum({1, 2}, {3, 4});
 ";
 
-    private void OnCodeChanged()
+    private void OnProgramCompiled(CompiledProgram compiledProgram)
     {
-        Console.WriteLine("changed!");
+        Console.WriteLine("program compiled!");
     }
 }

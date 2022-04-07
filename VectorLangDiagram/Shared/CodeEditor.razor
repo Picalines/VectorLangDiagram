@@ -1,4 +1,7 @@
-﻿@implements IDisposable
+﻿@using VectorLang.Compilation
+@using VectorLang.Model
+
+@implements IDisposable
 
 @inject IJSRuntime JSRuntime
 
@@ -9,9 +12,11 @@
     public string InitialCode { get; set; } = "";
 
     [Parameter]
-    public EventCallback OnChange { get; set; }
+    public EventCallback<CompiledProgram> OnProgramCompiled { get; set; }
 
-    private DotNetObjectReference<CodeEditor>? thisJsReference;
+    private DotNetObjectReference<CodeEditor>? ThisJsReference;
+
+    private IJSObjectReference? MonacoEditorReference;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -19,19 +24,38 @@
 
         if (firstRender)
         {
-            thisJsReference = DotNetObjectReference.Create(this);
-            await JSRuntime.InvokeVoidAsync("interop.createMonacoEditor", thisJsReference, "#monaco-container", InitialCode);
+            ThisJsReference = DotNetObjectReference.Create(this);
+            MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", ThisJsReference, "#monaco-container", InitialCode);
         }
     }
 
     public void Dispose()
     {
-        thisJsReference?.Dispose();
+        ThisJsReference?.Dispose();
     }
 
     [JSInvokable]
-    public async Task OnDidChangeContent()
+    public async Task OnDidChangeContent(string code)
     {
-        await OnChange.InvokeAsync();
+        CompiledProgram? compiledProgram = null;
+
+        await MonacoEditorReference!.InvokeVoidAsync("clearErrors");
+
+        try
+        {
+            compiledProgram = ProgramCompiler.Compile(code);
+        }
+        catch (ProgramException programException)
+        {
+            if (programException.Location is not null)
+            {
+                await MonacoEditorReference!.InvokeVoidAsync("addError", programException.Location, programException.Message);
+            }
+        }
+
+        if (compiledProgram is not null)
+        {
+            await OnProgramCompiled.InvokeAsync(compiledProgram);
+        }
     }
 }
