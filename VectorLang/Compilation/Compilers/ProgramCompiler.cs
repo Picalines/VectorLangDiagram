@@ -25,7 +25,17 @@ public static class ProgramCompiler
 
         var tokens = Tokenizer.Tokenize(code);
 
-        var syntaxTree = ProgramParser.Program.Parse(tokens);
+        IParseResult<Program> syntaxTree;
+
+        try
+        {
+            syntaxTree = ProgramParser.Program.Parse(tokens);
+        }
+        catch (UnknownTokenException unknownTokenException)
+        {
+            context.Reporter.ReportError(new(unknownTokenException.Location, 1), unknownTokenException.Message);
+            return null;
+        }
 
         if (!syntaxTree.IsSuccessfull)
         {
