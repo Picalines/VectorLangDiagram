@@ -24,6 +24,7 @@ public enum TokenType
     [Description("keyword 'val'"), TokenRegex(@"\bval\b")] KeywordVal,
     [Description("keyword 'plot'"), TokenRegex(@"\bplot\b")] KeywordPlot,
 
+    [Description("':='"), TokenRegex(@":=")] OperatorAssign,
     [Description("'!='"), TokenRegex(@"!=")] OperatorNotEquals,
     [Description("'='"), TokenRegex(@"=")] OperatorEquals,
     [Description("'+'"), TokenRegex(@"\+")] OperatorPlus,

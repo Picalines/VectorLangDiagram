@@ -89,7 +89,7 @@ internal static class UserFunctionCompiler
 
             context.Symbols.Insert(new VariableSymbol(name, address, type));
 
-            functionInstructions.Add(new StoreInstruction(address));
+            functionInstructions.Add(new StoreInstruction(address, true));
         }
 
         var compiledBody = ValueExpressionCompiler.Compile(context, body, signature.ReturnType);

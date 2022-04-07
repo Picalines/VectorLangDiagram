@@ -15,6 +15,13 @@ internal static partial class ValueExpressionParser
         from token in ParseToken.Identifier
         select new VariableNode(token);
 
+    private static readonly Parser<VariableCreationNode> VariableCreation =
+        from valKeyword in ParseToken.KeywordVal
+        from variable in Variable
+        from assignOp in ParseToken.OperatorAssign
+        from valueExpression in Parse.Ref(() => Lambda)
+        select new VariableCreationNode(valKeyword, variable, valueExpression);
+
     private static readonly Parser<ValueExpressionNode> InnerExpression =
         from openParen in ParseToken.OpenParenthesis
         from innerExpression in Parse.Ref(() => Lambda)
@@ -51,6 +58,7 @@ internal static partial class ValueExpressionParser
         .XOr(ConstantParser.Color)
         .XOr(Variable)
         .XOr(Vector)
+        .XOr(VariableCreation)
         .XOr(InnerExpression)
         .XOr(Block);
 

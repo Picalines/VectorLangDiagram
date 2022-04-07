@@ -36,6 +36,7 @@ internal static class ParseToken
     public static readonly Parser<Token> KeywordVal = TokenType.KeywordVal.Parser();
     public static readonly Parser<Token> KeywordPlot = TokenType.KeywordPlot.Parser();
 
+    public static readonly Parser<Token> OperatorAssign = TokenType.OperatorAssign.Parser();
     public static readonly Parser<Token> OperatorNotEquals = TokenType.OperatorNotEquals.Parser();
     public static readonly Parser<Token> OperatorEquals = TokenType.OperatorEquals.Parser();
     public static readonly Parser<Token> OperatorPlus = TokenType.OperatorPlus.Parser();

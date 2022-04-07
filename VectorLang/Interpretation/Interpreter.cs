@@ -62,9 +62,10 @@ internal static partial class Interpreter
             }
             break;
 
-            case StoreInstruction { Address: var destination }:
+            case StoreInstruction { Address: var destination, PopFromStack: var popFromStack }:
             {
-                context.StoreValue(destination, context.PopFromStack());
+                var value = popFromStack ? context.PopFromStack() : context.PeekStack();
+                context.StoreValue(destination, value);
             }
             break;
 

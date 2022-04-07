@@ -37,6 +37,11 @@ internal static partial class Interpreter
 
         // TODO: exceptions?
 
+        public Instance PeekStack()
+        {
+            return _Stack.Peek();
+        }
+
         public void PushToStack(Instance instance)
         {
             _Stack.Push(instance);
