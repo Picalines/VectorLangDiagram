@@ -6,18 +6,19 @@ namespace VectorLang.Compilation;
 
 internal static class UnaryExpressionCompiler
 {
-    public static CompiledExpression Compile(SymbolTable symbols, UnaryExpressionNode unaryExpression)
+    public static CompiledExpression Compile(CompilationContext context, UnaryExpressionNode unaryExpression)
     {
-        var (instanceType, instructions) = ValueExpressionCompiler.Compile(symbols, unaryExpression.Right);
+        var (instanceType, instructions) = ValueExpressionCompiler.Compile(context, unaryExpression.Right);
 
         if (!instanceType.UnaryOperators.TryGetValue(unaryExpression.Operator, out var unaryOperator))
         {
-            throw ProgramException.At(unaryExpression.Selection, UndefinedException.TypeMember(instanceType, unaryExpression.Operator));
+            context.Reporter.ReportError(unaryExpression.Selection, ReportMessage.UndefinedTypeMember(instanceType, unaryExpression.Operator));
+            return CompiledExpression.Invalid;
         }
 
         return new(
-            Type: unaryOperator.ReturnType,
-            Instructions: instructions.Append(new UnaryOperatorInstruction(unaryOperator))
+            unaryOperator.ReturnType,
+            instructions.Append(new UnaryOperatorInstruction(unaryOperator))
         );
     }
 }

@@ -1,15 +1,38 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using VectorLang.Model;
-using VectorLang.Tokenization;
 
 namespace VectorLang.Compilation;
 
-internal sealed record CompiledExpression(InstanceType Type, IEnumerable<Instruction> Instructions)
+internal sealed class CompiledExpression
 {
-    public CompiledExpression(InstanceType type, Instruction instruction) : this(type, instruction.Yield()) { }
+    public InstanceType Type { get; }
 
-    public void AssertIsAssignableTo(InstanceType expectedType, TextSelection selection)
+    public IEnumerable<Instruction> Instructions { get; }
+
+    public bool IsInvalid { get; }
+
+    public static readonly CompiledExpression Invalid = new(InvalidInstanceType.Instance);
+
+    public CompiledExpression(InstanceType type, IEnumerable<Instruction> instructions)
     {
-        ProgramException.MaybeAt(selection, () => Type.AssertIsAssignableTo(expectedType));
+        Type = type;
+        Instructions = instructions;
+
+        IsInvalid = Type.IsAssignableTo(InvalidInstanceType.Instance);
+    }
+
+    public CompiledExpression(InstanceType type, Instruction instruction) : this(type, instruction.Yield())
+    {
+    }
+
+    public CompiledExpression(InstanceType type) : this(type, Enumerable.Empty<Instruction>())
+    {
+    }
+
+    public void Deconstruct(out InstanceType instanceType, out IEnumerable<Instruction> instructions)
+    {
+        instanceType = Type;
+        instructions = Instructions;
     }
 }

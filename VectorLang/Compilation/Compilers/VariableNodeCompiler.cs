@@ -1,19 +1,19 @@
-﻿using VectorLang.Model;
-using VectorLang.SyntaxTree;
+﻿using VectorLang.SyntaxTree;
 
 namespace VectorLang.Compilation;
 
 internal static class VariableNodeCompiler
 {
-    public static CompiledExpression Compile(SymbolTable symbols, VariableNode variableNode)
+    public static CompiledExpression Compile(CompilationContext context, VariableNode variableNode)
     {
         var variableName = variableNode.Token.Value;
 
-        symbols.TryLookup(variableName, out VariableSymbol? variableSymbol);
+        context.Symbols.TryLookup(variableName, out VariableSymbol? variableSymbol);
 
         if (variableSymbol is null)
         {
-            throw ProgramException.At(variableNode.Selection, new UndefinedException($"variable '{variableName}'"));
+            context.Reporter.ReportError(variableNode.Selection, $"variable '{variableName}' is undefined");
+            return CompiledExpression.Invalid;
         }
 
         return new(

@@ -5,24 +5,21 @@ namespace VectorLang.Compilation;
 
 internal static class PlotCompiler
 {
-    public static CompiledPlot Compile(SymbolTable symbols, PlotDefinition plotDefinition)
+    public static CompiledPlot Compile(CompilationContext context, PlotDefinition plotDefinition)
     {
-        var compiledVector = ValueExpressionCompiler.Compile(symbols, plotDefinition.VectorExpression);
-        compiledVector.AssertIsAssignableTo(VectorInstance.InstanceType, plotDefinition.VectorExpression.Selection);
+        var compiledVector = ValueExpressionCompiler.Compile(context, plotDefinition.VectorExpression, VectorInstance.InstanceType);
 
         CompiledExpression? compiledLabel = null;
         CompiledExpression? compiledColor = null;
 
         if (plotDefinition is { LabelExpression: { } labelExpression })
         {
-            compiledLabel = ValueExpressionCompiler.Compile(symbols, labelExpression);
-            compiledLabel.AssertIsAssignableTo(StringInstance.InstanceType, labelExpression.Selection);
+            compiledLabel = ValueExpressionCompiler.Compile(context, labelExpression, StringInstance.InstanceType);
         }
 
         if (plotDefinition is { ColorExpression: { } colorExpression })
         {
-            compiledColor = ValueExpressionCompiler.Compile(symbols, colorExpression);
-            compiledColor.AssertIsAssignableTo(ColorInstance.InstanceType, colorExpression.Selection);
+            compiledColor = ValueExpressionCompiler.Compile(context, colorExpression, ColorInstance.InstanceType);
         }
 
         return new CompiledPlot(compiledVector, compiledLabel, compiledColor);

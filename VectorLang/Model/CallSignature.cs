@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -30,7 +31,7 @@ internal sealed class CallSignature
             && Arguments.Zip(otherSignature.Arguments).All(argPair => argPair.First.Type == argPair.Second.Type);
     }
 
-    public void AssertArguments(IEnumerable<InstanceType> arguments)
+    public bool CheckArguments(IEnumerable<InstanceType> arguments, out int? wrongArgumentIndex, [NotNullWhen(false)] out string? reportMessage)
     {
         int index = 0;
 
@@ -38,14 +39,18 @@ internal sealed class CallSignature
         {
             if (index >= Arguments.Count)
             {
-                throw new ArgumentCountException(index + 1, Arguments.Count);
+                reportMessage = ReportMessage.WrongArgumentCount(index + 1, Arguments.Count);
+                wrongArgumentIndex = null;
+                return false;
             }
 
             var (defName, defType) = Arguments[index];
 
             if (!givenType.IsAssignableTo(defType))
             {
-                throw new ArgumentTypeException(index, defName, givenType, defType);
+                reportMessage = ReportMessage.WrongArgumentType(index, defName, givenType, defType);
+                wrongArgumentIndex = index;
+                return false;
             }
 
             index++;
@@ -53,19 +58,25 @@ internal sealed class CallSignature
 
         if (index != Arguments.Count)
         {
-            throw new ArgumentCountException(index, Arguments.Count);
+            reportMessage = ReportMessage.WrongArgumentCount(index, Arguments.Count);
+            wrongArgumentIndex = null;
+            return false;
         }
+
+        reportMessage = null;
+        wrongArgumentIndex = null;
+        return true;
     }
 
-    public void AssertArguments(IEnumerable<Instance> arguments)
+    public bool CheckArguments(IEnumerable<Instance> arguments, out int? wrongArgumentIndex, [NotNullWhen(false)] out string? reportMessage)
     {
-        AssertArguments(arguments.Select(arg => arg.Type));
+        return CheckArguments(arguments.Select(arg => arg.Type), out wrongArgumentIndex, out reportMessage);
     }
 
     [Conditional("DEBUG")]
     public void AssertArgumentsDebug(params Instance[] arguments)
     {
-        AssertArguments(arguments);
+        Debug.Assert(CheckArguments(arguments, out _, out var reportMessage), reportMessage);
     }
 
     public static CallSignature From(MethodInfo methodInfo)

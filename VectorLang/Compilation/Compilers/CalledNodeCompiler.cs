@@ -8,29 +8,35 @@ namespace VectorLang.Compilation;
 
 internal static class CalledNodeCompiler
 {
-    public static CompiledExpression Compile(SymbolTable symbols, CalledNode called)
+    public static CompiledExpression Compile(CompilationContext context, CalledNode called)
     {
         return called.CalledValue switch
         {
-            MemberNode method => CompileMethodCall(symbols, called.Arguments, method),
+            MemberNode method => CompileMethodCall(context, called.Arguments, method),
 
-            VariableNode function => CompileFunctionCall(symbols, called.Arguments, function),
+            VariableNode function => CompileFunctionCall(context, called.Arguments, function),
 
             _ => throw new NotImplementedException(),
         };
     }
 
-    private static CompiledExpression CompileMethodCall(SymbolTable symbols, IReadOnlyList<ValueExpressionNode> arguments, MemberNode method)
+    private static CompiledExpression CompileMethodCall(CompilationContext context, IReadOnlyList<ValueExpressionNode> arguments, MemberNode method)
     {
         var methodName = method.Member;
-        var (objectType, objectInstructions) = ValueExpressionCompiler.Compile(symbols, method.Object);
+        var (objectType, objectInstructions) = ValueExpressionCompiler.Compile(context, method.Object);
 
         if (!objectType.Methods.TryGetValue(methodName, out var instanceMethod))
         {
-            throw ProgramException.At(method.MemberToken.Selection, UndefinedException.TypeMember(objectType, methodName, Array.Empty<InstanceType>()));
+            context.Reporter.ReportError(method.MemberToken.Selection, ReportMessage.UndefinedTypeMember(objectType, methodName, Array.Empty<InstanceType>()));
+            return CompiledExpression.Invalid;
         }
 
-        var compiledArguments = ArgumentsCompiler.Compile(symbols, method.MemberToken.Selection, instanceMethod.Signature, arguments);
+        var compiledArguments = ArgumentsCompiler.Compile(context, method.MemberToken.Selection, instanceMethod.Signature, arguments);
+
+        if (compiledArguments is null)
+        {
+            return new(instanceMethod.Signature.ReturnType);
+        }
 
         return new(
             instanceMethod.Signature.ReturnType,
@@ -40,21 +46,27 @@ internal static class CalledNodeCompiler
         );
     }
 
-    private static CompiledExpression CompileFunctionCall(SymbolTable symbols, IReadOnlyList<ValueExpressionNode> arguments, VariableNode functionNode)
+    private static CompiledExpression CompileFunctionCall(CompilationContext context, IReadOnlyList<ValueExpressionNode> arguments, VariableNode functionNode)
     {
         var functionName = functionNode.Token.Value;
-        symbols.TryLookup(functionName, out var functionSymbol);
+        context.Symbols.TryLookup(functionName, out var functionSymbol);
 
         if (functionSymbol is not FunctionSymbol { Function: { Signature: var signature } function })
         {
-            throw ProgramException.At(functionNode.Token.Selection, new UndefinedException($"function '{functionName}'"));
+            context.Reporter.ReportError(functionNode.Token.Selection, ReportMessage.UndefinedValue($"function '{functionName}'"));
+            return CompiledExpression.Invalid;
         }
 
-        var compiledArguments = ArgumentsCompiler.Compile(symbols, functionNode.Selection, signature, arguments);
+        var compiledArguments = ArgumentsCompiler.Compile(context, functionNode.Selection, signature, arguments);
+
+        if (compiledArguments is null)
+        {
+            return new(signature.ReturnType);
+        }
 
         return new(
-            Type: signature.ReturnType,
-            Instructions: compiledArguments.SelectMany(arg => arg.Instructions)
+            signature.ReturnType,
+            compiledArguments.SelectMany(arg => arg.Instructions)
                 .Append(new CallFunctionInstruction(function, arguments.Count))
         );
     }

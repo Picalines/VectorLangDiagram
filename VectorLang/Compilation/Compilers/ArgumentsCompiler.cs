@@ -8,25 +8,24 @@ namespace VectorLang.Compilation;
 
 internal static class ArgumentsCompiler
 {
-    public static List<CompiledExpression> Compile(
-        SymbolTable symbols,
+    public static List<CompiledExpression>? Compile(
+        CompilationContext context,
         TextSelection callSelection,
         CallSignature signature,
         IEnumerable<ValueExpressionNode> arguments)
     {
-        var compiledExpressions = arguments.Select((expression, index) => ValueExpressionCompiler.Compile(symbols, expression)).ToList();
+        var compiledExpressions = arguments.Select((expression, index) => ValueExpressionCompiler.Compile(context, expression)).ToList();
 
-        try
+        if (!signature.CheckArguments(compiledExpressions.Select(arg => arg.Type), out var argumentIndex, out var reportMessage))
         {
-            signature.AssertArguments(compiledExpressions.Select(arg => arg.Type));
-        }
-        catch (ArgumentCountException argumentCountException)
-        {
-            throw ProgramException.At(callSelection, argumentCountException);
-        }
-        catch (ArgumentTypeException argumentTypeException)
-        {
-            throw ProgramException.At(arguments.ElementAt(argumentTypeException.ArgumentIndex).Selection, argumentTypeException);
+            var reportSelection = argumentIndex switch
+            {
+                int index => arguments.ElementAt(index).Selection,
+                _ => callSelection,
+            };
+
+            context.Reporter.ReportError(reportSelection, reportMessage);
+            return null;
         }
 
         return compiledExpressions;

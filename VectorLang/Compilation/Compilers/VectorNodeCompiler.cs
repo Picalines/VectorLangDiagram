@@ -6,17 +6,19 @@ namespace VectorLang.Compilation;
 
 internal static class VectorNodeCompiler
 {
-    public static CompiledExpression Compile(SymbolTable symbols, VectorNode vectorNode)
+    public static CompiledExpression Compile(CompilationContext context, VectorNode vectorNode)
     {
-        var compiledX = ValueExpressionCompiler.Compile(symbols, vectorNode.X);
-        compiledX.AssertIsAssignableTo(NumberInstance.InstanceType, vectorNode.X.Selection);
+        var compiledX = ValueExpressionCompiler.Compile(context, vectorNode.X, NumberInstance.InstanceType);
+        var compiledY = ValueExpressionCompiler.Compile(context, vectorNode.Y, NumberInstance.InstanceType);
 
-        var compiledY = ValueExpressionCompiler.Compile(symbols, vectorNode.Y);
-        compiledY.AssertIsAssignableTo(NumberInstance.InstanceType, vectorNode.Y.Selection);
+        if (compiledX.IsInvalid || compiledY.IsInvalid)
+        {
+            return new(VectorInstance.InstanceType);
+        }
 
         return new(
-            Type: VectorInstance.InstanceType,
-            Instructions: compiledX.Instructions
+            VectorInstance.InstanceType,
+            compiledX.Instructions
                 .Concat(compiledY.Instructions)
                 .Append(CreateVectorInstruction.Instance)
         );

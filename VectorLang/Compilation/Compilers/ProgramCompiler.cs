@@ -17,42 +17,51 @@ public static class ProgramCompiler
         ColorInstance.InstanceType,
     };
 
-    public static CompiledProgram Compile(string code)
+    public static CompiledProgram? Compile(string code, out IReadOnlyList<Report> reports)
     {
+        var context = new CompilationContext();
+        reports = context.Reporter.Reports;
+
         var tokens = Tokenizer.Tokenize(code);
 
         var syntaxTree = ProgramParser.Program.Parse(tokens);
 
         if (!syntaxTree.IsSuccessfull)
         {
-            throw ProgramException.At(syntaxTree.Remainder.Selection, syntaxTree.ErrorMessage);
+            context.Reporter.ReportError(syntaxTree.Remainder.Selection, syntaxTree.ErrorMessage);
+            return null;
         }
 
-        return Compile(syntaxTree.Value);
+        var compiledProgram = Compile(context, syntaxTree.Value);
+
+        if (context.Reporter.AnyErrors())
+        {
+            return null;
+        }
+
+        return compiledProgram;
     }
 
-    internal static CompiledProgram Compile(Program program)
+    internal static CompiledProgram Compile(CompilationContext context, Program program)
     {
-        var symbols = new SymbolTable();
+        DefineInstanceTypes(context.Symbols);
 
-        DefineInstanceTypes(symbols);
+        DefineUserFunctions(program, context);
 
-        DefineUserFunctions(program, symbols);
+        CompileUserFunctions(context.Symbols);
 
-        CompileUserFunctions(symbols);
-
-        var compiledPlots = CompilePlots(program, symbols);
+        var compiledPlots = CompilePlots(program, context);
 
         return new CompiledProgram(compiledPlots);
     }
 
-    private static List<CompiledPlot> CompilePlots(Program program, SymbolTable symbols)
+    private static List<CompiledPlot> CompilePlots(Program program, CompilationContext context)
     {
         var compiledPlots = new List<CompiledPlot>();
 
         foreach (var plot in program.Definitions.OfType<PlotDefinition>())
         {
-            compiledPlots.Add(PlotCompiler.Compile(symbols, plot));
+            compiledPlots.Add(PlotCompiler.Compile(context, plot));
         }
 
         return compiledPlots;
@@ -69,13 +78,16 @@ public static class ProgramCompiler
         }
     }
 
-    private static void DefineUserFunctions(Program program, SymbolTable symbols)
+    private static void DefineUserFunctions(Program program, CompilationContext context)
     {
         foreach (var function in program.Definitions.OfType<FunctionDefinition>())
         {
-            var userFunction = UserFunctionCompiler.Compile(symbols, function);
+            var userFunction = UserFunctionCompiler.Compile(context, function);
 
-            symbols.Insert(new FunctionSymbol(userFunction));
+            if (userFunction is not null)
+            {
+                context.Symbols.Insert(new FunctionSymbol(userFunction));
+            }
         }
     }
 

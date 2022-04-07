@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using VectorLang.Model;
 
 namespace VectorLang.Compilation;
 
@@ -81,16 +80,5 @@ internal sealed class SymbolTable
         }
 
         return symbol is not null;
-    }
-
-    public TSymbol Lookup<TSymbol>(string name, string? undefinedValue = null)
-        where TSymbol : Symbol
-    {
-        if (!TryLookup<TSymbol>(name, out var foundSymbol))
-        {
-            throw new UndefinedException(undefinedValue ?? name);
-        }
-
-        return foundSymbol;
     }
 }
