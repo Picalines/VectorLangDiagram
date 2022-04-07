@@ -121,7 +121,7 @@ internal class ReflectionInstanceType : InstanceType
     private static BinaryOperator? MethodNameToBinaryOperator(string methodName) => methodName switch
     {
         "op_Addition" => BinaryOperator.Plus,
-        "op_Substraction" => BinaryOperator.Minus,
+        "op_Subtraction" => BinaryOperator.Minus,
         "op_Multiply" => BinaryOperator.Multiply,
         "op_Division" => BinaryOperator.Divide,
         "op_Modulus" => BinaryOperator.Modulo,
