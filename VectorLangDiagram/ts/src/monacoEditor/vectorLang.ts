@@ -72,6 +72,24 @@ monaco.languages.setMonarchTokensProvider(vectorLangId, {
     },
 });
 
+monaco.languages.setLanguageConfiguration(vectorLangId, {
+    comments: {
+        lineComment: '//',
+    },
+
+    autoClosingPairs: [
+        { open: '(', close: ')' },
+        { open: '[', close: ']' },
+        { open: '{', close: '}' },
+    ],
+
+    brackets: [
+        ['(', ')'],
+        ['[', ']'],
+        ['{', '}'],
+    ],
+})
+
 monaco.languages.registerCompletionItemProvider(vectorLangId, {
     provideCompletionItems: (model, position) => {
         const word = model.getWordUntilPosition(position);
