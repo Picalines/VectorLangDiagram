@@ -1,15 +1,37 @@
-﻿@inject IJSRuntime JSRuntime
+﻿@implements IDisposable
+
+@inject IJSRuntime JSRuntime
 
 <div id="monaco-container" style="height: 100%"></div>
 
 @code {
+    [Parameter]
+    public string InitialCode { get; set; } = "";
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
+    private DotNetObjectReference<CodeEditor>? thisJsReference;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
 
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("interop.createMonacoEditor", "#monaco-container");
+            thisJsReference = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("interop.createMonacoEditor", thisJsReference, "#monaco-container", InitialCode);
         }
+    }
+
+    public void Dispose()
+    {
+        thisJsReference?.Dispose();
+    }
+
+    [JSInvokable]
+    public async Task OnDidChangeContent()
+    {
+        await OnChange.InvokeAsync();
     }
 }

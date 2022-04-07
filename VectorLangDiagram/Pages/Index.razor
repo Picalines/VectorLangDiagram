@@ -2,8 +2,19 @@
 
 <PageTitle>Index</PageTitle>
 
-<CodeEditor />
+<CodeEditor InitialCode=@ExampleProgram OnChange="OnCodeChanged" />
 
 @code {
-    
+    private const string ExampleProgram = @"
+// Velcome to VectorLang!
+
+def sum(vector a, vector b) -> vector = a + b;
+
+plot 'S', #ff0000 -> sum({1, 2}, {3, 4});
+";
+
+    private void OnCodeChanged()
+    {
+        Console.WriteLine("changed!");
+    }
 }

@@ -1,11 +1,16 @@
 ﻿import * as monaco from 'monaco-editor';
+import { DotNetObjectReference } from '../DotNetObjectReference';
 import { vectorLangId } from './vectorLang';
 
-export function createMonacoEditor(containterSelector: string) {
+export function createMonacoEditor(dotNetRef: DotNetObjectReference, containterSelector: string, initialCode: string = '') {
     const container = document.querySelector(containterSelector) as HTMLElement;
 
-    monaco.editor.create(container, {
+    const editor = monaco.editor.create(container, {
+        value: initialCode,
+
         language: vectorLangId,
+
+        fontSize: 22,
 
         automaticLayout: true,
         lineNumbers: 'on',
@@ -16,5 +21,11 @@ export function createMonacoEditor(containterSelector: string) {
         minimap: {
             enabled: false,
         },
+    });
+
+    const model = editor.getModel();
+
+    model?.onDidChangeContent(async () => {
+        await dotNetRef.invokeMethodAsync('OnDidChangeContent');
     });
 }
