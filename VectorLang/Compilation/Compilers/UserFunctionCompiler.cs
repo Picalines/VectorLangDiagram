@@ -53,6 +53,13 @@ internal static class UserFunctionCompiler
         {
             if (context.Symbols.TryLookup<InstanceTypeSymbol>(defArgument.Type.Name, out var argumentTypeSymbol))
             {
+                if (argumentTypeSymbol.Type.IsAssignableTo(VoidInstance.InstanceType))
+                {
+                    context.Reporter.ReportError(defArgument.Type.Selection, ReportMessage.TypeIsNotAllowed(argumentTypeSymbol.Type));
+                    compiledSuccessfully = false;
+                    continue;
+                }
+
                 arguments.Add((defArgument.Name, argumentTypeSymbol.Type));
             }
             else

@@ -17,15 +17,18 @@ internal static class ReportMessage
     public static string UndefinedValue(string value) =>
         $"{value} is undefined";
 
-    internal static string UndefinedTypeMember(InstanceType type, string fieldOrMethod) =>
+    public static string UndefinedTypeMember(InstanceType type, string fieldOrMethod) =>
         UndefinedValue($"field or method {type.FormatMember(fieldOrMethod)}");
 
-    internal static string UndefinedTypeMember(InstanceType type, string method, params InstanceType[] argumentTypes) =>
+    public static string UndefinedTypeMember(InstanceType type, string method, params InstanceType[] argumentTypes) =>
         UndefinedValue($"method {type.FormatMember(method, argumentTypes)}");
 
-    internal static string UndefinedTypeMember(InstanceType type, UnaryOperator unaryOperator) =>
+    public static string UndefinedTypeMember(InstanceType type, UnaryOperator unaryOperator) =>
         UndefinedValue($"unary operator {type.FormatMember(unaryOperator)}");
 
-    internal static string UndefinedTypeMember(InstanceType type, BinaryOperator binaryOperator, InstanceType rightType) =>
+    public static string UndefinedTypeMember(InstanceType type, BinaryOperator binaryOperator, InstanceType rightType) =>
         UndefinedValue($"binary operator {type.FormatMember(binaryOperator, rightType)}");
+
+    public static string TypeIsNotAllowed(InstanceType notAllowedType) =>
+        $"type {notAllowedType} is not allowed here";
 }

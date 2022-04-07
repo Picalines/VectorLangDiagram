@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace VectorLang.Model;
 
-internal class ReflectionInstanceType : InstanceType
+internal sealed class ReflectionInstanceType : InstanceType
 {
     private readonly Type _InstanceReflectionType;
 

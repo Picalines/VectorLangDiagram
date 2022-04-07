@@ -6,7 +6,7 @@ monaco.languages.register({ id: vectorLangId });
 
 const keywords = ['def', 'external', 'val', 'plot'];
 
-const typeKeywords = ['number', 'vector', 'string', 'color'];
+const typeKeywords = ['number', 'vector', 'string', 'color', 'void'];
 
 monaco.languages.setMonarchTokensProvider(vectorLangId, {
     keywords,

@@ -15,6 +15,7 @@ public static class ProgramCompiler
         StringInstance.InstanceType,
         VectorInstance.InstanceType,
         ColorInstance.InstanceType,
+        VoidInstance.InstanceType,
     };
 
     public static CompiledProgram? Compile(string code, out IReadOnlyList<Report> reports)
