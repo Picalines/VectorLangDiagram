@@ -37,20 +37,13 @@
     [JSInvokable]
     public async Task OnDidChangeContent(string code)
     {
-        CompiledProgram? compiledProgram = null;
+        await MonacoEditorReference!.InvokeVoidAsync("clearReports");
 
-        await MonacoEditorReference!.InvokeVoidAsync("clearErrors");
+        var compiledProgram = ProgramCompiler.Compile(code, out var reports);
 
-        try
+        foreach (var report in reports)
         {
-            compiledProgram = ProgramCompiler.Compile(code);
-        }
-        catch (ProgramException programException)
-        {
-            if (programException.Location is not null)
-            {
-                await MonacoEditorReference!.InvokeVoidAsync("addError", programException.Location, programException.Message);
-            }
+            await MonacoEditorReference!.InvokeVoidAsync("addReport", report);
         }
 
         if (compiledProgram is not null)

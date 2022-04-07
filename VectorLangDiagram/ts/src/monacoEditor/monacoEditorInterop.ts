@@ -11,6 +11,14 @@ interface InteropSelection {
     readonly end: InteropTextLocation;
 }
 
+type InteropSeverity = 0 | 1 | 2;
+
+interface InteropReport {
+    readonly selection: InteropSelection;
+    readonly severity: InteropSeverity;
+    readonly message: string;
+}
+
 export class MonacoEditorInterop {
     private readonly model: monaco.editor.ITextModel;
 
@@ -27,7 +35,7 @@ export class MonacoEditorInterop {
         });
     }
 
-    public addError(selection: InteropSelection, message: string) {
+    public addReport({ selection, message, severity }: InteropReport) {
         const markers = monaco.editor.getModelMarkers({ owner: this.markersOwner }) as monaco.editor.IMarkerData[];
 
         markers.push({
@@ -36,14 +44,27 @@ export class MonacoEditorInterop {
             endLineNumber: selection.end.line,
             endColumn: selection.end.column,
 
-            severity: monaco.MarkerSeverity.Error,
+            severity: MonacoEditorInterop.interopSeverityToMarker(severity),
             message,
         });
 
         monaco.editor.setModelMarkers(this.model, this.markersOwner, markers);
     }
 
-    public clearErrors() {
+    public clearReports() {
         monaco.editor.setModelMarkers(this.model, this.markersOwner, []);
+    }
+
+    private static interopSeverityToMarker(interopSeverity: InteropSeverity): monaco.MarkerSeverity {
+        switch (interopSeverity) {
+            case 0:
+                return monaco.MarkerSeverity.Info;
+
+            case 1:
+                return monaco.MarkerSeverity.Warning;
+
+            case 2:
+                return monaco.MarkerSeverity.Error;
+        }
     }
 }
