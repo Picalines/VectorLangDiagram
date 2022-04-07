@@ -32,7 +32,7 @@ internal static partial class ValueExpressionParser
 
             if (!double.TryParse(valueLiteral, NumberStyles.Number, CultureInfo.InvariantCulture, out double value))
             {
-                return Parse.Throw<double>($"invalid number value '{valueLiteral}'");
+                return Parse.Throw<double>($"invalid number value '{valueLiteral}'", new[] { "number literal" });
             }
 
             var unit = token.RegexGroups["unit"].Value;
@@ -42,7 +42,7 @@ internal static partial class ValueExpressionParser
                 "" => Parse.Return(value),
                 "deg" => Parse.Return(value * (Math.PI / 180.0)),
                 "rad" => Parse.Return(value),
-                _ => Parse.Throw<double>($"unknown number unit '{unit}'"),
+                _ => Parse.Throw<double>($"unknown number unit '{unit}'", new[] { "no unit", "deg", "rad" }),
             };
         }
 

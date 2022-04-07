@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace VectorLang.Parsing;
 
@@ -52,7 +53,11 @@ internal static class Parse
 
         if (firstRemainder.Position == secondRemainder.Position)
         {
-            return firstFailure.MergeFailure(secondFailure);
+            return ParseResult<T>.Failure(
+                firstFailure.Remainder,
+                firstFailure.ErrorMessage!,
+                firstFailure.Expectations.Union(secondFailure.Expectations)
+            );
         }
 
         return secondRemainder.Position > firstRemainder.Position
@@ -62,32 +67,24 @@ internal static class Parse
 
     public static Parser<T> Return<T>(T value)
     {
-        return input => ParseResult<T>.Success(value, input);
+        return input => ParseResult<T>.Success(input, value);
     }
 
     public static Parser<T> ReturnNew<T>(Func<T> create)
     {
-        return input => ParseResult<T>.Success(create(), input);
+        return input => ParseResult<T>.Success(input, create());
     }
 
-    public static Parser<T> Throw<T>(string error)
+    public static Parser<T> Throw<T>(string error, IEnumerable<string>? expectations = null)
     {
-        return input => ParseResult<T>.Failure(error, input);
-    }
-
-    public static Parser<T> WithError<T>(this Parser<T> parser, string errorMessage)
-    {
-        return input => parser(input).IfFailure(error => ParseResult<T>.Failure(errorMessage, error.Remainder));
-    }
-
-    public static Parser<T> WithAdditionalError<T>(this Parser<T> parser, string additionalErrorMessage)
-    {
-        return input => parser(input).IfFailure(error => error.MergeFailure(additionalErrorMessage));
+        return input => ParseResult<T>.Failure(input, error, expectations);
     }
 
     public static Parser<T> Named<T>(this Parser<T> parser, string name)
     {
-        return parser.WithAdditionalError($"{name} expected");
+        return input => parser(input).IfFailure(error => error.Remainder == input
+            ? ParseResult<T>.Failure(error.Remainder, error.ErrorMessage!, new[] { name })
+            : error);
     }
 
     public static Parser<U> Select<T, U>(this Parser<T> parser, Func<U> create)
@@ -103,11 +100,6 @@ internal static class Parse
     public static Parser<U> As<T, U>(this Parser<T> parser, U value)
     {
         return parser.Select(() => value);
-    }
-
-    public static Parser<(T, U)> With<T, U>(this Parser<T> parser, U info)
-    {
-        return parser.Select(value => (value, info));
     }
 
     public static Parser<T> MaybeThen<T>(this Parser<T> current, Parser<T> optionalNext)
@@ -128,7 +120,9 @@ internal static class Parse
     public static Parser<T> AtEnd<T>(this Parser<T> parser)
     {
         return input => parser(input).IfSuccess(
-            result => result.Remainder.AtEnd ? result : ParseResult<T>.Failure("end of input expected", result.Remainder)
+            result => result.Remainder.AtEnd
+                ? result
+                : ParseResult<T>.Failure(result.Remainder, $"unexpected {result.Remainder.Current}", new[] { "end of input" })
         );
     }
 
@@ -158,7 +152,7 @@ internal static class Parse
             lastRemainder = result.Remainder;
         }
 
-        return ParseResult<List<T>>.Success(resultValues, lastRemainder);
+        return ParseResult<List<T>>.Success(lastRemainder, resultValues);
     };
 
     public static Parser<List<T>> UntilEnd<T>(this Parser<T> parser, int listCapacity = 0) => input =>
@@ -179,7 +173,7 @@ internal static class Parse
             lastRemainder = result.Remainder;
         }
 
-        return ParseResult<List<T>>.Success(resultValues, lastRemainder);
+        return ParseResult<List<T>>.Success(lastRemainder, resultValues);
     };
 
     public static Parser<List<T>> AtLeastOnce<T>(this Parser<T> parser)
@@ -229,7 +223,7 @@ internal static class Parse
             lastRemainder = parserResult.Remainder;
         }
 
-        return ParseResult<List<T>>.Success(parserResultValues, stopResult.Remainder);
+        return ParseResult<List<T>>.Success(stopResult.Remainder, parserResultValues);
     };
 
     public static Parser<T> ChainOperator<T, TOp>(Parser<TOp> @operator, Parser<T> term, Func<TOp, T, T, T> apply)
@@ -242,6 +236,6 @@ internal static class Parse
         return @operator.Then(opvalue =>
             term.Then(operandValue => ChainOperatorRest(apply(opvalue, firstTerm, operandValue), @operator, term, apply))
         )
-        .Or(Return(firstTerm));
+        .XOr(Return(firstTerm));
     }
 }

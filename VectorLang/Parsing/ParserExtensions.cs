@@ -15,13 +15,6 @@ internal static class ParserExtensions
     {
         var parseInput = new ParseInput(tokens);
 
-        try
-        {
-            return parser(parseInput);
-        }
-        catch (Exception exception)
-        {
-            return ParseResult<T>.Failure($"Exception: {exception.Message}", parseInput);
-        }
+        return parser(parseInput);
     }
 }

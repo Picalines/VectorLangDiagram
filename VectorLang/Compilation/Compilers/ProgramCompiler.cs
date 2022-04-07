@@ -29,7 +29,14 @@ public static class ProgramCompiler
 
         if (!syntaxTree.IsSuccessfull)
         {
-            context.Reporter.ReportError(syntaxTree.Remainder.Selection, syntaxTree.ErrorMessage);
+            var errorMessage = syntaxTree.ErrorMessage;
+
+            if (syntaxTree.Expectations.Any())
+            {
+                errorMessage += "; expected " + string.Join(" or ", syntaxTree.Expectations);
+            }
+
+            context.Reporter.ReportError(syntaxTree.Remainder.Selection, errorMessage);
             return null;
         }
 

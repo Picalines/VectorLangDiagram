@@ -8,10 +8,12 @@ internal static class ParseToken
     {
         if (input.AtEnd || input.Current.Type != tokenType)
         {
-            return ParseResult<Token>.Failure($"{tokenType.GetDescription()} expected", input);
+            var unexpectedItem = input.AtEnd ? "end of input" : input.Current.Type.GetDescription();
+
+            return ParseResult<Token>.Failure(input, $"unexpected {unexpectedItem}", new[] { tokenType.GetDescription() });
         }
 
-        return ParseResult<Token>.Success(input.Current, input.Advance());
+        return ParseResult<Token>.Success(input.Advance(), input.Current);
     };
 
     public static readonly Parser<Token> Semicolon = TokenType.Semicolon.Parser();

@@ -31,12 +31,11 @@ internal static partial class ValueExpressionParser
 
     private static readonly Parser<ValueExpressionNode> PrimaryTerm =
         (ConstantParser.Number as Parser<ValueExpressionNode>)
-        .Or(ConstantParser.String)
-        .Or(ConstantParser.Color)
-        .Or(Variable)
-        .Or(Vector)
-        .Or(InnerExpression)
-        .WithError("expression term expected");
+        .XOr(ConstantParser.String)
+        .XOr(ConstantParser.Color)
+        .XOr(Variable)
+        .XOr(Vector)
+        .XOr(InnerExpression);
 
     private static readonly Parser<CallInfo> Call =
         from openParen in ParseToken.OpenParenthesis
@@ -64,10 +63,10 @@ internal static partial class ValueExpressionParser
         );
 
     private static readonly Parser<ValueExpressionNode> SignedTerm =
-        ParseToken.OperatorPlus.With(UnaryOperator.Plus)
-        .Or(ParseToken.OperatorMinus.With(UnaryOperator.Minus))
-        .Then(op => MappedTerm.Select(factor => new UnaryExpressionNode(factor, op.Item2, op.Item1)))
-        .Or(MappedTerm);
+        ParseToken.OperatorPlus.Select(token => new { Operator = UnaryOperator.Plus, Token = token })
+        .Or(ParseToken.OperatorMinus.Select(token => new { Operator = UnaryOperator.Minus, Token = token }))
+        .Then(op => MappedTerm.Select(factor => new UnaryExpressionNode(factor, op.Operator, op.Token)))
+        .XOr(MappedTerm);
 
     private static readonly Func<BinaryOperator, ValueExpressionNode, ValueExpressionNode, BinaryExpressionNode> CreateBinaryExpression =
         (op, left, right) => new BinaryExpressionNode(left, right, op);

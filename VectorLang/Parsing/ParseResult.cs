@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace VectorLang.Parsing;
 
@@ -13,6 +15,8 @@ internal interface IParseResult<out T>
     bool IsSuccessfull { get; }
 
     string? ErrorMessage { get; }
+
+    IEnumerable<string> Expectations { get; }
 }
 
 internal class ParseResult<T> : IParseResult<T>
@@ -21,12 +25,15 @@ internal class ParseResult<T> : IParseResult<T>
 
     public string? ErrorMessage { get; }
 
+    public IEnumerable<string> Expectations { get; }
+
     private readonly T? _Value;
 
-    private ParseResult(T? value, string? errorMessage, ParseInput remainder)
+    private ParseResult(ParseInput remainder, T? value, string? errorMessage, IEnumerable<string> expectations)
     {
         _Value = value;
         ErrorMessage = errorMessage;
+        Expectations = expectations;
         Remainder = remainder;
     }
 
@@ -42,20 +49,20 @@ internal class ParseResult<T> : IParseResult<T>
         }
     }
 
-    public static IParseResult<T> Success(T value, ParseInput remainder)
+    public static IParseResult<T> Success(ParseInput remainder, T value)
     {
-        return new ParseResult<T>(value, null, remainder);
+        return new ParseResult<T>(remainder, value, null, Enumerable.Empty<string>());
     }
 
-    public static IParseResult<T> Failure(string errorMessage, ParseInput remainder)
+    public static IParseResult<T> Failure(ParseInput remainder, string errorMessage, IEnumerable<string>? expectations = null)
     {
-        return new ParseResult<T>(default!, errorMessage, remainder);
+        return new ParseResult<T>(remainder, default!, errorMessage, expectations ?? Enumerable.Empty<string>());
     }
 
     public static IParseResult<T> CastFailure<U>(IParseResult<U> otherFailure)
     {
         Debug.Assert(!otherFailure.IsSuccessfull);
 
-        return new ParseResult<T>(default!, otherFailure.ErrorMessage, otherFailure.Remainder);
+        return new ParseResult<T>(otherFailure.Remainder, default!, otherFailure.ErrorMessage, otherFailure.Expectations);
     }
 }
