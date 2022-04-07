@@ -11,7 +11,15 @@
 
 def sum(vector a, vector b) -> vector = a + b;
 
-plot 'S', #ff0000 -> sum({1, 2}, {3, 4});
+def main() -> void = [
+    val a = {1, 2};
+    val b = {3, 4};
+
+    a.plot('A', #ff0000);
+    b.plot('B', #0000ff);
+
+    sum(a, b).plot('A + B', #ff00ff);
+];
 ";
 
     private void OnProgramCompiled(CompiledProgram compiledProgram)
