@@ -21,6 +21,22 @@ internal static partial class ValueExpressionParser
         from closeParen in ParseToken.CloseParenthesis
         select innerExpression;
 
+    private static readonly Parser<BlockNode> Block =
+        from openBracket in ParseToken.OpenSquareBracket
+        from block in
+            (
+                from priorExpressions in Parse.Ref(() => Lambda).FollowedBy(ParseToken.Semicolon).Many()
+                from resultExpression in Parse.Ref(() => Lambda)
+                from closeBracket in ParseToken.CloseSquareBracket
+                select new BlockNode(priorExpressions, resultExpression, openBracket, closeBracket)
+            )
+            .Or(
+                from expressions in Parse.Ref(() => Lambda).FollowedBy(ParseToken.Semicolon).AtLeastOnce()
+                from closeBracket in ParseToken.CloseSquareBracket
+                select new BlockNode(expressions, null, openBracket, closeBracket)
+             )
+        select block;
+
     private static readonly Parser<VectorNode> Vector =
         from openBrace in ParseToken.OpenCurlyBrace
         from x in Parse.Ref(() => Lambda)
@@ -35,7 +51,8 @@ internal static partial class ValueExpressionParser
         .XOr(ConstantParser.Color)
         .XOr(Variable)
         .XOr(Vector)
-        .XOr(InnerExpression);
+        .XOr(InnerExpression)
+        .XOr(Block);
 
     private static readonly Parser<CallInfo> Call =
         from openParen in ParseToken.OpenParenthesis

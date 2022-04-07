@@ -22,7 +22,7 @@ internal static class ValueExpressionCompiler
 
         VectorNode vectorNode => VectorNodeCompiler.Compile(context, vectorNode),
 
-        // TODO: block compilation
+        BlockNode blockNode => BlockCompiler.Compile(context, blockNode),
 
         _ => throw new NotImplementedException(),
     };
