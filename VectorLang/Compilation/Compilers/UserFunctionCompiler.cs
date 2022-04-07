@@ -35,9 +35,15 @@ internal static class UserFunctionCompiler
             throw ProgramException.At(definition.NameToken.Selection, new RedefenitionException($"argument '{redefinedArgument}'"));
         }
 
-        var returnType = symbols.Lookup<InstanceTypeSymbol>(definition.ReturnType.Name).Type;
+        var returnType = ProgramException.MaybeAt(
+            definition.ReturnType.Selection,
+            () => symbols.Lookup<InstanceTypeSymbol>(definition.ReturnType.Name).Type
+        );
 
-        var arguments = definition.Arguments.Select(arg => (arg.Name, symbols.Lookup<InstanceTypeSymbol>(arg.Type.Name).Type));
+        var arguments = definition.Arguments.Select(arg => (arg.Name, ProgramException.MaybeAt(
+            arg.Type.Selection,
+            () => symbols.Lookup<InstanceTypeSymbol>(arg.Type.Name).Type)
+        ));
 
         return new CallSignature(returnType, arguments.ToArray());
     }
