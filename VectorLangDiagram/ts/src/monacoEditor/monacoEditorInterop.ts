@@ -11,7 +11,13 @@ interface InteropSelection {
     readonly end: InteropTextLocation;
 }
 
-type InteropSeverity = 0 | 1 | 2;
+const interopSeverityMap = {
+    0: monaco.MarkerSeverity.Info,
+    1: monaco.MarkerSeverity.Warning,
+    2: monaco.MarkerSeverity.Error,
+};
+
+type InteropSeverity = keyof typeof interopSeverityMap;
 
 interface InteropReport {
     readonly selection: InteropSelection;
@@ -44,7 +50,7 @@ export class MonacoEditorInterop {
             endLineNumber: selection.end.line,
             endColumn: selection.end.column,
 
-            severity: MonacoEditorInterop.interopSeverityToMarker(severity),
+            severity: interopSeverityMap[severity],
             message,
         });
 
@@ -53,18 +59,5 @@ export class MonacoEditorInterop {
 
     public clearReports() {
         monaco.editor.setModelMarkers(this.model, this.markersOwner, []);
-    }
-
-    private static interopSeverityToMarker(interopSeverity: InteropSeverity): monaco.MarkerSeverity {
-        switch (interopSeverity) {
-            case 0:
-                return monaco.MarkerSeverity.Info;
-
-            case 1:
-                return monaco.MarkerSeverity.Warning;
-
-            case 2:
-                return monaco.MarkerSeverity.Error;
-        }
     }
 }
