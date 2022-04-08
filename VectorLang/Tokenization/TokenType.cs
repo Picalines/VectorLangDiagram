@@ -19,10 +19,11 @@ public enum TokenType
     [Description("'{'"), TokenRegex(@"\{")] OpenCurlyBrace,
     [Description("'}'"), TokenRegex(@"\}")] CloseCurlyBrace,
 
-    [Description("keyword 'def'"), TokenRegex(@"\bdef\b")] KeywordDef,
-    [Description("keyword 'external'"), TokenRegex(@"\bextenal\b")] KeywordExternal,
-    [Description("keyword 'val'"), TokenRegex(@"\bval\b")] KeywordVal,
-    [Description("keyword 'plot'"), TokenRegex(@"\bplot\b")] KeywordPlot,
+    [Description("'def'"), TokenRegex(@"\bdef\b")] KeywordDef,
+    [Description("'external'"), TokenRegex(@"\bextenal\b")] KeywordExternal,
+    [Description("'val'"), TokenRegex(@"\bval\b")] KeywordVal,
+    [Description("'if'"), TokenRegex(@"\bif\b")] KeywordIf,
+    [Description("'else'"), TokenRegex(@"\belse\b")] KeywordElse,
 
     [Description("':='"), TokenRegex(@":=")] OperatorAssign,
     [Description("'!='"), TokenRegex(@"!=")] OperatorNotEquals,

@@ -15,15 +15,20 @@ def main() -> void = [
     val a := {1, 2};
     val b := {3, 4};
 
-    a.plot('A', #ff0000);
-    b.plot('B', #0000ff);
+    plot(a, 'A', #ff0000);
+    plot(b, 'B', #0000ff);
 
-    sum(a, b).plot('A + B', #ff00ff);
+    plot(sum(a, b), 'A + B', #ff00ff);
 ];
 ";
 
     private void OnProgramCompiled(CompiledProgram compiledProgram)
     {
-        Console.WriteLine("program compiled!");
+        Console.WriteLine("plotted vectors:");
+
+        foreach (var vector in compiledProgram.PlotVectors())
+        {
+            Console.WriteLine($"'{vector.Label}': {{{vector.Coordinates.X}, {vector.Coordinates.Y}}} {vector.Color}");
+        }
     }
 }

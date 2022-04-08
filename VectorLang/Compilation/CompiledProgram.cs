@@ -1,22 +1,26 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using VectorLang.Model;
 
 namespace VectorLang.Compilation;
 
 public sealed class CompiledProgram
 {
-    private readonly IReadOnlyList<CompiledPlot> _CompiledPlots;
+    private readonly PlotInterface _PlotInterface;
 
-    internal CompiledProgram(IReadOnlyList<CompiledPlot> compiledPlots)
+    private readonly Function _MainFunction;
+
+    internal CompiledProgram(PlotInterface plotInterface, Function mainFunction)
     {
-        _CompiledPlots = compiledPlots;
+        _PlotInterface = plotInterface;
+        _MainFunction = mainFunction;
     }
 
     public IReadOnlyList<PlottedVector> PlotVectors()
     {
-        // TODO: hadle ProgramExceptions?
+        _PlotInterface.ClearVectors();
 
-        return _CompiledPlots.Select(p => p.Plot()).ToList();
+        _MainFunction.Call();
+
+        return _PlotInterface.PlottedVectors;
     }
 }

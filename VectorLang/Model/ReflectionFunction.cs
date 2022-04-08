@@ -1,28 +1,28 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace VectorLang.Model;
 
 internal sealed class ReflectionFunction : Function
 {
+    private readonly object? _Target;
+
     private readonly MethodInfo _Method;
 
-    private ReflectionFunction(MethodInfo method)
-        : base(method.Name, CallSignature.From(method))
+    private ReflectionFunction(string name, object? target, MethodInfo method)
+        : base(name, CallSignature.From(method))
     {
+        _Target = target;
         _Method = method;
     }
 
-    public static ReflectionFunction FromMethod(Delegate methodDelegate)
+    public static ReflectionFunction FromMethod(string languageName, Delegate methodDelegate)
     {
-        Debug.Assert(methodDelegate.Target is null, $"{nameof(ReflectionFunction)}.{nameof(FromMethod)} expects a static method delegate");
-
-        return new(methodDelegate.Method);
+        return new(languageName, methodDelegate.Target, methodDelegate.Method);
     }
 
     protected override Instance CallInternal(params Instance[] arguments)
     {
-        return (_Method.InvokeAndRethrow(null, arguments) as Instance)!;
+        return (_Method.InvokeAndRethrow(_Target, arguments) as Instance)!;
     }
 }

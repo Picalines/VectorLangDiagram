@@ -21,14 +21,4 @@ internal static class DefinitionParser
         from expression in ValueExpressionParser.Lambda.Named("function value expression")
         from semicolon in ParseToken.Semicolon
         select new FunctionDefinition(name, returnType, arguments, expression);
-
-    public static readonly Parser<PlotDefinition> Plot =
-        from plotKeyword in ParseToken.KeywordPlot
-        from labelExpression in ValueExpressionParser.Lambda.Named("vector label")
-        from comma in ParseToken.Comma
-        from colorExpression in ValueExpressionParser.Lambda.Named("vector color")
-        from arrow in ParseToken.Arrow
-        from vectorExpression in ValueExpressionParser.Lambda.Named("vector expression")
-        from semicolon in ParseToken.Semicolon
-        select new PlotDefinition(vectorExpression, labelExpression, colorExpression);
 }

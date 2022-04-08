@@ -60,29 +60,46 @@ public static class ProgramCompiler
         return compiledProgram;
     }
 
-    internal static CompiledProgram Compile(CompilationContext context, Program program)
+    internal static CompiledProgram? Compile(CompilationContext context, Program program)
     {
         DefineInstanceTypes(context.Symbols);
+
+        var plotInterface = new PlotInterface();
+
+        DefineBuiltInFunctions(context.Symbols, plotInterface);
 
         DefineUserFunctions(program, context);
 
         CompileUserFunctions(context.Symbols);
 
-        var compiledPlots = CompilePlots(program, context);
+        var mainFunction = CompileMainFunction(context, program);
 
-        return new CompiledProgram(compiledPlots);
-    }
-
-    private static List<CompiledPlot> CompilePlots(Program program, CompilationContext context)
-    {
-        var compiledPlots = new List<CompiledPlot>();
-
-        foreach (var plot in program.Definitions.OfType<PlotDefinition>())
+        if (mainFunction is null)
         {
-            compiledPlots.Add(PlotCompiler.Compile(context, plot));
+            return null;
         }
 
-        return compiledPlots;
+        return new CompiledProgram(plotInterface, mainFunction);
+    }
+
+    private static Function? CompileMainFunction(CompilationContext context, Program program)
+    {
+        if (!context.Symbols.TryLookup<FunctionSymbol>("main", out var mainFunctionSymbol))
+        {
+            context.Reporter.ReportError(new TextSelection(new(1, 1), 1), ReportMessage.MainFunctionNotFound);
+            return null;
+        }
+
+        var mainFunction = mainFunctionSymbol.Function;
+
+        if (mainFunction.Signature.Arguments.Any())
+        {
+            var mainFunctionDefinition = program.Definitions.OfType<FunctionDefinition>().First(def => def.Name == "main");
+            context.Reporter.ReportError(mainFunctionDefinition.NameToken.Selection, ReportMessage.MainFunctionMustHaveNoArguments);
+            return null;
+        }
+
+        return mainFunction;
     }
 
     private static void CompileUserFunctions(SymbolTable symbols)
@@ -107,6 +124,13 @@ public static class ProgramCompiler
                 context.Symbols.Insert(new FunctionSymbol(userFunction));
             }
         }
+    }
+
+    private static void DefineBuiltInFunctions(SymbolTable symbols, PlotInterface plotInterface)
+    {
+        symbols.Insert(new FunctionSymbol(plotInterface.PlotFunction));
+
+        // TODO: other functions?
     }
 
     private static void DefineInstanceTypes(SymbolTable symbols)

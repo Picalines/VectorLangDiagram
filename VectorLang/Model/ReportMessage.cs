@@ -2,6 +2,10 @@
 
 internal static class ReportMessage
 {
+    public static readonly string MainFunctionNotFound = "entry function 'main' not found";
+
+    public static readonly string MainFunctionMustHaveNoArguments = "entry function 'main' must have no arguments";
+
     public static string WrongArgumentCount(int gotCount, int expectedCount) =>
         $"got {gotCount} arguments, but {expectedCount} expected";
 
