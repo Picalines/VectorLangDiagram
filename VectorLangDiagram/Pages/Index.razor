@@ -9,7 +9,7 @@
         <CodeEditor InitialCode=@ExampleProgram OnProgramCompiled="OnProgramCompiled" />
     </section>
     <section>
-        <VectorCanvas Vectors=LastPlottedVectors />
+        <DiagramView Vectors=LastPlottedVectors />
     </section>
 </div>
 
@@ -20,8 +20,8 @@
 def sum(vector a, vector b) -> vector = a + b;
 
 def main() -> void = [
-    val a := {1, 2};
-    val b := {3, 4};
+    val a := {10, 0};
+    val b := {0, 10};
 
     plot(a, 'A', #ff0000);
     plot(b, 'B', #0000ff);
