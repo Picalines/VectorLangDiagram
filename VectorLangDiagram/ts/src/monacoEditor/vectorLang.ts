@@ -47,6 +47,9 @@ monaco.languages.setMonarchTokensProvider(vectorLangId, {
             // numbers
             [/(\d+(\.\d+)?|\.\d+)(\w*)/, 'number.float'],
 
+            // color
+            [/#[a-fA-F\d]{6}/, 'constant.language'],
+
             // delimiter: after number because of .\d floats
             [/[;,.]/, 'delimiter'],
 
