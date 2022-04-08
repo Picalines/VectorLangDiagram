@@ -1,9 +1,17 @@
 ﻿@page "/"
 @using VectorLang.Compilation
+@using VectorLang.Model
 
 <PageTitle>Index</PageTitle>
 
-<CodeEditor InitialCode=@ExampleProgram OnProgramCompiled="OnProgramCompiled" />
+<div id="sections">
+    <section>
+        <CodeEditor InitialCode=@ExampleProgram OnProgramCompiled="OnProgramCompiled" />
+    </section>
+    <section>
+        <VectorCanvas Vectors=LastPlottedVectors />
+    </section>
+</div>
 
 @code {
     private const string ExampleProgram = @"
@@ -22,13 +30,10 @@ def main() -> void = [
 ];
 ";
 
+    private IReadOnlyList<PlottedVector> LastPlottedVectors = Array.Empty<PlottedVector>();
+
     private void OnProgramCompiled(CompiledProgram compiledProgram)
     {
-        Console.WriteLine("plotted vectors:");
-
-        foreach (var vector in compiledProgram.PlotVectors())
-        {
-            Console.WriteLine($"'{vector.Label}': {{{vector.Coordinates.X}, {vector.Coordinates.Y}}} {vector.Color}");
-        }
+        LastPlottedVectors = compiledProgram.PlotVectors();
     }
 }
