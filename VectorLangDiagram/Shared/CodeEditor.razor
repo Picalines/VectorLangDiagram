@@ -26,6 +26,8 @@
         {
             ThisJsReference = DotNetObjectReference.Create(this);
             MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", ThisJsReference, "#monaco-container", InitialCode);
+
+            await OnDidChangeContent(InitialCode);
         }
     }
 
