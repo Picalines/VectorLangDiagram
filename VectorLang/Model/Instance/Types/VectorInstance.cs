@@ -29,6 +29,8 @@ internal sealed class VectorInstance : ReflectionInstance
     {
     }
 
+    public (double X, double Y) ToTuple() => (X.Value, Y.Value);
+
     [InstanceMethod("normalize")]
     public VectorInstance Normalize() => Length.Value > 0.0 ? new VectorInstance(X / Length, Y / Length) : this;
 
@@ -52,6 +54,9 @@ internal sealed class VectorInstance : ReflectionInstance
         X * angle.Cos() - Y * angle.Sin(),
         X * angle.Sin() + Y * angle.Cos()
     );
+
+    [InstanceMethod("scale")]
+    public VectorInstance Scale(VectorInstance scale) => new(X * scale.X, Y * scale.Y);
 
     [InstanceOperator]
     public static VectorInstance operator +(VectorInstance right) => right;

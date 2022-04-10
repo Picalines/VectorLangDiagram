@@ -66,7 +66,7 @@ public static class ProgramCompiler
 
         var plotInterface = new PlotInterface();
 
-        DefineBuiltInFunctions(context.Symbols, plotInterface);
+        DefineFunctionsFromLibrary(context.Symbols, plotInterface);
 
         DefineUserFunctions(program, context);
 
@@ -126,11 +126,12 @@ public static class ProgramCompiler
         }
     }
 
-    private static void DefineBuiltInFunctions(SymbolTable symbols, PlotInterface plotInterface)
+    private static void DefineFunctionsFromLibrary(SymbolTable symbols, FunctionLibrary library)
     {
-        symbols.Insert(new FunctionSymbol(plotInterface.PlotFunction));
-
-        // TODO: other functions?
+        foreach (var function in library.Functions)
+        {
+            symbols.Insert(new FunctionSymbol(function));
+        }
     }
 
     private static void DefineInstanceTypes(SymbolTable symbols)

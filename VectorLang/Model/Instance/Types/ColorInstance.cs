@@ -25,4 +25,6 @@ internal sealed class ColorInstance : ReflectionInstance
         : this(new NumberInstance(r), new(g), new(b))
     {
     }
+
+    public (double R, double G, double B) ToTuple() => (R.Value, G.Value, B.Value);
 }
