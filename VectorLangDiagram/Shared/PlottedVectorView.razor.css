@@ -1,0 +1,10 @@
+﻿line {
+    stroke-linecap: round;
+}
+
+text {
+    font-size: 0.35px;
+    text-anchor: middle;
+    cursor: default;
+    text-shadow: 0 0 10px black;
+}
