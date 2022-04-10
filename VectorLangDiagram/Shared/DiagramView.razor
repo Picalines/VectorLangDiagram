@@ -4,11 +4,12 @@
 
 <div style="display: flex; width: 100%; height: 100%" id="diagram">
     <svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="@SVGLength(-ViewScale) @SVGLength(-ViewScale) @SVGLength(ViewScale) @SVGLength(ViewScale)"
+        viewBox="-100 -100 100 100"
         preserveAspectRatio="xMidYMid slice"
+        style="overflow: visible"
         id="vectors"
     >
-        <g transform="translate(@SVGLength(-ViewScale / 2 + OffsetX), @SVGLength(-ViewScale / 2 + OffsetY))">
+        <g transform="translate(-50, -50)">
             @foreach (var vector in Vectors)
             {
                 <PlottedVectorView Vector=vector />
@@ -23,14 +24,6 @@
 
     private IJSObjectReference? PanZoom;
 
-    // TODO: make svg "infinite"
-
-    private double Zoom = 0.01;
-
-    private double OffsetX = 0;
-
-    private double OffsetY = 0;
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -40,8 +33,4 @@
             PanZoom = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createPanZoom", "#diagram");
         }
     }
-
-    private double ViewScale => 500;
-
-    private static string SVGLength(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 }
