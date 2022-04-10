@@ -9,7 +9,15 @@
         style="overflow: visible"
         id="vectors"
     >
+        <defs>
+            <pattern id="diagram-background" x=0 y=0 width=1 height=1 patternUnits="userSpaceOnUse">
+                <rect x=0 y=0 width=1 height=1 stroke="#333333" stroke-width=0.05 />
+            </pattern>
+        </defs>
+
         <g transform="translate(-5, -5)">
+            <rect x=-100 y=-100 width=200 height=200 fill="url(#diagram-background)" />
+
             @foreach (var vector in Vectors)
             {
                 <PlottedVectorView Vector=vector />
