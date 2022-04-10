@@ -1,8 +1,8 @@
 ﻿@using VectorLang.Model
 
-<div style="display: flex; width: 100%; height: 100%"
-    @onwheel="OnWheel"
->
+@inject IJSRuntime JSRuntime
+
+<div style="display: flex; width: 100%; height: 100%" id="diagram">
     <svg xmlns="http://www.w3.org/2000/svg"
         viewBox="@SVGLength(-ViewScale) @SVGLength(-ViewScale) @SVGLength(ViewScale) @SVGLength(ViewScale)"
         preserveAspectRatio="xMidYMid slice"
@@ -18,16 +18,12 @@
 </div>
 
 @code {
-    private const double MinZoom = 0.001;
-
-    private const double MaxZoom = 0.1;
-
-    private const double ZoomSensitivity = 0.0001;
-
-    private const double OffsetSensitivity = 0.01;
-
     [Parameter]
     public IReadOnlyList<PlottedVector> Vectors { get; set; } = Array.Empty<PlottedVector>();
+
+    private IJSObjectReference? PanZoom;
+
+    // TODO: make svg "infinite"
 
     private double Zoom = 0.01;
 
@@ -35,21 +31,17 @@
 
     private double OffsetY = 0;
 
-    private double ViewScale => 1 / Zoom;
-
-    private void OnWheel(WheelEventArgs args)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (args.CtrlKey)
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
         {
-            Zoom += args.DeltaY * ZoomSensitivity;
-            Zoom = Math.Clamp(Zoom, MinZoom, MaxZoom);
-        }
-        else
-        {
-            OffsetX += -args.DeltaX * OffsetSensitivity;
-            OffsetY += -args.DeltaY * OffsetSensitivity;
+            PanZoom = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createPanZoom", "#diagram");
         }
     }
+
+    private double ViewScale => 500;
 
     private static string SVGLength(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 }
