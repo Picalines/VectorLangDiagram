@@ -63,7 +63,7 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Max(NumberInstance other) => Value > other.Value ? this : other;
 
     [InstanceMethod("clamp")]
-    public NumberInstance Clamp(NumberInstance min, NumberInstance max) => Max(min).Min(max);
+    public NumberInstance Clamp(NumberInstance min, NumberInstance max) => new(Math.Clamp(Value, min.Value, max.Value));
 
     [InstanceMethod("round")]
     public NumberInstance Round() => new(Math.Round(Value));
