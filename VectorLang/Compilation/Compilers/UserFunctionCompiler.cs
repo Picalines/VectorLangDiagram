@@ -83,7 +83,7 @@ internal static class UserFunctionCompiler
 
         var functionInstructions = new List<Instruction>();
 
-        foreach (var (name, type) in signature.Arguments)
+        foreach (var (name, type) in signature.Arguments.Reverse())
         {
             var address = functionContextSymbol.GenerateVariableAddress();
 
