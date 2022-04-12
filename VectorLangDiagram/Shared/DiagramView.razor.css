@@ -30,8 +30,14 @@
     height: 100%;
     aspect-ratio: 1;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     border: none;
     border-radius: 50%;
+
+    background-color: darkmagenta;
 
     transition: filter linear 0.1s;
 }
@@ -42,4 +48,8 @@
 
 #view-options > button:active {
     filter: brightness(75%);
+}
+
+#view-options > button > svg {
+    transform: scale(0.75);
 }
