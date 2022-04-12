@@ -15,6 +15,7 @@
     <None Remove="ts\src\monacoVectorLang.ts" />
     <None Remove="ts\src\panzoom\create.ts" />
     <None Remove="ts\src\panzoom\index.ts" />
+    <None Remove="ts\src\panzoom\PanZoomInterop.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
     <TypeScriptCompile Include="ts\src\monacoEditor\vectorLang.ts" />
     <TypeScriptCompile Include="ts\src\panzoom\create.ts" />
     <TypeScriptCompile Include="ts\src\panzoom\index.ts" />
+    <TypeScriptCompile Include="ts\src\panzoom\panzoomInterop.ts" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,0 +1,45 @@
+﻿#diagram {
+    display: flex;
+    flex-direction: column-reverse;
+
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#view {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+#view-options {
+    position: absolute;
+    z-index: 1;
+
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#view-options > button {
+    height: 100%;
+    aspect-ratio: 1;
+
+    border: none;
+    border-radius: 50%;
+
+    transition: filter linear 0.1s;
+}
+
+#view-options > button:hover {
+    filter: brightness(85%);
+}
+
+#view-options > button:active {
+    filter: brightness(75%);
+}

@@ -2,31 +2,37 @@
 
 @inject IJSRuntime JSRuntime
 
-<div style="display: flex; width: 100%; height: 100%" id="diagram">
-    <svg xmlns="http://www.w3.org/2000/svg"
-        viewBox="-10 -10 10 10"
-        preserveAspectRatio="xMidYMid slice"
-        style="overflow: visible"
-        id="vectors"
-    >
-        <defs>
-            <pattern id="diagram-background" x=0 y=0 width=1 height=1 patternUnits="userSpaceOnUse">
-                <rect x=0 y=0 width=1 height=1 stroke="#333333" stroke-width=0.05 />
-            </pattern>
-        </defs>
+<div id="diagram">
+    <div id="view-options">
+        <button type="button" @onclick="OnResetViewClick" />
+    </div>
 
-        <g transform="translate(-5, -5)">
-            <rect x=-100 y=-100 width=200 height=200 fill="url(#diagram-background)" />
+    <div id="view">
+        <svg xmlns="http://www.w3.org/2000/svg"
+            viewBox="-10 -10 10 10"
+            preserveAspectRatio="xMidYMid slice"
+            style="overflow: visible"
+            id="vectors"
+        >
+            <defs>
+                <pattern id="diagram-background" x=0 y=0 width=1 height=1 patternUnits="userSpaceOnUse">
+                    <rect x=0 y=0 width=1 height=1 stroke="#333333" stroke-width=0.05 />
+                </pattern>
+            </defs>
 
-            <line x1=-100 y1=0 x2=100 y2=0 stroke="#550000" stroke-width=0.05 />
-            <line x1=0 y1=-100 x2=0 y2=100 stroke="#005500" stroke-width=0.05 />
+            <g transform="translate(-5, -5)">
+                <rect x=-100 y=-100 width=200 height=200 fill="url(#diagram-background)" />
 
-            @foreach (var vector in Vectors)
-            {
-                <PlottedVectorView Vector=vector />
-            }
-        </g>
-    </svg>
+                <line x1=-100 y1=0 x2=100 y2=0 stroke="#550000" stroke-width=0.05 />
+                <line x1=0 y1=-100 x2=0 y2=100 stroke="#005500" stroke-width=0.05 />
+
+                @foreach (var vector in Vectors)
+                {
+                    <PlottedVectorView Vector=vector />
+                }
+            </g>
+        </svg>
+    </div>
 </div>
 
 @code {
@@ -41,7 +47,15 @@
 
         if (firstRender)
         {
-            PanZoom = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createPanZoom", "#diagram");
+            PanZoom = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createPanZoom", "#view");
+        }
+    }
+
+    private async Task OnResetViewClick()
+    {
+        if (PanZoom is not null)
+        {
+            await PanZoom.InvokeVoidAsync("reset");
         }
     }
 }
