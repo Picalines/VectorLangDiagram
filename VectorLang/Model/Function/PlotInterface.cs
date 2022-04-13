@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace VectorLang.Model;
 
-// TODO: ReflectionFunctionLibrary
-
-internal sealed class PlotInterface : FunctionLibrary
+internal sealed class PlotInterface : ReflectionFunctionLibrary
 {
     private class Transformation
     {
@@ -22,15 +21,6 @@ internal sealed class PlotInterface : FunctionLibrary
     public PlotInterface()
     {
         _Transformations.Push(new Transformation());
-
-        AddFunction(ReflectionFunction.FromMethod("push", Push));
-        AddFunction(ReflectionFunction.FromMethod("pop", Pop));
-
-        AddFunction(ReflectionFunction.FromMethod("translate", Translate));
-        AddFunction(ReflectionFunction.FromMethod("scale", Scale));
-        AddFunction(ReflectionFunction.FromMethod("rotate", Rotate));
-
-        AddFunction(ReflectionFunction.FromMethod("plot", Plot));
     }
 
     public IReadOnlyList<PlottedVector> PlottedVectors => _PlottedVectors;
@@ -40,7 +30,8 @@ internal sealed class PlotInterface : FunctionLibrary
         _PlottedVectors.Clear();
     }
 
-    private VoidInstance Push()
+    [ReflectionFunction("push")]
+    public VoidInstance Push()
     {
         var lastTransform = _Transformations.Peek();
 
@@ -54,19 +45,20 @@ internal sealed class PlotInterface : FunctionLibrary
         return VoidInstance.Instance;
     }
 
-    private VoidInstance Pop()
+    [ReflectionFunction("pop")]
+    public VoidInstance Pop()
     {
-        // TODO: throw error?
+        // TODO: throw runtime exception?
 
-        if (_Transformations.Count > 1)
-        {
-            _Transformations.Pop();
-        }
+        Debug.Assert(_Transformations.Count > 1);
+
+        _Transformations.Pop();
 
         return VoidInstance.Instance;
     }
 
-    private VoidInstance Translate(VectorInstance offset)
+    [ReflectionFunction("translate")]
+    public VoidInstance Translate(VectorInstance offset)
     {
         var origin = _Transformations.Peek();
 
@@ -75,7 +67,8 @@ internal sealed class PlotInterface : FunctionLibrary
         return VoidInstance.Instance;
     }
 
-    private VoidInstance Scale(VectorInstance scale)
+    [ReflectionFunction("scale")]
+    public VoidInstance Scale(VectorInstance scale)
     {
         var origin = _Transformations.Peek();
 
@@ -84,7 +77,8 @@ internal sealed class PlotInterface : FunctionLibrary
         return VoidInstance.Instance;
     }
 
-    private VoidInstance Rotate(NumberInstance rotation)
+    [ReflectionFunction("rotate")]
+    public VoidInstance Rotate(NumberInstance rotation)
     {
         var origin = _Transformations.Peek();
 
@@ -93,7 +87,8 @@ internal sealed class PlotInterface : FunctionLibrary
         return VoidInstance.Instance;
     }
 
-    private VoidInstance Plot(VectorInstance vector, StringInstance label, ColorInstance color)
+    [ReflectionFunction("plot")]
+    public VoidInstance Plot(VectorInstance vector, StringInstance label, ColorInstance color)
     {
         var origin = _Transformations.Peek();
 
