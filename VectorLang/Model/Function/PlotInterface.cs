@@ -88,15 +88,15 @@ internal sealed class PlotInterface : ReflectionFunctionLibrary
     }
 
     [ReflectionFunction("plot")]
-    public VoidInstance Plot(VectorInstance vector, StringInstance label, ColorInstance color)
+    public VoidInstance Plot(VectorInstance vector, ColorInstance color, StringInstance label)
     {
         var origin = _Transformations.Peek();
 
         _PlottedVectors.Add(new PlottedVector(
-            origin.Offset.ToTuple(),
-            (origin.Offset + vector.Scale(origin.Scale).Rotate(origin.Rotation)).ToTuple(),
-            label.Value,
-            color.ToTuple()
+            origin.Offset,
+            origin.Offset + vector.Scale(origin.Scale).Rotate(origin.Rotation),
+            color,
+            label
         ));
 
         return VoidInstance.Instance;

@@ -23,10 +23,10 @@ def main() -> void = [
     val a := {1, 0};
     val b := {0, 1};
 
-    plot(a, 'A', #ff0000);
-    plot(b, 'B', #0000ff);
+    plot(a, #ff0000, 'A');
+    plot(b, #0000ff, 'B');
 
-    plot(sum(a, b), 'A + B', #ff00ff);
+    plot(sum(a, b), #ff00ff, 'A + B');
 ];
 ";
 
