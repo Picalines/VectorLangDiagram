@@ -32,6 +32,7 @@ internal static class ParseToken
     public static readonly Parser<Token> CloseCurlyBrace = TokenType.CloseCurlyBrace.Parser();
 
     public static readonly Parser<Token> KeywordDef = TokenType.KeywordDef.Parser();
+    public static readonly Parser<Token> KeywordConst = TokenType.KeywordConst.Parser();
     public static readonly Parser<Token> KeywordExternal = TokenType.KeywordExternal.Parser();
     public static readonly Parser<Token> KeywordVal = TokenType.KeywordVal.Parser();
     public static readonly Parser<Token> KeywordIf = TokenType.KeywordIf.Parser();

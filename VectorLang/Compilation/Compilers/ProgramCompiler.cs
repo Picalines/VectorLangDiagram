@@ -17,6 +17,11 @@ public static class ProgramCompiler
         VoidInstance.InstanceType,
     };
 
+    private static readonly List<Library> _Libraries = new()
+    {
+        MathLibrary.Instance,
+    };
+
     public static CompiledProgram? Compile(string code, out IReadOnlyList<Report> reports)
     {
         var context = new CompilationContext();
@@ -63,11 +68,11 @@ public static class ProgramCompiler
     {
         DefineInstanceTypes(context.Symbols);
 
-        var plotInterface = new PlotInterface();
+        DefineLibraries(context.Symbols);
 
-        DefineFunctionsFromLibrary(context.Symbols, plotInterface);
+        CompileUserDefinitions(program, context);
 
-        DefineUserFunctions(program, context);
+        var plotInterface = CreatePlotInterface(context.Symbols);
 
         CompileUserFunctions(context.Symbols);
 
@@ -112,11 +117,25 @@ public static class ProgramCompiler
         }
     }
 
-    private static void DefineUserFunctions(Program program, CompilationContext context)
+    private static PlotInterface CreatePlotInterface(SymbolTable symbols)
     {
-        foreach (var function in program.Definitions.OfType<FunctionDefinition>())
+        var plotInterface = new PlotInterface();
+
+        DefineLibraryItems(symbols, plotInterface);
+
+        return plotInterface;
+    }
+
+    private static void CompileUserDefinitions(Program program, CompilationContext context)
+    {
+        foreach (var constantDefinition in program.Definitions.OfType<ConstantDefinition>())
         {
-            var userFunction = UserFunctionCompiler.Compile(context, function);
+            ConstantDefinitionCompiler.Compile(context, constantDefinition);
+        }
+
+        foreach (var functionDefinition in program.Definitions.OfType<FunctionDefinition>())
+        {
+            var userFunction = UserFunctionCompiler.Compile(context, functionDefinition);
 
             if (userFunction is not null)
             {
@@ -125,8 +144,26 @@ public static class ProgramCompiler
         }
     }
 
-    private static void DefineFunctionsFromLibrary(SymbolTable symbols, FunctionLibrary library)
+    private static void DefineLibraries(SymbolTable symbols)
     {
+        foreach (var library in _Libraries)
+        {
+            DefineLibraryItems(symbols, library);
+        }
+    }
+
+    private static void DefineLibraryItems(SymbolTable symbols, Library library)
+    {
+        if (!library.IsDefined)
+        {
+            library.DefineItems();
+        }
+
+        foreach (var (constantName, constantValue) in library.Constants)
+        {
+            symbols.Insert(new ConstantSymbol(constantName, constantValue));
+        }
+
         foreach (var function in library.Functions)
         {
             symbols.Insert(new FunctionSymbol(function));

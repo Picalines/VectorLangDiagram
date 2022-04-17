@@ -22,6 +22,11 @@ internal static partial class Interpreter
         return Interpret(context);
     }
 
+    public static Instance Interpret(IReadOnlyList<Instruction> instructions)
+    {
+        return Interpret(instructions, Array.Empty<Instance>());
+    }
+
     private static Instance Interpret(InterpretationContext context)
     {
         while (!context.AtEnd)

@@ -4,7 +4,7 @@ export const vectorLangId = "vectorLang";
 
 monaco.languages.register({ id: vectorLangId });
 
-const keywords = ['def', 'external', 'val', 'if', 'else'];
+const keywords = ['def', 'const', 'external', 'val', 'if', 'else'];
 
 const typeKeywords = ['number', 'vector', 'color', 'void'];
 

@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace VectorLang.Model;
 
-internal sealed class PlotInterface : ReflectionFunctionLibrary
+internal sealed class PlotInterface : ReflectionLibrary
 {
     private record PlotContext
     {

@@ -11,15 +11,22 @@ internal static class VariableNodeCompiler
 
         context.Symbols.TryLookup(variableName, out VariableSymbol? variableSymbol);
 
-        if (variableSymbol is null)
+        context.Symbols.TryLookup(variableName, out ConstantSymbol? constantSymbol);
+
+        if (variableSymbol is not null)
         {
-            context.Reporter.ReportError(variableNode.Selection, ReportMessage.UndefinedValue($"variable '{variableName}'"));
-            return CompiledExpression.Invalid;
+            return new(variableSymbol.Type, new LoadInstruction(variableSymbol.Address));
         }
 
-        return new(
-            type: variableSymbol.Type,
-            instruction: new LoadInstruction(variableSymbol.Address)
-        );
+        if (constantSymbol is not null)
+        {
+            return constantSymbol.Value is not null
+                ? new(constantSymbol.InstanceType, new PushInstruction(constantSymbol.Value))
+                : new(constantSymbol.InstanceType);
+        }
+
+        context.Reporter.ReportError(variableNode.Selection, ReportMessage.UndefinedValue($"variable or constant '{variableName}'"));
+
+        return CompiledExpression.Invalid;
     }
 }

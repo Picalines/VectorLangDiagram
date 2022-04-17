@@ -20,6 +20,7 @@ public enum TokenType
     [Description("'}'"), TokenRegex(@"\}")] CloseCurlyBrace,
 
     [Description("'def'"), TokenRegex(@"\bdef\b")] KeywordDef,
+    [Description("'const'"), TokenRegex(@"\bconst\b")] KeywordConst,
     [Description("'external'"), TokenRegex(@"\bextenal\b")] KeywordExternal,
     [Description("'val'"), TokenRegex(@"\bval\b")] KeywordVal,
     [Description("'if'"), TokenRegex(@"\bif\b")] KeywordIf,

@@ -4,6 +4,14 @@ namespace VectorLang.Parsing;
 
 internal static class DefinitionParser
 {
+    public static readonly Parser<ConstantDefinition> Constant =
+        from constKeyword in ParseToken.KeywordConst
+        from name in ParseToken.Identifier.Named("name of constant")
+        from equalsOp in ParseToken.OperatorEquals
+        from valueExpression in ValueExpressionParser.Lambda.Named("value of constant")
+        from semicolon in ParseToken.Semicolon
+        select new ConstantDefinition(name, valueExpression);
+
     public static readonly Parser<ArgumentDefinition> Argument =
         from type in TypeParser.Type.Named("argument type")
         from name in ParseToken.Identifier.Named("argument name")
