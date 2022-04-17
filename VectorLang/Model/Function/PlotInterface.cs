@@ -5,22 +5,24 @@ namespace VectorLang.Model;
 
 internal sealed class PlotInterface : ReflectionFunctionLibrary
 {
-    private class Transformation
+    private record PlotContext
     {
         public VectorInstance Offset { get; set; } = new(0, 0);
 
         public VectorInstance Scale { get; set; } = new(1, 1);
 
         public NumberInstance Rotation { get; set; } = new(0);
+
+        public ColorInstance Color { get; set; } = new(1, 1, 1);
     }
 
-    private readonly Stack<Transformation> _Transformations = new();
+    private readonly Stack<PlotContext> _ContextStack = new();
 
     private readonly List<PlottedVector> _PlottedVectors = new();
 
     public PlotInterface()
     {
-        _Transformations.Push(new Transformation());
+        _ContextStack.Push(new PlotContext());
     }
 
     public IReadOnlyList<PlottedVector> PlottedVectors => _PlottedVectors;
@@ -33,14 +35,7 @@ internal sealed class PlotInterface : ReflectionFunctionLibrary
     [ReflectionFunction("push")]
     public VoidInstance Push()
     {
-        var lastTransform = _Transformations.Peek();
-
-        _Transformations.Push(new Transformation()
-        {
-            Offset = lastTransform.Offset,
-            Scale = lastTransform.Scale,
-            Rotation = lastTransform.Rotation,
-        });
+        _ContextStack.Push(_ContextStack.Peek() with { });
 
         return VoidInstance.Instance;
     }
@@ -50,9 +45,9 @@ internal sealed class PlotInterface : ReflectionFunctionLibrary
     {
         // TODO: throw runtime exception?
 
-        Debug.Assert(_Transformations.Count > 1);
+        Debug.Assert(_ContextStack.Count > 1);
 
-        _Transformations.Pop();
+        _ContextStack.Pop();
 
         return VoidInstance.Instance;
     }
@@ -60,7 +55,7 @@ internal sealed class PlotInterface : ReflectionFunctionLibrary
     [ReflectionFunction("translate")]
     public VoidInstance Translate(VectorInstance offset)
     {
-        var origin = _Transformations.Peek();
+        var origin = _ContextStack.Peek();
 
         origin.Offset += offset.Scale(origin.Scale).Rotate(origin.Rotation);
 
@@ -70,7 +65,7 @@ internal sealed class PlotInterface : ReflectionFunctionLibrary
     [ReflectionFunction("scale")]
     public VoidInstance Scale(VectorInstance scale)
     {
-        var origin = _Transformations.Peek();
+        var origin = _ContextStack.Peek();
 
         origin.Scale = origin.Scale.Scale(scale);
 
@@ -80,22 +75,30 @@ internal sealed class PlotInterface : ReflectionFunctionLibrary
     [ReflectionFunction("rotate")]
     public VoidInstance Rotate(NumberInstance rotation)
     {
-        var origin = _Transformations.Peek();
+        var origin = _ContextStack.Peek();
 
         origin.Rotation += rotation;
 
         return VoidInstance.Instance;
     }
 
-    [ReflectionFunction("plot")]
-    public VoidInstance Plot(VectorInstance vector, ColorInstance color)
+    [ReflectionFunction("fill")]
+    public VoidInstance Fill(ColorInstance color)
     {
-        var origin = _Transformations.Peek();
+        _ContextStack.Peek().Color = color;
+
+        return VoidInstance.Instance;
+    }
+
+    [ReflectionFunction("plot")]
+    public VoidInstance Plot(VectorInstance vector)
+    {
+        var context = _ContextStack.Peek();
 
         _PlottedVectors.Add(new PlottedVector(
-            origin.Offset,
-            origin.Offset + vector.Scale(origin.Scale).Rotate(origin.Rotation),
-            color
+            context.Offset,
+            context.Offset + vector.Scale(context.Scale).Rotate(context.Rotation),
+            context.Color
         ));
 
         return VoidInstance.Instance;
