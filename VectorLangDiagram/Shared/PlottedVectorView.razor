@@ -41,8 +41,8 @@ else
 }
 
 @code {
-    [Parameter]
-    public PlottedVector Vector { get; set; }
+    [Parameter, EditorRequired]
+    public PlottedVector Vector { get; set; } = null!;
 
     private double VectorLength
     {
