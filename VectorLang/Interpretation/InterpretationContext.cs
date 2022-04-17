@@ -25,6 +25,8 @@ internal static partial class Interpreter
 
         public bool AtEnd => _CurrentInstructionIndex >= Instructions.Count;
 
+        public int StackSize => _Stack.Count;
+
         public void MoveNext()
         {
             _CurrentInstructionIndex++;

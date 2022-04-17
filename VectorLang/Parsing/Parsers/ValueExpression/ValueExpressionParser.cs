@@ -11,20 +11,32 @@ internal static partial class ValueExpressionParser
 {
     private record CallInfo(IReadOnlyList<ValueExpressionNode> Arguments, Token ClosingParenthesis);
 
+    private static readonly Parser<ValueExpressionNode> LambdaRef = Parse.Ref(() => Lambda);
+
     public static readonly Parser<VariableNode> Variable =
         from token in ParseToken.Identifier
         select new VariableNode(token);
 
+    private static readonly Parser<ValueExpressionNode> AssignedValue =
+        from assignOp in ParseToken.OperatorAssign
+        from valueExpression in LambdaRef
+        select valueExpression;
+
+    private static readonly Parser<ValueExpressionNode> VariableOrAssignment =
+        Variable.Then(variable =>
+            (AssignedValue.Select(valueExpression => new VariableAssignmentNode(variable, valueExpression)) as Parser<ValueExpressionNode>)
+            .XOr(Parse.Return(variable))
+        );
+
     private static readonly Parser<VariableCreationNode> VariableCreation =
         from valKeyword in ParseToken.KeywordVal
         from variable in Variable
-        from assignOp in ParseToken.OperatorAssign
-        from valueExpression in Parse.Ref(() => Lambda)
+        from valueExpression in AssignedValue
         select new VariableCreationNode(valKeyword, variable, valueExpression);
 
     private static readonly Parser<ValueExpressionNode> InnerExpression =
         from openParen in ParseToken.OpenParenthesis
-        from innerExpression in Parse.Ref(() => Lambda)
+        from innerExpression in LambdaRef
         from closeParen in ParseToken.CloseParenthesis
         select innerExpression;
 
@@ -32,13 +44,13 @@ internal static partial class ValueExpressionParser
         from openBracket in ParseToken.OpenSquareBracket
         from block in
             (
-                from priorExpressions in Parse.Ref(() => Lambda).FollowedBy(ParseToken.Semicolon).Many()
-                from resultExpression in Parse.Ref(() => Lambda)
+                from priorExpressions in LambdaRef.FollowedBy(ParseToken.Semicolon).Many()
+                from resultExpression in LambdaRef
                 from closeBracket in ParseToken.CloseSquareBracket
                 select new BlockNode(priorExpressions, resultExpression, openBracket, closeBracket)
             )
             .Or(
-                from expressions in Parse.Ref(() => Lambda).FollowedBy(ParseToken.Semicolon).AtLeastOnce()
+                from expressions in LambdaRef.FollowedBy(ParseToken.Semicolon).AtLeastOnce()
                 from closeBracket in ParseToken.CloseSquareBracket
                 select new BlockNode(expressions, null, openBracket, closeBracket)
              )
@@ -46,16 +58,16 @@ internal static partial class ValueExpressionParser
 
     private static readonly Parser<VectorNode> Vector =
         from openBrace in ParseToken.OpenCurlyBrace
-        from x in Parse.Ref(() => Lambda)
+        from x in LambdaRef
         from comma in ParseToken.Comma
-        from y in Parse.Ref(() => Lambda)
+        from y in LambdaRef
         from closeBrace in ParseToken.CloseCurlyBrace
         select new VectorNode(x, y, openBrace, closeBrace);
 
     private static readonly Parser<ValueExpressionNode> PrimaryTerm =
         (ConstantParser.Number as Parser<ValueExpressionNode>)
         .XOr(ConstantParser.Color)
-        .XOr(Variable)
+        .XOr(VariableOrAssignment)
         .XOr(Vector)
         .XOr(VariableCreation)
         .XOr(InnerExpression)
@@ -63,7 +75,7 @@ internal static partial class ValueExpressionParser
 
     private static readonly Parser<CallInfo> Call =
         from openParen in ParseToken.OpenParenthesis
-        from arguments in Parse.Ref(() => Lambda).DelimitedBy(ParseToken.Comma)
+        from arguments in LambdaRef.DelimitedBy(ParseToken.Comma)
         from closeParen in ParseToken.CloseParenthesis
         select new CallInfo(arguments, closeParen);
 

@@ -34,6 +34,8 @@ internal static partial class Interpreter
             }
         }
 
+        Debug.Assert(context.StackSize == 1);
+
         return context.PopFromStack();
     }
 

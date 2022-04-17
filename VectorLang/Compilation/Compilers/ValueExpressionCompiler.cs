@@ -24,6 +24,8 @@ internal static class ValueExpressionCompiler
 
         VariableCreationNode variableCreation => VariableCreationCompiler.Compile(context, variableCreation),
 
+        VariableAssignmentNode variableAssignment => VariableAssignmentCompiler.Compile(context, variableAssignment),
+
         BlockNode blockNode => BlockCompiler.Compile(context, blockNode),
 
         _ => throw new NotImplementedException(),
