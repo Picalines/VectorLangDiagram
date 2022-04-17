@@ -6,7 +6,7 @@ monaco.languages.register({ id: vectorLangId });
 
 const keywords = ['def', 'external', 'val', 'if', 'else'];
 
-const typeKeywords = ['number', 'vector', 'string', 'color', 'void'];
+const typeKeywords = ['number', 'vector', 'color', 'void'];
 
 monaco.languages.setMonarchTokensProvider(vectorLangId, {
     keywords,
@@ -52,20 +52,10 @@ monaco.languages.setMonarchTokensProvider(vectorLangId, {
 
             // delimiter: after number because of .\d floats
             [/[;,.]/, 'delimiter'],
-
-            // strings
-            [/["'']([^'"\\]|\\.)*$/, 'string.invalid'],  // non-teminated string
-            [/["'']/, { token: 'string.quote', bracket: '@open', next: '@string' }],
-
         ],
 
         comment: [
             [/\/\/.*$/, 'comment']
-        ],
-
-        string: [
-            [/[^\\"']+/, 'string'],
-            [/["'']/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
         ],
 
         whitespace: [

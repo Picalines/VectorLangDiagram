@@ -35,7 +35,6 @@ public enum TokenType
     [Description("'%'"), TokenRegex(@"\%")] OperatorModulo,
 
     [Description("number literal"), TokenRegex(@"(?<value>\d+(\.\d+)?|\.\d+)(?<unit>\w*)", true)] LiteralNumber,
-    [Description("string literal"), TokenRegex(@"""""|''|([""']).*?[^\\]\1")] LiteralString,
     [Description("color literal"), TokenRegex(@"#(?<r>[a-fA-F\d]{2})(?<g>[a-fA-F\d]{2})(?<b>[a-fA-F\d]{2})", true)] LiteralColor,
 
     [Description("identifier"), TokenRegex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b")] Identifier,

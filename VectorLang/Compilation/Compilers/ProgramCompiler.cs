@@ -12,7 +12,6 @@ public static class ProgramCompiler
     private static readonly List<InstanceType> _InstanceTypes = new()
     {
         NumberInstance.InstanceType,
-        StringInstance.InstanceType,
         VectorInstance.InstanceType,
         ColorInstance.InstanceType,
         VoidInstance.InstanceType,

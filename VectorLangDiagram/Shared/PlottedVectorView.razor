@@ -33,13 +33,6 @@ else
     <circle cx=@x1 cy=@y1 r=@strokeWidth fill=@color />
 }
 
-@if (Vector.Label.Length > 0)
-{
-    <text>
-        <text x=@x2 y=@textY fill=@color>@Vector.Label</text>
-    </text>
-}
-
 @code {
     [Parameter, EditorRequired]
     public PlottedVector Vector { get; set; } = null!;

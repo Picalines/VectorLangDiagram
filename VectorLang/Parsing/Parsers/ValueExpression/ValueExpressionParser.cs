@@ -54,7 +54,6 @@ internal static partial class ValueExpressionParser
 
     private static readonly Parser<ValueExpressionNode> PrimaryTerm =
         (ConstantParser.Number as Parser<ValueExpressionNode>)
-        .XOr(ConstantParser.String)
         .XOr(ConstantParser.Color)
         .XOr(Variable)
         .XOr(Vector)

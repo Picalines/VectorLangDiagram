@@ -15,10 +15,6 @@ internal static partial class ValueExpressionParser
             from value in ParseNumberLiteral(literalToken)
             select new NumberNode(value, literalToken);
 
-        public static readonly Parser<StringNode> String =
-            from token in ParseToken.LiteralString
-            select new StringNode(token.Value[1..^1], token);
-
         public static readonly Parser<ColorNode> Color =
             from literalToken in ParseToken.LiteralColor
             from color in ParseColorLiteral(literalToken)
