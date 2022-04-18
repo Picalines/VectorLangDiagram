@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Linq;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
@@ -19,10 +19,10 @@ internal static class VariableCreationCompiler
             redefinition = true;
         }
 
-        if (!context.Symbols.TryLookup<FunctionContextSymbol>(out var functionContext))
-        {
-            throw new InvalidOperationException();
-        }
+        context.Symbols.TryLookup<FunctionContextSymbol>(out var functionContext);
+
+        // TODO: create one if not exists?
+        Debug.Assert(functionContext is not null);
 
         var compiledValue = ValueExpressionCompiler.Compile(context, variableCreation.ValueExpression);
 
