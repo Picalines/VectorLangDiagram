@@ -39,6 +39,10 @@ internal static class ParseToken
     public static readonly Parser<Token> KeywordElse = TokenType.KeywordElse.Parser();
 
     public static readonly Parser<Token> OperatorAssign = TokenType.OperatorAssign.Parser();
+    public static readonly Parser<Token> OperatorLess = TokenType.OperatorLess.Parser();
+    public static readonly Parser<Token> OperatorLessOrEqual = TokenType.OperatorLessOrEqual.Parser();
+    public static readonly Parser<Token> OperatorGreater = TokenType.OperatorGreater.Parser();
+    public static readonly Parser<Token> OperatorGreaterOrEqual = TokenType.OperatorGreaterOrEqual.Parser();
     public static readonly Parser<Token> OperatorNotEquals = TokenType.OperatorNotEquals.Parser();
     public static readonly Parser<Token> OperatorEquals = TokenType.OperatorEquals.Parser();
     public static readonly Parser<Token> OperatorPlus = TokenType.OperatorPlus.Parser();
@@ -46,8 +50,12 @@ internal static class ParseToken
     public static readonly Parser<Token> OperatorMultiply = TokenType.OperatorMultiply.Parser();
     public static readonly Parser<Token> OperatorDivide = TokenType.OperatorDivide.Parser();
     public static readonly Parser<Token> OperatorModulo = TokenType.OperatorModulo.Parser();
+    public static readonly Parser<Token> OperatorNot = TokenType.OperatorNot.Parser();
+    public static readonly Parser<Token> OperatorAnd = TokenType.OperatorAnd.Parser();
+    public static readonly Parser<Token> OperatorOr = TokenType.OperatorOr.Parser();
 
     public static readonly Parser<Token> LiteralNumber = TokenType.LiteralNumber.Parser();
+    public static readonly Parser<Token> LiteralBoolean = TokenType.LiteralBoolean.Parser();
     public static readonly Parser<Token> LiteralColor = TokenType.LiteralColor.Parser();
 
     public static readonly Parser<Token> Identifier = TokenType.Identifier.Parser();

@@ -4,9 +4,9 @@ export const vectorLangId = "vectorLang";
 
 monaco.languages.register({ id: vectorLangId });
 
-const keywords = ['def', 'const', 'external', 'val', 'if', 'else'];
+const keywords = ['def', 'const', 'external', 'val', 'if', 'else', 'true', 'false', 'and', 'or', 'not'];
 
-const typeKeywords = ['number', 'vector', 'color', 'void'];
+const typeKeywords = ['number', 'boolean', 'vector', 'color', 'void'];
 
 monaco.languages.setMonarchTokensProvider(vectorLangId, {
     keywords,

@@ -10,6 +10,8 @@ internal static class ConstantCompiler
     {
         NumberNode { Value: var number } => new(NumberInstance.InstanceType, new PushInstruction(new NumberInstance(number))),
 
+        BooleanNode { Value: var boolean } => new(BooleanInstance.InstanceType, new PushInstruction(BooleanInstance.From(boolean))),
+
         ColorNode { R: var r, G: var g, B: var b } => new(ColorInstance.InstanceType, new PushInstruction(new ColorInstance(r, g, b))),
 
         _ => throw new NotImplementedException(),

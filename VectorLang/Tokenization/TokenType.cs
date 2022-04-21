@@ -27,6 +27,10 @@ public enum TokenType
     [Description("'else'"), TokenRegex(@"\belse\b")] KeywordElse,
 
     [Description("':='"), TokenRegex(@":=")] OperatorAssign,
+    [Description("'<'"), TokenRegex(@"<")] OperatorLess,
+    [Description("'<='"), TokenRegex(@"<=")] OperatorLessOrEqual,
+    [Description("'>'"), TokenRegex(@">")] OperatorGreater,
+    [Description("'>='"), TokenRegex(@">=")] OperatorGreaterOrEqual,
     [Description("'!='"), TokenRegex(@"!=")] OperatorNotEquals,
     [Description("'='"), TokenRegex(@"=")] OperatorEquals,
     [Description("'+'"), TokenRegex(@"\+")] OperatorPlus,
@@ -34,8 +38,12 @@ public enum TokenType
     [Description("'*'"), TokenRegex(@"\*")] OperatorMultiply,
     [Description("'/'"), TokenRegex(@"\/")] OperatorDivide,
     [Description("'%'"), TokenRegex(@"\%")] OperatorModulo,
+    [Description("'not'"), TokenRegex(@"\bnot\b")] OperatorNot,
+    [Description("'and'"), TokenRegex(@"\band\b")] OperatorAnd,
+    [Description("'or'"), TokenRegex(@"\bor\b")] OperatorOr,
 
     [Description("number literal"), TokenRegex(@"(?<value>\d+(\.\d+)?|\.\d+)(?<unit>\w*)", true)] LiteralNumber,
+    [Description("boolean literal"), TokenRegex(@"\b((?<true>true)|(?<false>false))\b", true)] LiteralBoolean,
     [Description("color literal"), TokenRegex(@"#(?<r>[a-fA-F\d]{2})(?<g>[a-fA-F\d]{2})(?<b>[a-fA-F\d]{2})", true)] LiteralColor,
 
     [Description("identifier"), TokenRegex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b")] Identifier,

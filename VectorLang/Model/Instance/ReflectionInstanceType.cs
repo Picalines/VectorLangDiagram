@@ -72,8 +72,7 @@ internal sealed class ReflectionInstanceType : InstanceType
                         return (methodInfo.InvokeAndRethrow(null, new[] { thisInstance }) as Instance)!;
                     });
                 }
-
-                if (MethodNameToBinaryOperator(methodInfo.Name) is { } binaryOperator)
+                else if (MethodNameToBinaryOperator(methodInfo.Name) is { } binaryOperator)
                 {
                     var (returnType, arguments) = CallSignature.From(methodInfo);
 
@@ -83,6 +82,10 @@ internal sealed class ReflectionInstanceType : InstanceType
                     {
                         return (methodInfo.InvokeAndRethrow(null, new[] { thisInstance, rightInstance }) as Instance)!;
                     });
+                }
+                else
+                {
+                    Debug.Fail($"{nameof(InstanceOperatorAttribute)} is not allowed on method '{methodInfo.Name}'");
                 }
             }
         }
@@ -115,6 +118,7 @@ internal sealed class ReflectionInstanceType : InstanceType
     {
         "op_UnaryPlus" => UnaryOperator.Plus,
         "op_UnaryNegation" => UnaryOperator.Minus,
+        "op_LogicalNot" => UnaryOperator.Not,
         _ => null,
     };
 
@@ -125,6 +129,12 @@ internal sealed class ReflectionInstanceType : InstanceType
         "op_Multiply" => BinaryOperator.Multiply,
         "op_Division" => BinaryOperator.Divide,
         "op_Modulus" => BinaryOperator.Modulo,
+        "op_LessThan" => BinaryOperator.Less,
+        "op_LessThanOrEqual" => BinaryOperator.LessOrEqual,
+        "op_GreaterThan" => BinaryOperator.Greater,
+        "op_GreaterThanOrEqual" => BinaryOperator.GreaterOrEqual,
+        "op_Equality" => BinaryOperator.Equals,
+        "op_Inequality" => BinaryOperator.NotEquals,
         _ => null,
     };
 }

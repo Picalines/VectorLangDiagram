@@ -14,4 +14,6 @@ internal abstract record class ConstantNode : ValueExpressionNode
 
 internal sealed record NumberNode(double Value, Token Token) : ConstantNode(Token.Selection);
 
+internal sealed record BooleanNode(bool Value, Token Token) : ConstantNode(Token.Selection);
+
 internal sealed record ColorNode(double R, double G, double B, TextSelection Selection) : ConstantNode(Selection);

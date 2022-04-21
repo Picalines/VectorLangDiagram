@@ -119,4 +119,22 @@ internal sealed class NumberInstance : ReflectionInstance
 
     [InstanceOperator]
     public static VectorInstance operator /(NumberInstance number, VectorInstance vector) => vector / number;
+
+    [InstanceOperator]
+    public static BooleanInstance operator <(NumberInstance left, NumberInstance right) => BooleanInstance.From(left.Value < right.Value);
+
+    [InstanceOperator]
+    public static BooleanInstance operator <=(NumberInstance left, NumberInstance right) => BooleanInstance.From(left.Value <= right.Value);
+
+    [InstanceOperator]
+    public static BooleanInstance operator >(NumberInstance left, NumberInstance right) => BooleanInstance.From(left.Value > right.Value);
+
+    [InstanceOperator]
+    public static BooleanInstance operator >=(NumberInstance left, NumberInstance right) => BooleanInstance.From(left.Value >= right.Value);
+
+    [InstanceOperator]
+    public static BooleanInstance operator ==(NumberInstance left, NumberInstance right) => BooleanInstance.From(left.Value == right.Value);
+
+    [InstanceOperator]
+    public static BooleanInstance operator !=(NumberInstance left, NumberInstance right) => BooleanInstance.From(left.Value != right.Value);
 }

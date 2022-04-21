@@ -94,6 +94,7 @@ internal abstract class InstanceType
     {
         AssertNotDefined();
 
+        Debug.Assert(binaryOperator is not (BinaryOperator.And or BinaryOperator.Or), $"operator {binaryOperator} is not allowed in {nameof(DefineOperator)}");
         Debug.Assert(!_BinaryOperators.ContainsKey((binaryOperator, rightType)), $"binary operator {FormatMember(binaryOperator, rightType)} is already defined");
 
         _BinaryOperators[(binaryOperator, rightType)] = new InstanceBinaryOperator(this, returnType, rightType, callable);

@@ -86,4 +86,19 @@ internal sealed class VectorInstance : ReflectionInstance
 
         return new(vector.X / number, vector.Y / number);
     }
+
+    [InstanceOperator]
+    public static BooleanInstance operator ==(VectorInstance left, VectorInstance right)
+    {
+        var xEquality = left.X == right.Y;
+        var yEquality = left.Y == right.Y;
+
+        return BooleanInstance.From(xEquality.Value && yEquality.Value);
+    }
+
+    [InstanceOperator]
+    public static BooleanInstance operator !=(VectorInstance left, VectorInstance right)
+    {
+        return !(left == right);
+    }
 }

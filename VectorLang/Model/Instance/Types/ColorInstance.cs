@@ -27,4 +27,20 @@ internal sealed class ColorInstance : ReflectionInstance
     }
 
     public (double R, double G, double B) ToTuple() => (R.Value, G.Value, B.Value);
+
+    [InstanceOperator]
+    public static BooleanInstance operator ==(ColorInstance left, ColorInstance right)
+    {
+        var rEquality = left.R == right.R;
+        var gEquality = left.G == right.G;
+        var bEquality = left.B == right.B;
+
+        return BooleanInstance.From(rEquality.Value && gEquality.Value && bEquality.Value);
+    }
+
+    [InstanceOperator]
+    public static BooleanInstance operator !=(ColorInstance left, ColorInstance right)
+    {
+        return !(left == right);
+    }
 }
