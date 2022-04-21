@@ -153,5 +153,20 @@ internal static partial class ValueExpressionParser
     private static readonly Parser<ValueExpressionNode> BooleanExpression =
         Parse.ChainOperator(ParseToken.OperatorOr.As(BinaryOperator.Or), And, CreateBinaryExpression);
 
-    public static readonly Parser<ValueExpressionNode> Lambda = BooleanExpression;
+    private static readonly Parser<ValueExpressionNode> ConditionalExpression =
+        from ifKeyword in ParseToken.KeywordIf
+        from openParen in ParseToken.OpenParenthesis
+        from condition in LambdaRef
+        from closeParen in ParseToken.CloseParenthesis
+        from trueValue in LambdaRef
+        from falseValue in
+            (
+                from elseKeyword in ParseToken.KeywordElse
+                from falseValue in LambdaRef
+                select falseValue
+            )
+            .XOr(Parse.Return<ValueExpressionNode?>(null))
+        select new ConditionalExpressionNode(ifKeyword, condition, trueValue, falseValue);
+
+    public static readonly Parser<ValueExpressionNode> Lambda = ConditionalExpression.XOr(BooleanExpression);
 }

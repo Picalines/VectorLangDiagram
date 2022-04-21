@@ -20,7 +20,21 @@ monaco.languages.setMonarchTokensProvider(vectorLangId, {
     tokenizer: {
         root: [
             // function
-            [/(\b[a-z_][a-zA-Z0-9_]*)(\s*)(\()/, ['entity.name.function', 'white', 'delimiter']],
+            [/(\b[a-z_][a-zA-Z0-9_]*)(\s*)(\()/, [
+                {
+                    cases: {
+                        '@typeKeywords': 'type.identifier',
+                        '@keywords': 'keyword',
+                        '@default': 'entity.name.function',
+                    }
+                },
+                {
+                    token: 'white'
+                },
+                {
+                    token: 'delimiter'
+                }
+            ]],
 
             // identifiers and keywords
             [/[a-zA-Z_][a-zA-Z0-9_]*/, {

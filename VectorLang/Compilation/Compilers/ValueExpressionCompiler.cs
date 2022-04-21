@@ -28,6 +28,8 @@ internal static class ValueExpressionCompiler
 
         BlockNode blockNode => BlockCompiler.Compile(context, blockNode),
 
+        ConditionalExpressionNode conditionalExpresion => ConditionalExpressionCompiler.Compile(context, conditionalExpresion),
+
         _ => throw new NotImplementedException(),
     };
 

@@ -27,10 +27,10 @@ public enum TokenType
     [Description("'else'"), TokenRegex(@"\belse\b")] KeywordElse,
 
     [Description("':='"), TokenRegex(@":=")] OperatorAssign,
-    [Description("'<'"), TokenRegex(@"<")] OperatorLess,
     [Description("'<='"), TokenRegex(@"<=")] OperatorLessOrEqual,
-    [Description("'>'"), TokenRegex(@">")] OperatorGreater,
+    [Description("'<'"), TokenRegex(@"<")] OperatorLess,
     [Description("'>='"), TokenRegex(@">=")] OperatorGreaterOrEqual,
+    [Description("'>'"), TokenRegex(@">")] OperatorGreater,
     [Description("'!='"), TokenRegex(@"!=")] OperatorNotEquals,
     [Description("'='"), TokenRegex(@"=")] OperatorEquals,
     [Description("'+'"), TokenRegex(@"\+")] OperatorPlus,
