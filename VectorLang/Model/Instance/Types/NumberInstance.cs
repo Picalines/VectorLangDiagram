@@ -47,6 +47,9 @@ internal sealed class NumberInstance : ReflectionInstance
     [InstanceMethod("atan")]
     public NumberInstance Atan() => new(Math.Atan(Value));
 
+    [InstanceMethod("exp")]
+    public NumberInstance Exp() => new(Math.Exp(Value));
+
     [InstanceMethod("ln")]
     public NumberInstance Ln() => new(Math.Log(Value));
 
@@ -73,6 +76,9 @@ internal sealed class NumberInstance : ReflectionInstance
 
     [InstanceMethod("ceil")]
     public NumberInstance Ceil() => new(Math.Ceiling(Value));
+
+    [InstanceMethod("isInt")]
+    public BooleanInstance IsInt() => BooleanInstance.From(Value % 1 == 0); // may be wrong when close to epsilon
 
     [InstanceMethod("roundDigits")]
     public NumberInstance RoundDigits(NumberInstance digits) => new(Math.Round(Value, (int)digits.Value));
