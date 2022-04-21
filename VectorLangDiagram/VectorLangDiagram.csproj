@@ -1,11 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="ts\src\create.ts" />
     <None Remove="ts\src\index.ts" />
@@ -17,11 +15,9 @@
     <None Remove="ts\src\panzoom\index.ts" />
     <None Remove="ts\src\panzoom\PanZoomInterop.ts" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\VectorLang\VectorLang.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <TypeScriptCompile Include="ts\src\monacoEditor\create.ts" />
     <TypeScriptCompile Include="ts\src\index.ts" />
@@ -33,9 +29,15 @@
     <TypeScriptCompile Include="ts\src\panzoom\index.ts" />
     <TypeScriptCompile Include="ts\src\panzoom\panzoomInterop.ts" />
   </ItemGroup>
-
   <ItemGroup>
     <Folder Include="wwwroot\bundle\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <PackageReference Include="ElectronNET.API" Version="13.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="electron.manifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
