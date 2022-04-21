@@ -4,7 +4,7 @@
 
 <div id="sections">
     <section id="code-editor-section">
-        <CodeEditor InitialCode=@ExampleProgram OnProgramCompiled="OnProgramCompiled" />
+        <CodeEditor @ref=CodeEditor InitialCode=@ExampleProgram OnCodeEdited=OnCodeEdited />
     </section>
     <section>
         <DiagramView Vectors=LastPlottedVectors />
@@ -32,10 +32,25 @@ def main() -> void = [
 ];
 ";
 
+    private CodeEditor CodeEditor = null!;
+
     private IReadOnlyList<PlottedVector> LastPlottedVectors = Array.Empty<PlottedVector>();
 
-    private void OnProgramCompiled(CompiledProgram compiledProgram)
+    private async Task OnCodeEdited(string code)
     {
-        LastPlottedVectors = compiledProgram.PlotVectors();
+        await CodeEditor.ClearReportsAsync();
+
+        var compiledProgram = ProgramCompiler.Compile(code, out var reports);
+
+        foreach (var report in reports)
+        {
+            await CodeEditor.AddReportAsync(report);
+        }
+
+        if (compiledProgram is not null)
+        {
+            // TODO: runtime exception
+            LastPlottedVectors = compiledProgram.PlotVectors();
+        }
     }
 }
