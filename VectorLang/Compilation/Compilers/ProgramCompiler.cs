@@ -21,6 +21,7 @@ public static class ProgramCompiler
     private static readonly List<Library> _Libraries = new()
     {
         MathLibrary.Instance,
+        ColorLibrary.Instance,
     };
 
     public static CompiledProgram? Compile(string code, out IReadOnlyList<Report> reports)

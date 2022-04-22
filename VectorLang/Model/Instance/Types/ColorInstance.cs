@@ -28,6 +28,16 @@ internal sealed class ColorInstance : ReflectionInstance
 
     public (double R, double G, double B) ToTuple() => (R.Value, G.Value, B.Value);
 
+    [InstanceMethod("blend")]
+    public ColorInstance Blend(ColorInstance to, NumberInstance progress) => new(
+        R.Lerp(to.R, progress),
+        G.Lerp(to.G, progress),
+        B.Lerp(to.B, progress)
+    );
+
+    [InstanceOperator]
+    public static ColorInstance operator +(ColorInstance left, ColorInstance right) => left.Blend(right, 0.5);
+
     [InstanceOperator]
     public static BooleanInstance operator ==(ColorInstance left, ColorInstance right)
     {

@@ -28,6 +28,9 @@ internal sealed class NumberInstance : ReflectionInstance
             _CachedInstances.Add(value, new NumberInstance(value));
         }
 
+        AddToCache(0.75);
+        AddToCache(0.5);
+        AddToCache(0.25);
         AddToCache(Math.Sqrt(2));
         AddToCache(Math.Sqrt(3));
         AddToCache(Math.PI);
