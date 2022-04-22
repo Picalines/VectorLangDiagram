@@ -22,7 +22,7 @@ internal sealed class ColorInstance : ReflectionInstance
     }
 
     public ColorInstance(double r, double g, double b)
-        : this(new NumberInstance(r), new(g), new(b))
+        : this(NumberInstance.From(r), NumberInstance.From(g), NumberInstance.From(b))
     {
     }
 
@@ -35,7 +35,7 @@ internal sealed class ColorInstance : ReflectionInstance
         var gEquality = left.G == right.G;
         var bEquality = left.B == right.B;
 
-        return BooleanInstance.From(rEquality.Value && gEquality.Value && bEquality.Value);
+        return rEquality.Value && gEquality.Value && bEquality.Value;
     }
 
     [InstanceOperator]

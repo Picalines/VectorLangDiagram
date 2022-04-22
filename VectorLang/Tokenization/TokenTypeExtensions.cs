@@ -1,22 +1,29 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace VectorLang.Tokenization;
 
 public static class TokenTypeExtensions
 {
-    internal static TokenRegexAttribute GetRegexAttribute(this TokenType tokenType) =>
-        typeof(TokenType)
-        .GetField(tokenType.ToString())!
-        .GetCustomAttribute<TokenRegexAttribute>()
-        ?? throw new NotImplementedException($"missing {nameof(TokenRegexAttribute)} on enum {nameof(TokenType)}.{tokenType}");
+    private static readonly Dictionary<TokenType, TokenRegexAttribute> _CachedRegexAttributes = new();
 
-    public static bool IsKeyword(this TokenType tokenType) =>
-        tokenType.ToString().StartsWith("Keyword");
+    internal static TokenRegexAttribute GetRegexAttribute(this TokenType tokenType)
+    {
+        if (!_CachedRegexAttributes.TryGetValue(tokenType, out var regexAttribute))
+        {
+            regexAttribute = typeof(TokenType)
+                .GetField(tokenType.ToString())!
+                .GetCustomAttribute<TokenRegexAttribute>();
 
-    public static bool IsOperator(this TokenType tokenType) =>
-        tokenType.ToString().StartsWith("Operator");
+            if (regexAttribute is null)
+            {
+                throw new NotImplementedException($"missing {nameof(TokenRegexAttribute)} on enum {nameof(TokenType)}.{tokenType}");
+            }
 
-    public static bool IsLiteral(this TokenType tokenType) =>
-        tokenType.ToString().StartsWith("Literal");
+            _CachedRegexAttributes.Add(tokenType, regexAttribute);
+        }
+
+        return regexAttribute;
+    }
 }

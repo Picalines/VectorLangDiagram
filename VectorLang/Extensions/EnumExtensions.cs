@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -6,11 +7,22 @@ namespace VectorLang;
 
 internal static class EnumExtensions
 {
+    private static readonly Dictionary<Enum, string?> _CachedDescriptions = new();
+
+    private static readonly Dictionary<Enum, string?> _CachedFormats = new();
+
     public static string? GetDescriptionOrNull(this Enum enumValue)
     {
-        return enumValue.GetType()
-            .GetField(enumValue.ToString())!
-            .GetCustomAttribute<DescriptionAttribute>()?.Description;
+        if (!_CachedDescriptions.TryGetValue(enumValue, out var description))
+        {
+            description = enumValue.GetType()
+                .GetField(enumValue.ToString())!
+                .GetCustomAttribute<DescriptionAttribute>()?.Description;
+
+            _CachedDescriptions.Add(enumValue, description);
+        }
+
+        return description;
     }
 
     public static string GetDescription(this Enum enumValue)
@@ -21,9 +33,14 @@ internal static class EnumExtensions
 
     public static string? GetFormattedOrNull(this Enum enumValue, params object?[] formatArgs)
     {
-        var formatString = enumValue.GetType()
-            .GetField(enumValue.ToString())!
-            .GetCustomAttribute<FormatAttribute>()?.Format;
+        if (!_CachedFormats.TryGetValue(enumValue, out var formatString))
+        {
+            formatString = enumValue.GetType()
+                .GetField(enumValue.ToString())!
+                .GetCustomAttribute<FormatAttribute>()?.Format;
+
+            _CachedFormats.Add(enumValue, formatString);
+        }
 
         return formatString is not null ? string.Format(formatString, formatArgs) : null;
     }

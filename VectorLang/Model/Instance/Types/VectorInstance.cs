@@ -25,7 +25,7 @@ internal sealed class VectorInstance : ReflectionInstance
     }
 
     public VectorInstance(double x, double y)
-        : this(new NumberInstance(x), new NumberInstance(y))
+        : this(NumberInstance.From(x), NumberInstance.From(y))
     {
     }
 
@@ -93,7 +93,7 @@ internal sealed class VectorInstance : ReflectionInstance
         var xEquality = left.X == right.Y;
         var yEquality = left.Y == right.Y;
 
-        return BooleanInstance.From(xEquality.Value && yEquality.Value);
+        return xEquality.Value && yEquality.Value;
     }
 
     [InstanceOperator]

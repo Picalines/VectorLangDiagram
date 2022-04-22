@@ -8,7 +8,7 @@ internal static class ConstantCompiler
 {
     public static CompiledExpression Compile(ConstantNode constant) => constant switch
     {
-        NumberNode { Value: var number } => new(NumberInstance.InstanceType, new PushInstruction(new NumberInstance(number))),
+        NumberNode { Value: var number } => new(NumberInstance.InstanceType, new PushInstruction(NumberInstance.From(number))),
 
         BooleanNode { Value: var boolean } => new(BooleanInstance.InstanceType, new PushInstruction(BooleanInstance.From(boolean))),
 

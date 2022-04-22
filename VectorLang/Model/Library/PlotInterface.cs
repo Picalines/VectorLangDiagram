@@ -11,7 +11,7 @@ internal sealed class PlotInterface : ReflectionLibrary
 
         public VectorInstance Scale { get; set; } = new(1, 1);
 
-        public NumberInstance Rotation { get; set; } = new(0);
+        public NumberInstance Rotation { get; set; } = 0;
 
         public ColorInstance Color { get; set; } = new(1, 1, 1);
     }

@@ -18,6 +18,8 @@ internal sealed class BooleanInstance : ReflectionInstance
 
     public static BooleanInstance From(bool value) => value ? True : False;
 
+    public static implicit operator BooleanInstance(bool value) => From(value);
+
     [InstanceOperator]
     public static BooleanInstance operator !(BooleanInstance right)
     {
