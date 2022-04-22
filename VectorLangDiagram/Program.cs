@@ -30,14 +30,17 @@ app.UseRouting();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
-var electronWindowOptions = new BrowserWindowOptions()
+if (HybridSupport.IsElectronActive)
 {
-    Title = "VectorLangDiagram",
-    Center = true,
-    MinWidth = 500,
-    MinHeight = 400,
-};
+    var electronWindowOptions = new BrowserWindowOptions()
+    {
+        Title = "VectorLangDiagram",
+        Center = true,
+        MinWidth = 500,
+        MinHeight = 400,
+    };
 
-Task.Run(() => Electron.WindowManager.CreateWindowAsync(electronWindowOptions));
+    Task.Run(() => Electron.WindowManager.CreateWindowAsync(electronWindowOptions));
+}
 
 app.Run();
