@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
 
 namespace VectorLang.Model;
 
 internal sealed class PlotLibrary : ReflectionLibrary
 {
+    private const int MaxContextStackSize = 32;
+
+    private const int MaxPlottedVectorsCount = 5000;
+
     private record PlotContext
     {
         public VectorInstance Offset { get; set; } = new(0, 0);
@@ -35,6 +39,11 @@ internal sealed class PlotLibrary : ReflectionLibrary
     [ReflectionFunction("push")]
     public VoidInstance Push()
     {
+        if (_ContextStack.Count == MaxContextStackSize + 1)
+        {
+            throw new InvalidOperationException($"push() was called without pop() more than {MaxContextStackSize} times");
+        }
+
         _ContextStack.Push(_ContextStack.Peek() with { });
 
         return VoidInstance.Instance;
@@ -43,9 +52,10 @@ internal sealed class PlotLibrary : ReflectionLibrary
     [ReflectionFunction("pop")]
     public VoidInstance Pop()
     {
-        // TODO: throw runtime exception?
-
-        Debug.Assert(_ContextStack.Count > 1);
+        if (_ContextStack.Count <= 1)
+        {
+            throw new InvalidOperationException("pop() was called before push()");
+        }
 
         _ContextStack.Pop();
 
@@ -93,6 +103,11 @@ internal sealed class PlotLibrary : ReflectionLibrary
     [ReflectionFunction("plot")]
     public VoidInstance Plot(VectorInstance vector)
     {
+        if (_PlottedVectors.Count == MaxPlottedVectorsCount)
+        {
+            throw new InvalidOperationException($"plot() was called more than ${MaxPlottedVectorsCount} times");
+        }
+
         var context = _ContextStack.Peek();
 
         _PlottedVectors.Add(new PlottedVector(
