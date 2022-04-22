@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace VectorLang.Model;
 
-internal sealed class PlotInterface : ReflectionLibrary
+internal sealed class PlotLibrary : ReflectionLibrary
 {
     private record PlotContext
     {
@@ -20,7 +20,7 @@ internal sealed class PlotInterface : ReflectionLibrary
 
     private readonly List<PlottedVector> _PlottedVectors = new();
 
-    public PlotInterface()
+    public PlotLibrary()
     {
         _ContextStack.Push(new PlotContext());
     }

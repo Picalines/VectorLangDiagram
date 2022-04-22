@@ -6,19 +6,19 @@ namespace VectorLang.Compilation;
 
 public sealed class CompiledProgram
 {
-    private readonly PlotInterface _PlotInterface;
+    private readonly PlotLibrary _PlotLibrary;
 
     private readonly Function _MainFunction;
 
-    internal CompiledProgram(PlotInterface plotInterface, Function mainFunction)
+    internal CompiledProgram(PlotLibrary plotLibrary, Function mainFunction)
     {
-        _PlotInterface = plotInterface;
+        _PlotLibrary = plotLibrary;
         _MainFunction = mainFunction;
     }
 
     public IReadOnlyList<PlottedVector> PlotVectors()
     {
-        _PlotInterface.ClearVectors();
+        _PlotLibrary.ClearVectors();
 
         try
         {
@@ -30,6 +30,6 @@ public sealed class CompiledProgram
             throw new RuntimeException(exception, null);
         }
 
-        return _PlotInterface.PlottedVectors;
+        return _PlotLibrary.PlottedVectors;
     }
 }

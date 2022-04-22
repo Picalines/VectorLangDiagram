@@ -73,7 +73,7 @@ public static class ProgramCompiler
 
         CompileUserDefinitions(program, context);
 
-        var plotInterface = CreatePlotInterface(context.Symbols);
+        var plotLibrary = CreatePlotInterface(context.Symbols);
 
         CompileUserFunctions(context.Symbols);
 
@@ -84,7 +84,7 @@ public static class ProgramCompiler
             return null;
         }
 
-        return new CompiledProgram(plotInterface, mainFunction);
+        return new CompiledProgram(plotLibrary, mainFunction);
     }
 
     private static Function? CompileMainFunction(CompilationContext context, Program program)
@@ -118,13 +118,13 @@ public static class ProgramCompiler
         }
     }
 
-    private static PlotInterface CreatePlotInterface(SymbolTable symbols)
+    private static PlotLibrary CreatePlotInterface(SymbolTable symbols)
     {
-        var plotInterface = new PlotInterface();
+        var plotLibrary = new PlotLibrary();
 
-        DefineLibraryItems(symbols, plotInterface);
+        DefineLibraryItems(symbols, plotLibrary);
 
-        return plotInterface;
+        return plotLibrary;
     }
 
     private static void CompileUserDefinitions(Program program, CompilationContext context)
