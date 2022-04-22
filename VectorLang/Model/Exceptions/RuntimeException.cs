@@ -3,7 +3,7 @@ using VectorLang.Tokenization;
 
 namespace VectorLang.Model;
 
-internal sealed class RuntimeException : Exception
+public sealed class RuntimeException : Exception
 {
     public TextSelection? Selection { get; }
 
@@ -13,12 +13,12 @@ internal sealed class RuntimeException : Exception
         Selection = selection;
     }
 
-    public RuntimeException(string message, TextSelection? selection)
+    internal RuntimeException(string message, TextSelection? selection)
         : this(message, null, selection)
     {
     }
 
-    public RuntimeException(Exception innerException, TextSelection? selection)
+    internal RuntimeException(Exception innerException, TextSelection? selection)
         : this(innerException.Message, innerException, selection)
     {
     }

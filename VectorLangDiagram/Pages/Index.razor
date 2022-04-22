@@ -1,10 +1,12 @@
 ﻿@page "/"
+
+@using System.Timers
 @using VectorLang.Compilation
 @using VectorLang.Model
 
 <div id="sections">
     <section id="code-editor-section">
-        <CodeEditor @ref=CodeEditor InitialCode=@ExampleProgram OnCodeEdited=OnCodeEdited />
+        <CodeEditor @ref=CodeEditor InitialValue=@ExampleProgram OnChange=OnCodeEdited />
     </section>
     <section>
         <DiagramView Vectors=LastPlottedVectors />
@@ -32,25 +34,56 @@ def main() -> void = [
 ];
 ";
 
+    private const double CompilationLatency = 500;
+
+    private readonly Timer Timer = new(CompilationLatency);
+
     private CodeEditor CodeEditor = null!;
 
     private IReadOnlyList<PlottedVector> LastPlottedVectors = Array.Empty<PlottedVector>();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Timer.Elapsed += async (_, _) => await InvokeAsync(CompileAndRunProgram);
+        Timer.AutoReset = false;
+
+        Timer.Start();
+    }
 
     private async Task OnCodeEdited(string code)
     {
         await CodeEditor.ClearReportsAsync();
 
-        var compiledProgram = ProgramCompiler.Compile(code, out var reports);
+        Timer.Stop();
+        Timer.Start();
+    }
+
+    private async Task CompileAndRunProgram()
+    {
+        var compiledProgram = ProgramCompiler.Compile(CodeEditor.Value, out var reports);
 
         foreach (var report in reports)
         {
             await CodeEditor.AddReportAsync(report);
         }
 
-        if (compiledProgram is not null)
+        if (compiledProgram is null)
         {
-            // TODO: runtime exception
+            return;
+        }
+
+        try
+        {
             LastPlottedVectors = compiledProgram.PlotVectors();
         }
+        catch (RuntimeException runtimeException)
+        {
+            // TODO: render in interface
+            Console.WriteLine(runtimeException);
+        }
+
+        StateHasChanged();
     }
 }

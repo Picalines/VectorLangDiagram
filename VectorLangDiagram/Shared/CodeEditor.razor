@@ -9,14 +9,23 @@
 
 @code {
     [Parameter]
-    public string InitialCode { get; set; } = "";
+    public string InitialValue { get; set; } = "";
 
     [Parameter]
-    public EventCallback<string> OnCodeEdited { get; set; }
+    public EventCallback<string> OnChange { get; set; }
+
+    public string Value { get; private set; } = "";
 
     private DotNetObjectReference<CodeEditor>? ThisJsReference;
 
     private IJSObjectReference? MonacoEditorReference;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Value = InitialValue;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -25,9 +34,9 @@
         if (firstRender)
         {
             ThisJsReference = DotNetObjectReference.Create(this);
-            MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", ThisJsReference, "#monaco-container", InitialCode);
+            MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", ThisJsReference, "#monaco-container", InitialValue);
 
-            await OnDidChangeContent(InitialCode);
+            await OnDidChangeContent(InitialValue);
         }
     }
 
@@ -39,7 +48,9 @@
     [JSInvokable]
     public async Task OnDidChangeContent(string code)
     {
-        await OnCodeEdited.InvokeAsync(code);
+        Value = code;
+
+        await OnChange.InvokeAsync(code);
     }
 
     public async Task ClearReportsAsync()
