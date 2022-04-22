@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VectorLang.Model;
 
 namespace VectorLang.Compilation;
@@ -19,7 +20,15 @@ public sealed class CompiledProgram
     {
         _PlotInterface.ClearVectors();
 
-        _MainFunction.Call();
+        try
+        {
+            _MainFunction.Call();
+        }
+        catch (Exception exception)
+        {
+            // TODO: handle errors in the Interpreter to specify their location
+            throw new RuntimeException(exception, null);
+        }
 
         return _PlotInterface.PlottedVectors;
     }
