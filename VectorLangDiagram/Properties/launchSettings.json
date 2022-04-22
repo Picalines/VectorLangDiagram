@@ -1,12 +1,4 @@
 {
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:24043",
-      "sslPort": 44335
-    }
-  },
   "profiles": {
     "Electron.NET App": {
       "commandName": "Executable",
@@ -14,18 +6,11 @@
       "commandLineArgs": "start",
       "workingDirectory": "."
     },
-    "VectorLangDiagram": {
+    "Blazor App": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "applicationUrl": "https://localhost:7107;http://localhost:5107",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
