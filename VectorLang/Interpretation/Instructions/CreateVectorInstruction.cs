@@ -1,4 +1,4 @@
-﻿namespace VectorLang.Compilation;
+﻿namespace VectorLang.Interpretation;
 
 internal sealed record CreateVectorInstruction : Instruction
 {

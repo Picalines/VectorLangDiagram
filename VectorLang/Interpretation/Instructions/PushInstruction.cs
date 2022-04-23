@@ -1,5 +1,5 @@
 ﻿using VectorLang.Model;
 
-namespace VectorLang.Compilation;
+namespace VectorLang.Interpretation;
 
 internal sealed record PushInstruction(Instance Instance) : Instruction;

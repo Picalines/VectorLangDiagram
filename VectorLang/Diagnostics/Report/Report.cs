@@ -1,6 +1,6 @@
 ﻿using VectorLang.Tokenization;
 
-namespace VectorLang.Model;
+namespace VectorLang.Diagnostics;
 
 public sealed class Report
 {

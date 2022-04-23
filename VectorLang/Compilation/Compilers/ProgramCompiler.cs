@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using VectorLang.Diagnostics;
 using VectorLang.Model;
 using VectorLang.Parsing;
 using VectorLang.SyntaxTree;
@@ -28,7 +29,7 @@ public static class ProgramCompiler
     {
         var context = new CompilationContext();
 
-        diagnoser = new Diagnoser(context.Reporter.Reports);
+        diagnoser = new Diagnoser(context.Reporter);
 
         var tokens = Tokenizer.Tokenize(code);
 

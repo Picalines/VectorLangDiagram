@@ -1,4 +1,4 @@
-﻿namespace VectorLang.Model;
+﻿namespace VectorLang.Diagnostics;
 
 public enum CompletionKind
 {

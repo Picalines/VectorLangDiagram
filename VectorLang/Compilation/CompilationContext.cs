@@ -1,4 +1,4 @@
-﻿using VectorLang.Model;
+﻿using VectorLang.Diagnostics;
 
 namespace VectorLang.Compilation;
 

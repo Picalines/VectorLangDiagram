@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
-using VectorLang.Model;
+using VectorLang.Diagnostics;
+using VectorLang.Interpretation;
 using VectorLang.SyntaxTree;
 
 namespace VectorLang.Compilation;

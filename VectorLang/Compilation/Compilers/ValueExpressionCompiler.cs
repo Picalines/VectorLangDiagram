@@ -1,4 +1,5 @@
 ﻿using System;
+using VectorLang.Diagnostics;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
 

@@ -1,6 +1,6 @@
 ﻿using VectorLang.Model;
 
-namespace VectorLang.Compilation;
+namespace VectorLang.Interpretation;
 
 internal abstract record CallInstruction(int ArgumentCount) : Instruction;
 

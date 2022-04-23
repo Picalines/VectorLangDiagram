@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VectorLang.Tokenization;
 
-namespace VectorLang.Model;
+namespace VectorLang.Diagnostics;
 
 internal sealed class Reporter
 {

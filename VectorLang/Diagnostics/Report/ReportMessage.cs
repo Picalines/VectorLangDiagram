@@ -1,4 +1,6 @@
-﻿namespace VectorLang.Model;
+﻿using VectorLang.Model;
+
+namespace VectorLang.Diagnostics;
 
 internal static class ReportMessage
 {
