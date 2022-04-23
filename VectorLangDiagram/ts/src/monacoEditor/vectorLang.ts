@@ -1,4 +1,5 @@
 ﻿import * as monaco from 'monaco-editor';
+import { MonacoEditorInterop } from './monacoEditorInterop';
 
 export const vectorLangId = "vectorLang";
 
@@ -99,6 +100,11 @@ monaco.languages.setLanguageConfiguration(vectorLangId, {
 
 monaco.languages.registerCompletionItemProvider(vectorLangId, {
     provideCompletionItems: (model, position) => {
+        const editorInterop = MonacoEditorInterop.instance;
+        if (!editorInterop) {
+            return { suggestions: [] };
+        }
+
         const word = model.getWordUntilPosition(position);
 
         const range: monaco.IRange = {
@@ -109,20 +115,7 @@ monaco.languages.registerCompletionItemProvider(vectorLangId, {
         };
 
         return {
-            suggestions: [
-                ...keywords.map(keyword => ({
-                    label: keyword,
-                    kind: monaco.languages.CompletionItemKind.Keyword,
-                    insertText: keyword,
-                    range,
-                })),
-                ...typeKeywords.map(type => ({
-                    label: type,
-                    kind: monaco.languages.CompletionItemKind.Class,
-                    insertText: type,
-                    range,
-                })),
-            ]
+            suggestions: editorInterop.completions.map(completion => ({...completion, range}))
         }
     },
 });

@@ -17,7 +17,11 @@ internal static class UserFunctionCompiler
 
         var lazyBody = new Lazy<IReadOnlyList<Instruction>>(() => CompileBody(context, signature, definition.ValueExpression));
 
-        return new UserFunction(definition.Name, signature, lazyBody);
+        var userFunction = new UserFunction(definition.Name, signature, lazyBody);
+
+        context.Symbols.Insert(new FunctionSymbol(userFunction));
+
+        return userFunction;
     }
 
     private static CallSignature? CompileSignature(CompilationContext context, FunctionDefinition definition)

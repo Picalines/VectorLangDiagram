@@ -11,24 +11,24 @@ internal sealed class Reporter
 
     public IReadOnlyList<Report> Reports => _Reports;
 
-    public bool AnyErrors() => Reports.Any(report => report.Severity is Severity.Error);
+    public bool AnyErrors() => Reports.Any(report => report.Severity is ReportSeverity.Error);
 
     public void ReportInfo(TextSelection selection, string message)
     {
-        Report(selection, Severity.Info, message);
+        Report(selection, ReportSeverity.Info, message);
     }
 
     public void ReportWarning(TextSelection selection, string message)
     {
-        Report(selection, Severity.Warning, message);
+        Report(selection, ReportSeverity.Warning, message);
     }
 
     public void ReportError(TextSelection selection, string message)
     {
-        Report(selection, Severity.Error, message);
+        Report(selection, ReportSeverity.Error, message);
     }
 
-    public bool Catch(TextSelection selection, Action action, Severity severity = Severity.Error)
+    public bool Catch(TextSelection selection, Action action, ReportSeverity severity = ReportSeverity.Error)
     {
         try
         {
@@ -43,7 +43,7 @@ internal sealed class Reporter
         return false;
     }
 
-    private void Report(TextSelection selection, Severity severity, string message)
+    private void Report(TextSelection selection, ReportSeverity severity, string message)
     {
         _Reports.Add(new Report(selection, severity, message));
     }

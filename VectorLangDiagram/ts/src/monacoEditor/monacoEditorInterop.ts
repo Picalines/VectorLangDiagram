@@ -1,48 +1,35 @@
 ﻿import * as monaco from 'monaco-editor';
 import { DotNetObjectReference } from '../DotNetObjectReference';
+import { InteropCompletion, InteropReport, interopCompletionKindMap, interopReportSeverityMap } from './interopTypes';
 
-interface InteropTextLocation {
-    readonly line: number;
-    readonly column: number;
-}
-
-interface InteropSelection {
-    readonly start: InteropTextLocation;
-    readonly end: InteropTextLocation;
-}
-
-const interopSeverityMap = {
-    0: monaco.MarkerSeverity.Info,
-    1: monaco.MarkerSeverity.Warning,
-    2: monaco.MarkerSeverity.Error,
-};
-
-type InteropSeverity = keyof typeof interopSeverityMap;
-
-interface InteropReport {
-    readonly selection: InteropSelection;
-    readonly severity: InteropSeverity;
-    readonly message: string;
-}
+const markersOwner = "monaco-editor-interop";
 
 export class MonacoEditorInterop {
-    private readonly model: monaco.editor.ITextModel;
+    private static _instance?: MonacoEditorInterop = undefined;
 
-    private readonly markersOwner = "monaco-editor-interop";
+    public readonly model: monaco.editor.ITextModel;
+
+    private _completions: InteropCompletion[] = [];
 
     constructor(
         public readonly editor: monaco.editor.IStandaloneCodeEditor,
-        private readonly dotNetRef: DotNetObjectReference,
+        private readonly _dotNetRef: DotNetObjectReference,
     ) {
         this.model = this.editor.getModel()!;
 
         this.model.onDidChangeContent(async () => {
-            await this.dotNetRef.invokeMethodAsync('OnDidChangeContent', this.model.getValue());
+            await this._dotNetRef.invokeMethodAsync('OnDidChangeContent', this.model.getValue());
         });
+
+        MonacoEditorInterop._instance = this;
+    }
+
+    public static get instance() {
+        return MonacoEditorInterop._instance;
     }
 
     public addReport({ selection, message, severity }: InteropReport) {
-        const markers = monaco.editor.getModelMarkers({ owner: this.markersOwner }) as monaco.editor.IMarkerData[];
+        const markers = monaco.editor.getModelMarkers({ owner: markersOwner }) as monaco.editor.IMarkerData[];
 
         markers.push({
             startLineNumber: selection.start.line,
@@ -50,14 +37,23 @@ export class MonacoEditorInterop {
             endLineNumber: selection.end.line,
             endColumn: selection.end.column,
 
-            severity: interopSeverityMap[severity],
+            severity: interopReportSeverityMap[severity],
             message,
         });
 
-        monaco.editor.setModelMarkers(this.model, this.markersOwner, markers);
+        monaco.editor.setModelMarkers(this.model, markersOwner, markers);
     }
 
     public clearReports() {
-        monaco.editor.setModelMarkers(this.model, this.markersOwner, []);
+        monaco.editor.setModelMarkers(this.model, markersOwner, []);
+    }
+
+    public get completions(): Omit<monaco.languages.CompletionItem, 'range'>[] {
+        return this._completions.map(info => ({
+            label: info.label,
+            kind: interopCompletionKindMap[info.kind],
+            detail: info.detail ?? undefined,
+            insertText: info.value,
+        }));
     }
 }

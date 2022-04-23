@@ -6,14 +6,14 @@ internal static class ReportMessage
 
     public const string MainFunctionMustHaveNoArguments = "entry function 'main' must have no arguments";
 
+    public static string NotAssignableType(InstanceType gotType, InstanceType expectedType) =>
+        $"value of type {gotType} is not assignable to type {expectedType}";
+
     public static string WrongArgumentCount(int gotCount, int expectedCount) =>
         $"got {gotCount} arguments, but {expectedCount} expected";
 
     public static string WrongArgumentType(int argumentIndex, string argumentName, InstanceType gotType, InstanceType expectedType) =>
-        $"{gotType} is not assignable to {expectedType} in argument #{argumentIndex + 1} '{argumentName}'";
-
-    public static string NotAssignableType(InstanceType gotType, InstanceType expectedType) =>
-        $"value of type {gotType} is not assignable to type {expectedType}";
+        $"{NotAssignableType(gotType, expectedType)} in argument #{argumentIndex + 1} '{argumentName}'";
 
     public static string RedefinedValue(string value) =>
         $"{value} is already defined";

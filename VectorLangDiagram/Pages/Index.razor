@@ -62,9 +62,9 @@ def main() -> void = [
 
     private async Task CompileAndRunProgram()
     {
-        var compiledProgram = ProgramCompiler.Compile(CodeEditor.Value, out var reports);
+        var compiledProgram = ProgramCompiler.Compile(CodeEditor.Value, out var diagnoser);
 
-        foreach (var report in reports)
+        foreach (var report in diagnoser.Reports)
         {
             await CodeEditor.AddReportAsync(report);
         }

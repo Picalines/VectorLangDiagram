@@ -5,6 +5,8 @@ using VectorLang.SyntaxTree;
 
 namespace VectorLang.Compilation;
 
+// TODO: rename to UserConstant
+
 internal static class ConstantDefinitionCompiler
 {
     public static void Compile(CompilationContext context, ConstantDefinition constantDefinition)
@@ -19,8 +21,6 @@ internal static class ConstantDefinitionCompiler
             return;
         }
 
-        // TODO: handle "runtime" error
-
         if (compiledValue.IsInvalid)
         {
             return;
@@ -34,6 +34,8 @@ internal static class ConstantDefinitionCompiler
         }
         else
         {
+            // TODO: handle "runtime" error
+
             var value = Interpreter.Interpret(compiledValue.Instructions.ToList());
 
             constantSymbol = new(constantName, value);

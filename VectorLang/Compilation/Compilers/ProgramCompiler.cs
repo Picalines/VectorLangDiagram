@@ -24,10 +24,11 @@ public static class ProgramCompiler
         ColorLibrary.Instance,
     };
 
-    public static CompiledProgram? Compile(string code, out IReadOnlyList<Report> reports)
+    public static CompiledProgram? Compile(string code, out Diagnoser diagnoser)
     {
         var context = new CompilationContext();
-        reports = context.Reporter.Reports;
+
+        diagnoser = new Diagnoser(context.Reporter.Reports);
 
         var tokens = Tokenizer.Tokenize(code);
 
@@ -137,12 +138,7 @@ public static class ProgramCompiler
 
         foreach (var functionDefinition in program.Definitions.OfType<FunctionDefinition>())
         {
-            var userFunction = UserFunctionCompiler.Compile(context, functionDefinition);
-
-            if (userFunction is not null)
-            {
-                context.Symbols.Insert(new FunctionSymbol(userFunction));
-            }
+            UserFunctionCompiler.Compile(context, functionDefinition);
         }
     }
 

@@ -9,6 +9,7 @@
     <None Remove="ts\src\index.ts" />
     <None Remove="ts\src\monacoColorThemes.ts" />
     <None Remove="ts\src\monacoEditor\index.ts" />
+    <None Remove="ts\src\monacoEditor\interopTypes.ts" />
     <None Remove="ts\src\monacoEditor\monacoEditorInterop.ts" />
     <None Remove="ts\src\monacoVectorLang.ts" />
     <None Remove="ts\src\panzoom\create.ts" />
@@ -23,6 +24,7 @@
     <TypeScriptCompile Include="ts\src\index.ts" />
     <TypeScriptCompile Include="ts\src\monacoEditor\colorThemes.ts" />
     <TypeScriptCompile Include="ts\src\monacoEditor\index.ts" />
+    <TypeScriptCompile Include="ts\src\monacoEditor\interopTypes.ts" />
     <TypeScriptCompile Include="ts\src\monacoEditor\monacoEditorInterop.ts" />
     <TypeScriptCompile Include="ts\src\monacoEditor\vectorLang.ts" />
     <TypeScriptCompile Include="ts\src\panzoom\create.ts" />
