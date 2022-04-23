@@ -84,6 +84,8 @@ internal static class UserFunctionCompiler
     {
         context = context.WithChildSymbols();
 
+        context.CompletionProvider.AddScope(body.Selection, context.Symbols);
+
         var functionContextSymbol = new FunctionContextSymbol(signature.ReturnType);
         context.Symbols.Insert(functionContextSymbol);
 

@@ -99,11 +99,14 @@ monaco.languages.setLanguageConfiguration(vectorLangId, {
 })
 
 monaco.languages.registerCompletionItemProvider(vectorLangId, {
-    provideCompletionItems: (model, position) => {
+    provideCompletionItems: async (model, position) => {
         const editorInterop = MonacoEditorInterop.instance;
+
         if (!editorInterop) {
             return { suggestions: [] };
         }
+
+        const completions = await editorInterop.fetchCompletions();
 
         const word = model.getWordUntilPosition(position);
 
@@ -115,7 +118,7 @@ monaco.languages.registerCompletionItemProvider(vectorLangId, {
         };
 
         return {
-            suggestions: editorInterop.completions.map(completion => ({...completion, range}))
+            suggestions: completions.map(completion => ({...completion, range}))
         }
     },
 });

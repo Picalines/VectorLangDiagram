@@ -28,8 +28,9 @@ public static class ProgramCompiler
     public static CompiledProgram? Compile(string code, out Diagnoser diagnoser)
     {
         var context = new CompilationContext();
+        var (reporter, completionProvider, _) = context;
 
-        diagnoser = new Diagnoser(context.Reporter);
+        diagnoser = new Diagnoser(reporter, completionProvider);
 
         var tokens = Tokenizer.Tokenize(code);
 
@@ -41,7 +42,8 @@ public static class ProgramCompiler
         }
         catch (UnknownTokenException unknownTokenException)
         {
-            context.Reporter.ReportError(new(unknownTokenException.Location, 1), unknownTokenException.Message);
+            reporter.ReportError(new(unknownTokenException.Location, 1), unknownTokenException.Message);
+
             return null;
         }
 
@@ -54,13 +56,14 @@ public static class ProgramCompiler
                 errorMessage += "; expected " + string.Join(" or ", syntaxTree.Expectations);
             }
 
-            context.Reporter.ReportError(syntaxTree.Remainder.Selection, errorMessage);
+            reporter.ReportError(syntaxTree.Remainder.Selection, errorMessage);
+
             return null;
         }
 
         var compiledProgram = Compile(context, syntaxTree.Value);
 
-        if (context.Reporter.AnyErrors())
+        if (reporter.AnyErrors())
         {
             return null;
         }

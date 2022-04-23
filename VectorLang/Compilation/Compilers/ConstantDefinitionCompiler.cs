@@ -13,6 +13,9 @@ internal static class ConstantDefinitionCompiler
     {
         var constantName = constantDefinition.Name;
 
+        // TODO: definition "ScopeSelection"?
+        context.CompletionProvider.AddScope(constantDefinition.ValueExpression.Selection, context.Symbols);
+
         var compiledValue = ValueExpressionCompiler.Compile(context, constantDefinition.ValueExpression);
 
         if (context.Symbols.ContainsLocal(constantName))

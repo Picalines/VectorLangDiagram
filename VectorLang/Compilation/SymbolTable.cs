@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace VectorLang.Compilation;
 
-internal sealed class SymbolTable
+internal sealed class SymbolTable : IEnumerable<Symbol>
 {
     public readonly SymbolTable? Parent;
 
@@ -80,5 +81,28 @@ internal sealed class SymbolTable
         }
 
         return symbol is not null;
+    }
+
+    public IEnumerator<Symbol> GetEnumerator()
+    {
+        foreach (var localSymbol in LocalSymbols)
+        {
+            yield return localSymbol;
+        }
+
+        if (Parent is null)
+        {
+            yield break;
+        }
+
+        foreach (var parentSymbol in Parent)
+        {
+            yield return parentSymbol;
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

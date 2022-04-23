@@ -9,8 +9,6 @@ export class MonacoEditorInterop {
 
     public readonly model: monaco.editor.ITextModel;
 
-    private _completions: InteropCompletion[] = [];
-
     constructor(
         public readonly editor: monaco.editor.IStandaloneCodeEditor,
         private readonly _dotNetRef: DotNetObjectReference,
@@ -48,8 +46,12 @@ export class MonacoEditorInterop {
         monaco.editor.setModelMarkers(this.model, markersOwner, []);
     }
 
-    public get completions(): Omit<monaco.languages.CompletionItem, 'range'>[] {
-        return this._completions.map(info => ({
+    public async fetchCompletions(): Promise<Omit<monaco.languages.CompletionItem, 'range'>[]> {
+        const cursorPosition = this.editor.getPosition()!;
+
+        const completions = await this._dotNetRef.invokeMethodAsync("FetchCompletions", cursorPosition.lineNumber, cursorPosition.column) as InteropCompletion[];
+
+        return completions.map(info => ({
             label: info.label,
             kind: interopCompletionKindMap[info.kind],
             detail: info.detail ?? undefined,

@@ -2,11 +2,15 @@
 
 @using System.Timers
 @using VectorLang.Compilation
+@using VectorLang.Diagnostics
 @using VectorLang.Model
+@using VectorLang.Tokenization
 
 <div id="sections">
     <section id="code-editor-section">
-        <CodeEditor @ref=CodeEditor InitialValue=@ExampleProgram OnChange=OnCodeEdited />
+        <CodeEditor @ref=CodeEditor InitialValue=@ExampleProgram
+            OnChange=OnCodeEdited
+            CompletionProvider="(location) => Diagnoser?.GetCompletions(location)" />
     </section>
     <section>
         <DiagramView Vectors=LastPlottedVectors />
@@ -42,6 +46,8 @@ def main() -> void = [
 
     private IReadOnlyList<PlottedVector> LastPlottedVectors = Array.Empty<PlottedVector>();
 
+    private Diagnoser? Diagnoser;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -62,9 +68,9 @@ def main() -> void = [
 
     private async Task CompileAndRunProgram()
     {
-        var compiledProgram = ProgramCompiler.Compile(CodeEditor.Value, out var diagnoser);
+        var compiledProgram = ProgramCompiler.Compile(CodeEditor.Value, out Diagnoser);
 
-        foreach (var report in diagnoser.Reports)
+        foreach (var report in Diagnoser.Reports)
         {
             await CodeEditor.AddReportAsync(report);
         }

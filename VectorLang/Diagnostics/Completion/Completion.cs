@@ -24,7 +24,9 @@ public sealed class Completion
 
     internal static Completion OfKeyword(TokenType keywordType)
     {
-        var keyword = keywordType.GetDescription();
+        Debug.Assert(keywordType.ToString().Contains("Keyword"));
+
+        var keyword = keywordType.GetDescription().Replace("\'", "");
 
         return new(CompletionKind.Keyword, keyword, null, keyword);
     }
