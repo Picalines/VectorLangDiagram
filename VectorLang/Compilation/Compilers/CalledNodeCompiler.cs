@@ -18,7 +18,7 @@ internal static class CalledNodeCompiler
 
             VariableNode function => CompileFunctionCall(context, called.Arguments, function),
 
-            _ => throw new NotImplementedException(),
+            _ => ReportNotCallable(context, called.CalledValue),
         };
     }
 
@@ -71,5 +71,12 @@ internal static class CalledNodeCompiler
             compiledArguments.SelectMany(arg => arg.Instructions)
                 .Append(new CallFunctionInstruction(function, arguments.Count))
         );
+    }
+
+    private static CompiledExpression ReportNotCallable(CompilationContext context, ValueExpressionNode calledValue)
+    {
+        context.Reporter.ReportError(calledValue.Selection, ReportMessage.NotCallableValue("expression"));
+
+        return CompiledExpression.Invalid;
     }
 }

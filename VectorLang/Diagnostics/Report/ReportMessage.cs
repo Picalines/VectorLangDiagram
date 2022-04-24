@@ -37,4 +37,7 @@ internal static class ReportMessage
 
     public static string TypeIsNotAllowed(InstanceType notAllowedType) =>
         $"type {notAllowedType} is not allowed here";
+
+    public static string NotCallableValue(string value) =>
+        $"{value} is not callable";
 }
