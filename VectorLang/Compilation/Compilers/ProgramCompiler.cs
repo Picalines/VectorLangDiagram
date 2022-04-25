@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using VectorLang.Diagnostics;
 using VectorLang.Model;
 using VectorLang.Parsing;
 using VectorLang.SyntaxTree;
@@ -12,6 +13,7 @@ public static class ProgramCompiler
     private static readonly List<InstanceType> _InstanceTypes = new()
     {
         NumberInstance.InstanceType,
+        BooleanInstance.InstanceType,
         VectorInstance.InstanceType,
         ColorInstance.InstanceType,
         VoidInstance.InstanceType,
@@ -20,12 +22,15 @@ public static class ProgramCompiler
     private static readonly List<Library> _Libraries = new()
     {
         MathLibrary.Instance,
+        ColorLibrary.Instance,
     };
 
-    public static CompiledProgram? Compile(string code, out IReadOnlyList<Report> reports)
+    public static CompiledProgram? Compile(string code, out Diagnoser diagnoser)
     {
         var context = new CompilationContext();
-        reports = context.Reporter.Reports;
+        var (reporter, completionProvider, _) = context;
+
+        diagnoser = new Diagnoser(reporter, completionProvider);
 
         var tokens = Tokenizer.Tokenize(code);
 
@@ -37,7 +42,8 @@ public static class ProgramCompiler
         }
         catch (UnknownTokenException unknownTokenException)
         {
-            context.Reporter.ReportError(new(unknownTokenException.Location, 1), unknownTokenException.Message);
+            reporter.ReportError(new(unknownTokenException.Location, 1), unknownTokenException.Message);
+
             return null;
         }
 
@@ -50,13 +56,14 @@ public static class ProgramCompiler
                 errorMessage += "; expected " + string.Join(" or ", syntaxTree.Expectations);
             }
 
-            context.Reporter.ReportError(syntaxTree.Remainder.Selection, errorMessage);
+            reporter.ReportError(syntaxTree.Remainder.Selection, errorMessage);
+
             return null;
         }
 
         var compiledProgram = Compile(context, syntaxTree.Value);
 
-        if (context.Reporter.AnyErrors())
+        if (reporter.AnyErrors())
         {
             return null;
         }
@@ -72,7 +79,7 @@ public static class ProgramCompiler
 
         CompileUserDefinitions(program, context);
 
-        var plotInterface = CreatePlotInterface(context.Symbols);
+        var plotLibrary = CreatePlotInterface(context.Symbols);
 
         CompileUserFunctions(context.Symbols);
 
@@ -83,7 +90,7 @@ public static class ProgramCompiler
             return null;
         }
 
-        return new CompiledProgram(plotInterface, mainFunction);
+        return new CompiledProgram(plotLibrary, mainFunction);
     }
 
     private static Function? CompileMainFunction(CompilationContext context, Program program)
@@ -117,13 +124,13 @@ public static class ProgramCompiler
         }
     }
 
-    private static PlotInterface CreatePlotInterface(SymbolTable symbols)
+    private static PlotLibrary CreatePlotInterface(SymbolTable symbols)
     {
-        var plotInterface = new PlotInterface();
+        var plotLibrary = new PlotLibrary();
 
-        DefineLibraryItems(symbols, plotInterface);
+        DefineLibraryItems(symbols, plotLibrary);
 
-        return plotInterface;
+        return plotLibrary;
     }
 
     private static void CompileUserDefinitions(Program program, CompilationContext context)
@@ -135,12 +142,7 @@ public static class ProgramCompiler
 
         foreach (var functionDefinition in program.Definitions.OfType<FunctionDefinition>())
         {
-            var userFunction = UserFunctionCompiler.Compile(context, functionDefinition);
-
-            if (userFunction is not null)
-            {
-                context.Symbols.Insert(new FunctionSymbol(userFunction));
-            }
+            UserFunctionCompiler.Compile(context, functionDefinition);
         }
     }
 

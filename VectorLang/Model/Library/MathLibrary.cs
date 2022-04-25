@@ -9,8 +9,14 @@ internal sealed class MathLibrary : ReflectionLibrary
     private MathLibrary() { }
 
     [ReflectionConstant("PI")]
-    public static readonly NumberInstance PI = new(Math.PI);
+    public static readonly NumberInstance PI = Math.PI;
+
+    [ReflectionConstant("E")]
+    public static readonly NumberInstance E = Math.E;
 
     [ReflectionConstant("Tau")]
-    public static readonly NumberInstance Tau = new(Math.Tau);
+    public static readonly NumberInstance Tau = Math.Tau;
+
+    [ReflectionConstant("Epsilon")]
+    public static readonly NumberInstance Epsilon = double.Epsilon;
 }

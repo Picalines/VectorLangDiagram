@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VectorLang.Diagnostics;
+using VectorLang.Interpretation;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
 
@@ -17,7 +19,11 @@ internal static class UserFunctionCompiler
 
         var lazyBody = new Lazy<IReadOnlyList<Instruction>>(() => CompileBody(context, signature, definition.ValueExpression));
 
-        return new UserFunction(definition.Name, signature, lazyBody);
+        var userFunction = new UserFunction(definition.Name, signature, lazyBody);
+
+        context.Symbols.Insert(new FunctionSymbol(userFunction));
+
+        return userFunction;
     }
 
     private static CallSignature? CompileSignature(CompilationContext context, FunctionDefinition definition)
@@ -77,6 +83,8 @@ internal static class UserFunctionCompiler
     private static IReadOnlyList<Instruction> CompileBody(CompilationContext context, CallSignature signature, ValueExpressionNode body)
     {
         context = context.WithChildSymbols();
+
+        context.CompletionProvider.AddScope(body.Selection, context.Symbols);
 
         var functionContextSymbol = new FunctionContextSymbol(signature.ReturnType);
         context.Symbols.Insert(functionContextSymbol);

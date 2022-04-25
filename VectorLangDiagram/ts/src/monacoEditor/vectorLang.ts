@@ -1,12 +1,13 @@
 ﻿import * as monaco from 'monaco-editor';
+import { MonacoEditorInterop } from './monacoEditorInterop';
 
 export const vectorLangId = "vectorLang";
 
 monaco.languages.register({ id: vectorLangId });
 
-const keywords = ['def', 'const', 'external', 'val', 'if', 'else'];
+const keywords = ['def', 'const', 'external', 'val', 'if', 'else', 'true', 'false', 'and', 'or', 'not'];
 
-const typeKeywords = ['number', 'vector', 'color', 'void'];
+const typeKeywords = ['number', 'boolean', 'vector', 'color', 'void'];
 
 monaco.languages.setMonarchTokensProvider(vectorLangId, {
     keywords,
@@ -20,7 +21,21 @@ monaco.languages.setMonarchTokensProvider(vectorLangId, {
     tokenizer: {
         root: [
             // function
-            [/(\b[a-z_][a-zA-Z0-9_]*)(\s*)(\()/, ['entity.name.function', 'white', 'delimiter']],
+            [/(\b[a-z_][a-zA-Z0-9_]*)(\s*)(\()/, [
+                {
+                    cases: {
+                        '@typeKeywords': 'type.identifier',
+                        '@keywords': 'keyword',
+                        '@default': 'entity.name.function',
+                    }
+                },
+                {
+                    token: 'white'
+                },
+                {
+                    token: 'delimiter'
+                }
+            ]],
 
             // identifiers and keywords
             [/[a-zA-Z_][a-zA-Z0-9_]*/, {
@@ -84,7 +99,15 @@ monaco.languages.setLanguageConfiguration(vectorLangId, {
 })
 
 monaco.languages.registerCompletionItemProvider(vectorLangId, {
-    provideCompletionItems: (model, position) => {
+    provideCompletionItems: async (model, position) => {
+        const editorInterop = MonacoEditorInterop.instance;
+
+        if (!editorInterop) {
+            return { suggestions: [] };
+        }
+
+        const completions = await editorInterop.fetchCompletions();
+
         const word = model.getWordUntilPosition(position);
 
         const range: monaco.IRange = {
@@ -95,20 +118,7 @@ monaco.languages.registerCompletionItemProvider(vectorLangId, {
         };
 
         return {
-            suggestions: [
-                ...keywords.map(keyword => ({
-                    label: keyword,
-                    kind: monaco.languages.CompletionItemKind.Keyword,
-                    insertText: keyword,
-                    range,
-                })),
-                ...typeKeywords.map(type => ({
-                    label: type,
-                    kind: monaco.languages.CompletionItemKind.Class,
-                    insertText: type,
-                    range,
-                })),
-            ]
+            suggestions: completions.map(completion => ({...completion, range}))
         }
     },
 });

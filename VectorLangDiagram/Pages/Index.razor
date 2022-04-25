@@ -1,12 +1,16 @@
 ﻿@page "/"
-@using VectorLang.Compilation
-@using VectorLang.Model
 
-<PageTitle>Index</PageTitle>
+@using System.Timers
+@using VectorLang.Compilation
+@using VectorLang.Diagnostics
+@using VectorLang.Model
+@using VectorLang.Tokenization
 
 <div id="sections">
-    <section style="z-index: 1">
-        <CodeEditor InitialCode=@ExampleProgram OnProgramCompiled="OnProgramCompiled" />
+    <section id="code-editor-section">
+        <CodeEditor @ref=CodeEditor InitialValue=@ExampleProgram
+            OnChange=OnCodeEdited
+            CompletionProvider="(location) => Diagnoser?.GetCompletions(location)" />
     </section>
     <section>
         <DiagramView Vectors=LastPlottedVectors />
@@ -23,21 +27,69 @@ def main() -> void = [
     val a := {1, 0};
     val b := {0, 1};
 
-    fill(#ff0000);
+    fill(RED);
     plot(a);
 
-    fill(#0000ff);
+    fill(BLUE);
     plot(b);
 
-    fill(#ff00ff);
+    fill(MAGENTA);
     plot(sum(a, b));
 ];
 ";
 
+    private const double CompilationLatency = 250;
+
+    private readonly Timer Timer = new(CompilationLatency);
+
+    private CodeEditor CodeEditor = null!;
+
     private IReadOnlyList<PlottedVector> LastPlottedVectors = Array.Empty<PlottedVector>();
 
-    private void OnProgramCompiled(CompiledProgram compiledProgram)
+    private Diagnoser? Diagnoser;
+
+    protected override void OnInitialized()
     {
-        LastPlottedVectors = compiledProgram.PlotVectors();
+        base.OnInitialized();
+
+        Timer.Elapsed += async (_, _) => await InvokeAsync(CompileAndRunProgram);
+        Timer.AutoReset = false;
+
+        Timer.Start();
+    }
+
+    private async Task OnCodeEdited(string code)
+    {
+        await CodeEditor.ClearReportsAsync();
+
+        Timer.Stop();
+        Timer.Start();
+    }
+
+    private async Task CompileAndRunProgram()
+    {
+        var compiledProgram = ProgramCompiler.Compile(CodeEditor.Value, out Diagnoser);
+
+        foreach (var report in Diagnoser.Reports)
+        {
+            await CodeEditor.AddReportAsync(report);
+        }
+
+        if (compiledProgram is null)
+        {
+            return;
+        }
+
+        try
+        {
+            LastPlottedVectors = compiledProgram.PlotVectors();
+        }
+        catch (RuntimeException runtimeException)
+        {
+            // TODO: render in interface
+            Console.WriteLine(runtimeException);
+        }
+
+        StateHasChanged();
     }
 }

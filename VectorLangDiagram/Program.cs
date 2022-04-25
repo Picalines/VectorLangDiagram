@@ -1,8 +1,15 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using ElectronNET.API;
+using ElectronNET.API.Entities;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+
+// Electron
+builder.WebHost.UseElectron(args);
+builder.Services.AddElectron();
 
 var app = builder.Build();
 
@@ -22,5 +29,18 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+if (HybridSupport.IsElectronActive)
+{
+    var electronWindowOptions = new BrowserWindowOptions()
+    {
+        Title = "VectorLangDiagram",
+        Center = true,
+        MinWidth = 500,
+        MinHeight = 400,
+    };
+
+    Task.Run(() => Electron.WindowManager.CreateWindowAsync(electronWindowOptions));
+}
 
 app.Run();

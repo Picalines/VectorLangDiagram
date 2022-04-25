@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using VectorLang.Interpretation;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
 
@@ -9,11 +10,7 @@ internal static class BlockCompiler
     public static CompiledExpression Compile(CompilationContext context, BlockNode block)
     {
         context = context.WithChildSymbols();
-
-        if (!block.PriorExpressions.Any())
-        {
-            return ValueExpressionCompiler.Compile(context, block.ResultExpression!);
-        }
+        context.CompletionProvider.AddScope(block.Selection, context.Symbols);
 
         var priorExpressions = block.PriorExpressions.Select(expression => ValueExpressionCompiler.Compile(context, expression)).ToList();
 

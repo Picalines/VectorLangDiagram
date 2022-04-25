@@ -1,4 +1,5 @@
 ﻿using System;
+using VectorLang.Diagnostics;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
 
@@ -27,6 +28,8 @@ internal static class ValueExpressionCompiler
         VariableAssignmentNode variableAssignment => VariableAssignmentCompiler.Compile(context, variableAssignment),
 
         BlockNode blockNode => BlockCompiler.Compile(context, blockNode),
+
+        ConditionalExpressionNode conditionalExpresion => ConditionalExpressionCompiler.Compile(context, conditionalExpresion),
 
         _ => throw new NotImplementedException(),
     };

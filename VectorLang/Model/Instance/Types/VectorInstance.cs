@@ -25,7 +25,7 @@ internal sealed class VectorInstance : ReflectionInstance
     }
 
     public VectorInstance(double x, double y)
-        : this(new NumberInstance(x), new NumberInstance(y))
+        : this(NumberInstance.From(x), NumberInstance.From(y))
     {
     }
 
@@ -85,5 +85,20 @@ internal sealed class VectorInstance : ReflectionInstance
         }
 
         return new(vector.X / number, vector.Y / number);
+    }
+
+    [InstanceOperator]
+    public static BooleanInstance operator ==(VectorInstance left, VectorInstance right)
+    {
+        var xEquality = left.X == right.Y;
+        var yEquality = left.Y == right.Y;
+
+        return xEquality.Value && yEquality.Value;
+    }
+
+    [InstanceOperator]
+    public static BooleanInstance operator !=(VectorInstance left, VectorInstance right)
+    {
+        return !(left == right);
     }
 }

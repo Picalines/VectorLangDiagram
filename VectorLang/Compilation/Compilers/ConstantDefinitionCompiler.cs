@@ -1,15 +1,20 @@
 ﻿using System.Linq;
+using VectorLang.Diagnostics;
 using VectorLang.Interpretation;
-using VectorLang.Model;
 using VectorLang.SyntaxTree;
 
 namespace VectorLang.Compilation;
+
+// TODO: rename to UserConstant
 
 internal static class ConstantDefinitionCompiler
 {
     public static void Compile(CompilationContext context, ConstantDefinition constantDefinition)
     {
         var constantName = constantDefinition.Name;
+
+        // TODO: definition "ScopeSelection"?
+        context.CompletionProvider.AddScope(constantDefinition.ValueExpression.Selection, context.Symbols);
 
         var compiledValue = ValueExpressionCompiler.Compile(context, constantDefinition.ValueExpression);
 
@@ -18,8 +23,6 @@ internal static class ConstantDefinitionCompiler
             context.Reporter.ReportError(constantDefinition.NameToken.Selection, ReportMessage.RedefinedValue(constantName));
             return;
         }
-
-        // TODO: handle "runtime" error
 
         if (compiledValue.IsInvalid)
         {
@@ -34,6 +37,8 @@ internal static class ConstantDefinitionCompiler
         }
         else
         {
+            // TODO: handle "runtime" error
+
             var value = Interpreter.Interpret(compiledValue.Instructions.ToList());
 
             constantSymbol = new(constantName, value);

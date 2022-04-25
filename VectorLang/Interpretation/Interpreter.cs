@@ -62,6 +62,28 @@ internal static partial class Interpreter
             }
             break;
 
+            case JumpIfInstruction { Delta: var delta, PopFromStack: var popFromStack }:
+            {
+                var condition = (popFromStack ? context.PopFromStack() : context.PeekStack()) as BooleanInstance;
+                Debug.Assert(condition is not null);
+                if (jumped = condition.Value)
+                {
+                    context.Jump(delta);
+                }
+            }
+            break;
+
+            case JumpIfNotInstruction { Delta: var delta, PopFromStack: var popFromStack }:
+            {
+                var condition = (popFromStack ? context.PopFromStack() : context.PeekStack()) as BooleanInstance;
+                Debug.Assert(condition is not null);
+                if (jumped = !condition.Value)
+                {
+                    context.Jump(delta);
+                }
+            }
+            break;
+
             case JumpInstruction { Delta: var delta }:
             {
                 context.Jump(delta);

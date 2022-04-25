@@ -8,7 +8,11 @@ namespace VectorLang.Model;
 
 internal sealed class UserFunction : Function
 {
+    private const int MaxRecusionDepth = 1000;
+
     private readonly Lazy<IReadOnlyList<Instruction>> _Instructions;
+
+    private int _RecusionDepth = 0;
 
     public UserFunction(string name, CallSignature signature, Lazy<IReadOnlyList<Instruction>> instructions) : base(name, signature)
     {
@@ -31,6 +35,17 @@ internal sealed class UserFunction : Function
     {
         Debug.Assert(IsCompiled);
 
-        return Interpreter.Interpret(_Instructions.Value, arguments);
+        _RecusionDepth++;
+
+        if (_RecusionDepth > MaxRecusionDepth)
+        {
+            throw new StackOverflowException();
+        }
+
+        var returned = Interpreter.Interpret(_Instructions.Value, arguments);
+
+        _RecusionDepth = 0;
+
+        return returned;
     }
 }

@@ -15,6 +15,11 @@ internal static partial class ValueExpressionParser
             from value in ParseNumberLiteral(literalToken)
             select new NumberNode(value, literalToken);
 
+        public static readonly Parser<BooleanNode> Boolean =
+            from literalToken in ParseToken.LiteralBoolean
+            from boolean in ParseBooleanLiteral(literalToken)
+            select new BooleanNode(boolean, literalToken);
+
         public static readonly Parser<ColorNode> Color =
             from literalToken in ParseToken.LiteralColor
             from color in ParseColorLiteral(literalToken)
@@ -40,6 +45,20 @@ internal static partial class ValueExpressionParser
                 "rad" => Parse.Return(value),
                 _ => Parse.Throw<double>($"unknown number unit '{unit}'", new[] { "no unit", "deg", "rad" }),
             };
+        }
+
+        private static Parser<bool> ParseBooleanLiteral(Token token)
+        {
+            Debug.Assert(token.RegexGroups is not null);
+
+            if (token.RegexGroups["true"].Success)
+            {
+                return Parse.Return(true);
+            }
+
+            Debug.Assert(token.RegexGroups["false"].Success);
+
+            return Parse.Return(false);
         }
 
         private static Parser<(double R, double G, double B)> ParseColorLiteral(Token token)

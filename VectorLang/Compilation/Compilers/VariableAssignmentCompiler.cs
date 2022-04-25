@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using VectorLang.Diagnostics;
+using VectorLang.Interpretation;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
 

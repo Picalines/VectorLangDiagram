@@ -1,5 +1,7 @@
 ﻿@using VectorLang.Compilation
+@using VectorLang.Diagnostics
 @using VectorLang.Model
+@using VectorLang.Tokenization
 
 @implements IDisposable
 
@@ -9,14 +11,26 @@
 
 @code {
     [Parameter]
-    public string InitialCode { get; set; } = "";
+    public string InitialValue { get; set; } = "";
 
     [Parameter]
-    public EventCallback<CompiledProgram> OnProgramCompiled { get; set; }
+    public EventCallback<string> OnChange { get; set; }
+
+    [Parameter]
+    public Func<TextLocation, IReadOnlyList<Completion>?>? CompletionProvider { get; set; }
+
+    public string Value { get; private set; } = "";
 
     private DotNetObjectReference<CodeEditor>? ThisJsReference;
 
     private IJSObjectReference? MonacoEditorReference;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Value = InitialValue;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -25,9 +39,9 @@
         if (firstRender)
         {
             ThisJsReference = DotNetObjectReference.Create(this);
-            MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", ThisJsReference, "#monaco-container", InitialCode);
+            MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", ThisJsReference, "#monaco-container", InitialValue);
 
-            await OnDidChangeContent(InitialCode);
+            await OnDidChangeContent(InitialValue);
         }
     }
 
@@ -39,18 +53,32 @@
     [JSInvokable]
     public async Task OnDidChangeContent(string code)
     {
-        await MonacoEditorReference!.InvokeVoidAsync("clearReports");
+        Value = code;
 
-        var compiledProgram = ProgramCompiler.Compile(code, out var reports);
+        await OnChange.InvokeAsync(code);
+    }
 
-        foreach (var report in reports)
+    [JSInvokable]
+    public IReadOnlyList<Completion> FetchCompletions(int cursorLine, int cursorColumn)
+    {
+        var cursorLocation = new TextLocation(cursorLine, cursorColumn);
+
+        return CompletionProvider?.Invoke(cursorLocation) ?? Array.Empty<Completion>();
+    }
+
+    public async Task ClearReportsAsync()
+    {
+        if (MonacoEditorReference is not null)
         {
-            await MonacoEditorReference!.InvokeVoidAsync("addReport", report);
+            await MonacoEditorReference.InvokeVoidAsync("clearReports");
         }
+    }
 
-        if (compiledProgram is not null)
+    public async Task AddReportAsync(Report report)
+    {
+        if (MonacoEditorReference is not null)
         {
-            await OnProgramCompiled.InvokeAsync(compiledProgram);
+            await MonacoEditorReference.InvokeVoidAsync("addReport", report);
         }
     }
 }
