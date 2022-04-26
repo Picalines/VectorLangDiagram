@@ -52,10 +52,12 @@
 
 #diagram-tools-panel > button:hover {
     filter: brightness(85%);
+    cursor: pointer;
 }
 
 #diagram-tools-panel > button:active {
     filter: brightness(75%);
+    cursor: default;
 }
 
 #diagram-tools-panel > button > svg {
@@ -69,6 +71,7 @@
 
 #error-message-span {
     animation: error-message-appear 0.5s ease-out forwards;
+    cursor: default;
 }
 
 @keyframes error-message-appear {
