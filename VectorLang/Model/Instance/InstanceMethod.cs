@@ -26,7 +26,7 @@ internal sealed class InstanceMethod
 
         Signature.AssertArgumentsDebug(arguments);
 
-        var result = _Callable(thisInstance, arguments);
+        var result = RuntimeException.Catch(() => _Callable(thisInstance, arguments));
 
         Debug.Assert(result.Type.IsAssignableTo(Signature.ReturnType));
 

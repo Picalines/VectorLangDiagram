@@ -19,7 +19,7 @@ internal abstract class Function
     {
         Signature.AssertArgumentsDebug(arguments);
 
-        var returned = CallInternal(arguments);
+        var returned = RuntimeException.Catch(() => CallInternal(arguments));
 
         Debug.Assert(returned.Type.IsAssignableTo(Signature.ReturnType));
 
