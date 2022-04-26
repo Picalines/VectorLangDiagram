@@ -12,14 +12,22 @@ internal static class CalledNodeCompiler
 {
     public static CompiledExpression Compile(CompilationContext context, CalledNode called)
     {
-        return called.CalledValue switch
+        var compiled = called.CalledValue switch
         {
             MemberNode method => CompileMethodCall(context, called.Arguments, method),
 
             VariableNode function => CompileFunctionCall(context, called.Arguments, function),
 
-            _ => ReportNotCallable(context, called.CalledValue),
+            _ => null,
         };
+
+        if (compiled is null)
+        {
+            context.Reporter.ReportError(called.CalledValue.Selection, ReportMessage.NotCallableValue("this expression"));
+            return CompiledExpression.Invalid;
+        }
+
+        return compiled;
     }
 
     private static CompiledExpression CompileMethodCall(CompilationContext context, IReadOnlyList<ValueExpressionNode> arguments, MemberNode method)
@@ -55,7 +63,13 @@ internal static class CalledNodeCompiler
 
         if (functionSymbol is not FunctionSymbol { Function: { Signature: var signature } function })
         {
-            context.Reporter.ReportError(functionNode.Token.Selection, ReportMessage.UndefinedValue($"function '{functionName}'"));
+            context.Reporter.ReportError(functionNode.Token.Selection, functionSymbol switch
+            {
+                VariableSymbol => ReportMessage.NotCallableValue($"variable '{functionName}'"),
+                ConstantSymbol => ReportMessage.NotCallableValue($"constant '{functionName}'"),
+                _ => ReportMessage.UndefinedValue($"function '{functionName}'"),
+            });
+
             return CompiledExpression.Invalid;
         }
 
@@ -71,12 +85,5 @@ internal static class CalledNodeCompiler
             compiledArguments.SelectMany(arg => arg.Instructions)
                 .Append(new CallFunctionInstruction(function, arguments.Count))
         );
-    }
-
-    private static CompiledExpression ReportNotCallable(CompilationContext context, ValueExpressionNode calledValue)
-    {
-        context.Reporter.ReportError(calledValue.Selection, ReportMessage.NotCallableValue("expression"));
-
-        return CompiledExpression.Invalid;
     }
 }
