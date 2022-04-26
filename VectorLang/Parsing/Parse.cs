@@ -140,6 +140,11 @@ internal static class Parse
         };
     }
 
+    public static Parser<List<T>> Once<T>(this Parser<T> parser)
+    {
+        return parser.Select(r => new List<T> { r });
+    }
+
     public static Parser<List<T>> Many<T>(this Parser<T> parser, int listCapacity = 0) => input =>
     {
         ParseInput lastRemainder = input;
@@ -155,34 +160,14 @@ internal static class Parse
         return ParseResult<List<T>>.Success(lastRemainder, resultValues);
     };
 
-    public static Parser<List<T>> UntilEnd<T>(this Parser<T> parser, int listCapacity = 0) => input =>
+    public static Parser<List<T>> XMany<T>(this Parser<T> parser)
     {
-        ParseInput lastRemainder = input;
-        List<T> resultValues = new(listCapacity);
-
-        while (!lastRemainder.AtEnd)
-        {
-            var result = parser(lastRemainder);
-
-            if (!result.IsSuccessfull)
-            {
-                return ParseResult<List<T>>.CastFailure(result);
-            }
-
-            resultValues.Add(result.Value);
-            lastRemainder = result.Remainder;
-        }
-
-        return ParseResult<List<T>>.Success(lastRemainder, resultValues);
-    };
+        return parser.Many().Then(leading => parser.Once().XOr(Return(leading)));
+    }
 
     public static Parser<List<T>> AtLeastOnce<T>(this Parser<T> parser)
     {
-        return parser.Then(first => parser.Many().Select(rest =>
-        {
-            rest.Insert(0, first);
-            return rest;
-        }));
+        return parser.Once().Then(first => parser.Many().Select(rest => first.Concat(rest).ToList()));
     }
 
     public static Parser<List<T>> DelimitedBy<T, U>(this Parser<T> element, Parser<U> delimiter)
@@ -197,34 +182,6 @@ internal static class Parse
             )
             .XOr(ReturnNew(() => new List<T>()));
     }
-
-    public static Parser<List<T>> Until<T, U>(this Parser<T> parser, Parser<U> stop, int listCapacity = 0) => input =>
-    {
-        ParseInput lastRemainder = input;
-        List<T> parserResultValues = new(listCapacity);
-        IParseResult<T> parserResult;
-        IParseResult<U> stopResult;
-
-        while (!(stopResult = stop(lastRemainder)).IsSuccessfull)
-        {
-            parserResult = parser(lastRemainder);
-
-            if (!parserResult.IsSuccessfull)
-            {
-                if (lastRemainder.AtEnd)
-                {
-                    return ParseResult<List<T>>.CastFailure(stop(lastRemainder));
-                }
-
-                return ParseResult<List<T>>.CastFailure(parserResult);
-            }
-
-            parserResultValues.Add(parserResult.Value);
-            lastRemainder = parserResult.Remainder;
-        }
-
-        return ParseResult<List<T>>.Success(stopResult.Remainder, parserResultValues);
-    };
 
     public static Parser<T> ChainOperator<T, TOp>(Parser<TOp> @operator, Parser<T> term, Func<TOp, T, T, T> apply)
     {

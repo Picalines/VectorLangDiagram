@@ -9,6 +9,6 @@ internal static class ProgramParser
         .XOr(DefinitionParser.Constant);
 
     public static readonly Parser<Program> Program =
-        from definitions in Definition.UntilEnd()
+        from definitions in Definition.XMany()
         select new Program(definitions);
 }
