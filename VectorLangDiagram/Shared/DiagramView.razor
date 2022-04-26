@@ -3,19 +3,23 @@
 @inject IJSRuntime JSRuntime
 
 <div id="diagram">
-    <div id="view-options">
+    <div id="diagram-tools-panel">
         <button type="button" @onclick="OnResetViewClick">
             <svg viewBox="0 0 4 4">
                 <path stroke="white" d="M 0,1 v -1 h 1 M 3,0 h 1 v 1 M 4,3 v 1 h -1 M 1,4 h -1 v -1" />
             </svg>
         </button>
+        @if (ErrorMessage is not null)
+        {
+            <span id="error-message-span" title="runtime error">@ErrorMessage</span>
+        }
     </div>
 
     <div id="view">
         <svg xmlns="http://www.w3.org/2000/svg"
             viewBox="-10 -10 10 10"
             preserveAspectRatio="xMidYMid slice"
-            style="overflow: visible"
+            style="overflow: visible; opacity: @(ErrorMessage is null ? "1" : ".8")"
             id="vectors"
         >
             <defs>
@@ -42,6 +46,9 @@
 @code {
     [Parameter]
     public IReadOnlyList<PlottedVector> Vectors { get; set; } = Array.Empty<PlottedVector>();
+
+    [Parameter]
+    public string? ErrorMessage { get; set; } = null;
 
     private IJSObjectReference? PanZoom;
 

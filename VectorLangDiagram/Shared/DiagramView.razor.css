@@ -5,6 +5,8 @@
     position: relative;
     width: 100%;
     height: 100%;
+
+    color: white;
 }
 
 #view {
@@ -13,7 +15,7 @@
     height: 100%;
 }
 
-#view-options {
+#diagram-tools-panel {
     position: absolute;
     z-index: 1;
 
@@ -22,11 +24,16 @@
     padding: 10px;
 
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
+    flex-direction: row-reverse;
 }
 
-#view-options > button {
+#diagram-tools-panel > * {
+    margin-left: 10px;
+}
+
+#diagram-tools-panel > button {
     height: 100%;
     aspect-ratio: 1;
 
@@ -43,14 +50,35 @@
     transition: filter linear 0.1s;
 }
 
-#view-options > button:hover {
+#diagram-tools-panel > button:hover {
     filter: brightness(85%);
 }
 
-#view-options > button:active {
+#diagram-tools-panel > button:active {
     filter: brightness(75%);
 }
 
-#view-options > button > svg {
+#diagram-tools-panel > button > svg {
     transform: scale(0.6);
+}
+
+#diagram-tools-panel > span {
+    padding: 16px;
+    border-radius: 10px;
+}
+
+#error-message-span {
+    animation: error-message-appear 0.5s ease-out forwards;
+}
+
+@keyframes error-message-appear {
+    0% {
+        background-color: red;
+        transform: translateY(-3px);
+    }
+
+    100% {
+        background-color: #f14c4c;
+        transform: translateY(0);
+    }
 }

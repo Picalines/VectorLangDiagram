@@ -13,7 +13,7 @@
             CompletionProvider="(location) => Diagnoser?.GetCompletions(location)" />
     </section>
     <section>
-        <DiagramView Vectors=LastPlottedVectors />
+        <DiagramView Vectors=LastPlottedVectors ErrorMessage=@RuntimeErrorMessage />
     </section>
 </div>
 
@@ -46,6 +46,8 @@ def main() -> void = [
 
     private IReadOnlyList<PlottedVector> LastPlottedVectors = Array.Empty<PlottedVector>();
 
+    private string? RuntimeErrorMessage = null;
+
     private Diagnoser? Diagnoser;
 
     protected override void OnInitialized()
@@ -61,6 +63,8 @@ def main() -> void = [
     private async Task OnCodeEdited(string code)
     {
         await CodeEditor.ClearReportsAsync();
+
+        RuntimeErrorMessage = null;
 
         Timer.Stop();
         Timer.Start();
@@ -86,8 +90,7 @@ def main() -> void = [
         }
         catch (RuntimeException runtimeException)
         {
-            // TODO: render in interface
-            Console.WriteLine(runtimeException);
+            RuntimeErrorMessage = runtimeException.Message;
         }
 
         StateHasChanged();
