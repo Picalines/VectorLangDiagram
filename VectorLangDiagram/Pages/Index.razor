@@ -91,6 +91,11 @@ def main() -> void = [
         catch (RuntimeException runtimeException)
         {
             RuntimeErrorMessage = runtimeException.Message;
+
+            if (runtimeException.Selection is { } selection)
+            {
+                RuntimeErrorMessage = $"{selection}: {RuntimeErrorMessage}";
+            }
         }
 
         StateHasChanged();
