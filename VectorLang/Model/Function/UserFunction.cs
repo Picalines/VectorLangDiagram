@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using VectorLang.Compilation;
 using VectorLang.Interpretation;
 
 namespace VectorLang.Model;

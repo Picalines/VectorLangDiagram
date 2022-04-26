@@ -8,6 +8,8 @@ internal static class ReportMessage
 
     public const string MainFunctionMustHaveNoArguments = "entry function 'main' must have no arguments";
 
+    public const string CantEvaluateConstantExpression = "can't evaluate constant expression";
+
     public static string NotAssignableType(InstanceType gotType, InstanceType expectedType) =>
         $"value of type {gotType} is not assignable to type {expectedType}";
 

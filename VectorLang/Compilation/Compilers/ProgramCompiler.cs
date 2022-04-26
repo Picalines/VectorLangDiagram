@@ -137,7 +137,7 @@ public static class ProgramCompiler
     {
         foreach (var constantDefinition in program.Definitions.OfType<ConstantDefinition>())
         {
-            ConstantDefinitionCompiler.Compile(context, constantDefinition);
+            UserConstantCompiler.Compile(context, constantDefinition);
         }
 
         foreach (var functionDefinition in program.Definitions.OfType<FunctionDefinition>())

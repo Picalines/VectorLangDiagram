@@ -1,13 +1,12 @@
 ﻿using System.Linq;
 using VectorLang.Diagnostics;
 using VectorLang.Interpretation;
+using VectorLang.Model;
 using VectorLang.SyntaxTree;
 
 namespace VectorLang.Compilation;
 
-// TODO: rename to UserConstant
-
-internal static class ConstantDefinitionCompiler
+internal static class UserConstantCompiler
 {
     public static void Compile(CompilationContext context, ConstantDefinition constantDefinition)
     {
@@ -29,20 +28,25 @@ internal static class ConstantDefinitionCompiler
             return;
         }
 
-        ConstantSymbol constantSymbol;
+        Instance? constantValue = null;
 
-        if (context.Reporter.AnyErrors())
+        if (!context.Reporter.AnyErrors())
         {
-            constantSymbol = new(constantName, compiledValue.Type);
+            try
+            {
+                constantValue = Interpreter.Interpret(compiledValue.Instructions.ToList());
+            }
+            catch (RuntimeException)
+            {
+                context.Reporter.ReportError(constantDefinition.ValueExpression.Selection, ReportMessage.CantEvaluateConstantExpression);
+            }
         }
-        else
+
+        ConstantSymbol constantSymbol = constantValue switch
         {
-            // TODO: handle "runtime" error
-
-            var value = Interpreter.Interpret(compiledValue.Instructions.ToList());
-
-            constantSymbol = new(constantName, value);
-        }
+            null => new(constantName, compiledValue.Type),
+            not null => new(constantName, constantValue),
+        };
 
         context.Symbols.Insert(constantSymbol);
     }

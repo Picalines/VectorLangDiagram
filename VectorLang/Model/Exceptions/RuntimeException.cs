@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using VectorLang.Tokenization;
 
 namespace VectorLang.Model;
@@ -23,34 +24,20 @@ public sealed class RuntimeException : Exception
     {
     }
 
-    internal static void Catch(Action action)
-    {
-        try
-        {
-            action();
-        }
-        catch (RuntimeException)
-        {
-            throw;
-        }
-        catch (Exception exception)
-        {
-            throw new RuntimeException(exception, null);
-        }
-    }
-
+    [StackTraceHidden]
     internal static T Catch<T>(Func<T> func)
     {
         try
         {
             return func();
         }
-        catch (RuntimeException)
-        {
-            throw;
-        }
         catch (Exception exception)
         {
+            if (exception is RuntimeException)
+            {
+                throw;
+            }
+
             throw new RuntimeException(exception, null);
         }
     }
