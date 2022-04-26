@@ -146,7 +146,7 @@ internal sealed class NumberInstance : ReflectionInstance
     {
         if (right.Value == 0.0)
         {
-            throw new DivideByZeroException();
+            throw RuntimeException.ZeroDivision();
         }
 
         return left.Value / right.Value;
@@ -157,7 +157,7 @@ internal sealed class NumberInstance : ReflectionInstance
     {
         if (right.Value == 0.0)
         {
-            throw new DivideByZeroException();
+            throw RuntimeException.ZeroDivision();
         }
 
         return left.Value % right.Value;

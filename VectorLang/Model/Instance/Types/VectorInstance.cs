@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace VectorLang.Model;
+﻿namespace VectorLang.Model;
 
 internal sealed class VectorInstance : ReflectionInstance
 {
@@ -81,7 +79,7 @@ internal sealed class VectorInstance : ReflectionInstance
     {
         if (number.Value == 0.0)
         {
-            throw new DivideByZeroException();
+            throw RuntimeException.ZeroDivision();
         }
 
         return new(vector.X / number, vector.Y / number);

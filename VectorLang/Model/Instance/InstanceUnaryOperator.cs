@@ -23,7 +23,7 @@ internal sealed class InstanceUnaryOperator
     {
         Debug.Assert(thisInstance.Type.IsAssignableTo(InstanceType));
 
-        var result = RuntimeException.Catch(() => _Callable(thisInstance));
+        var result = _Callable(thisInstance);
 
         Debug.Assert(result.Type.IsAssignableTo(ReturnType));
 

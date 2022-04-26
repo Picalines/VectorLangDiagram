@@ -27,7 +27,7 @@ internal sealed class InstanceBinaryOperator
         Debug.Assert(thisInstance.Type.IsAssignableTo(InstanceType));
         Debug.Assert(right.Type.IsAssignableTo(RightType));
 
-        var result = RuntimeException.Catch(() => _Callable(thisInstance, right));
+        var result = _Callable(thisInstance, right);
 
         Debug.Assert(result.Type.IsAssignableTo(ReturnType));
 

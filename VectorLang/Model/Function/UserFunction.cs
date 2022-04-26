@@ -38,7 +38,7 @@ internal sealed class UserFunction : Function
 
         if (_RecusionDepth > MaxRecusionDepth)
         {
-            throw new StackOverflowException();
+            throw RuntimeException.RecursionLimitReached(Name, MaxRecusionDepth);
         }
 
         var returned = Interpreter.Interpret(_Instructions.Value, arguments);

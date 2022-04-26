@@ -1,44 +1,27 @@
 ﻿using System;
-using System.Diagnostics;
 using VectorLang.Tokenization;
 
 namespace VectorLang.Model;
 
 public sealed class RuntimeException : Exception
 {
-    public TextSelection? Selection { get; }
+    // TODO: call instruction can hold location and assign it in try/catch
+    public TextSelection? Selection { get; internal set; } = null;
 
-    private RuntimeException(string message, Exception? innerException, TextSelection? selection)
-        : base(message, innerException)
-    {
-        Selection = selection;
-    }
+    private RuntimeException(string message) : base(message) { }
 
-    internal RuntimeException(string message, TextSelection? selection)
-        : this(message, null, selection)
-    {
-    }
+    internal static RuntimeException ZeroDivision() =>
+        new("attempt to divide by zero");
 
-    internal RuntimeException(Exception innerException, TextSelection? selection)
-        : this(innerException.Message, innerException, selection)
-    {
-    }
+    internal static RuntimeException RecursionLimitReached(string functionName, int maxRecusionDepth) =>
+        new($"function '{functionName}' has reached the recursion limit ({maxRecusionDepth})");
 
-    [StackTraceHidden]
-    internal static T Catch<T>(Func<T> func)
-    {
-        try
-        {
-            return func();
-        }
-        catch (Exception exception)
-        {
-            if (exception is RuntimeException)
-            {
-                throw;
-            }
+    internal static RuntimeException PushStackOverflow(int maxStackSize) =>
+        new($"push() was called without pop() more than {maxStackSize} times");
 
-            throw new RuntimeException(exception, null);
-        }
-    }
+    internal static RuntimeException PopBeforePush() =>
+        new("pop() was called before push()");
+
+    internal static RuntimeException PlotLimitReached(int maxPlotCount) =>
+        new($"plot() was called more than ${maxPlotCount} times");
 }

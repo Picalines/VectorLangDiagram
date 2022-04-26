@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace VectorLang.Model;
 
@@ -41,7 +40,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     {
         if (_ContextStack.Count == MaxContextStackSize + 1)
         {
-            throw new InvalidOperationException($"push() was called without pop() more than {MaxContextStackSize} times");
+            throw RuntimeException.PushStackOverflow(MaxContextStackSize);
         }
 
         _ContextStack.Push(_ContextStack.Peek() with { });
@@ -54,7 +53,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     {
         if (_ContextStack.Count <= 1)
         {
-            throw new InvalidOperationException("pop() was called before push()");
+            throw RuntimeException.PopBeforePush();
         }
 
         _ContextStack.Pop();
@@ -105,7 +104,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     {
         if (_PlottedVectors.Count == MaxPlottedVectorsCount)
         {
-            throw new InvalidOperationException($"plot() was called more than ${MaxPlottedVectorsCount} times");
+            throw RuntimeException.PlotLimitReached(MaxPlottedVectorsCount);
         }
 
         var context = _ContextStack.Peek();
