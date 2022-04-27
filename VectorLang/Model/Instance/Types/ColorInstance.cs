@@ -16,9 +16,9 @@ internal sealed class ColorInstance : ReflectionInstance
 
     public ColorInstance(NumberInstance r, NumberInstance g, NumberInstance b) : base(InstanceType)
     {
-        R = r;
-        G = g;
-        B = b;
+        R = r.Clamp(0, 1);
+        G = g.Clamp(0, 1);
+        B = b.Clamp(0, 1);
     }
 
     public ColorInstance(double r, double g, double b)
