@@ -117,15 +117,6 @@ internal static class Parse
         return current.Then(currentResult => next.As(currentResult));
     }
 
-    public static Parser<T> AtEnd<T>(this Parser<T> parser)
-    {
-        return input => parser(input).IfSuccess(
-            result => result.Remainder.AtEnd
-                ? result
-                : ParseResult<T>.Failure(result.Remainder, $"unexpected {result.Remainder.Current}", new[] { "end of input" })
-        );
-    }
-
     public static Parser<T> Ref<T>(Func<Parser<T>?> reference)
     {
         Parser<T>? parser = null;
@@ -160,10 +151,17 @@ internal static class Parse
         return ParseResult<List<T>>.Success(lastRemainder, resultValues);
     };
 
-    public static Parser<List<T>> XMany<T>(this Parser<T> parser)
+    public static Parser<List<T>> UntilEnd<T>(this Parser<T> parser) => input =>
     {
-        return parser.Many().Then(leading => parser.Once().XOr(Return(leading)));
-    }
+        var itemsResult = parser.Many()(input);
+
+        if (itemsResult is { IsSuccessfull: true, Remainder: { AtEnd: false } itemsRemainder })
+        {
+            return parser.Once()(itemsRemainder);
+        }
+
+        return itemsResult;
+    };
 
     public static Parser<List<T>> AtLeastOnce<T>(this Parser<T> parser)
     {
