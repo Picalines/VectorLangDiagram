@@ -12,6 +12,13 @@ internal static class DefinitionParser
         from semicolon in ParseToken.Semicolon
         select new ConstantDefinition(name, equalsOp, semicolon, valueExpression);
 
+    public static readonly Parser<ExternalValueDefinition> ExternalValue =
+        from externalKeyword in ParseToken.KeywordExternal
+        from type in TypeParser.Type.Named("type of external value")
+        from name in ParseToken.Identifier.Named("name of external value")
+        from semicolon in ParseToken.Semicolon
+        select new ExternalValueDefinition(type, name, semicolon);
+
     public static readonly Parser<ArgumentDefinition> Argument =
         from type in TypeParser.Type.Named("argument type")
         from name in ParseToken.Identifier.Named("argument name")
