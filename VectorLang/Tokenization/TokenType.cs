@@ -21,7 +21,7 @@ public enum TokenType
 
     [Description("'def'"), TokenRegex(@"\bdef\b")] KeywordDef,
     [Description("'const'"), TokenRegex(@"\bconst\b")] KeywordConst,
-    [Description("'external'"), TokenRegex(@"\bextenal\b")] KeywordExternal,
+    [Description("'external'"), TokenRegex(@"\bexternal\b")] KeywordExternal,
     [Description("'val'"), TokenRegex(@"\bval\b")] KeywordVal,
     [Description("'if'"), TokenRegex(@"\bif\b")] KeywordIf,
     [Description("'else'"), TokenRegex(@"\belse\b")] KeywordElse,
