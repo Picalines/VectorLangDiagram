@@ -3,4 +3,10 @@ using VectorLang.Tokenization;
 
 namespace VectorLang.Diagnostics;
 
-internal sealed record CompletionScope(TextSelection Selection, SymbolTable Symbols);
+internal enum CompletionScopeType
+{
+    Definition,
+    Expression,
+}
+
+internal sealed record CompletionScope(TextSelection Selection, CompletionScopeType Type, SymbolTable Symbols);

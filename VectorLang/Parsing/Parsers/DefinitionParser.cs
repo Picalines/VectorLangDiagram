@@ -10,7 +10,7 @@ internal static class DefinitionParser
         from equalsOp in ParseToken.OperatorEquals
         from valueExpression in ValueExpressionParser.Lambda.Named("value of constant")
         from semicolon in ParseToken.Semicolon
-        select new ConstantDefinition(name, valueExpression);
+        select new ConstantDefinition(name, equalsOp, semicolon, valueExpression);
 
     public static readonly Parser<ArgumentDefinition> Argument =
         from type in TypeParser.Type.Named("argument type")
@@ -28,5 +28,5 @@ internal static class DefinitionParser
         from equalsOp in ParseToken.OperatorEquals
         from expression in ValueExpressionParser.Lambda.Named("function value expression")
         from semicolon in ParseToken.Semicolon
-        select new FunctionDefinition(name, returnType, arguments, expression);
+        select new FunctionDefinition(name, equalsOp, semicolon, returnType, arguments, expression);
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using VectorLang.Diagnostics;
 using VectorLang.Interpretation;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
+using VectorLang.Tokenization;
 
 namespace VectorLang.Compilation;
 
@@ -17,7 +19,7 @@ internal static class UserFunctionCompiler
             return null;
         }
 
-        var lazyBody = new Lazy<IReadOnlyList<Instruction>>(() => CompileBody(context, signature, definition.ValueExpression));
+        var lazyBody = new Lazy<IReadOnlyList<Instruction>>(() => CompileBody(context, signature, definition));
 
         var userFunction = new UserFunction(definition.Name, signature, lazyBody);
 
@@ -47,9 +49,8 @@ internal static class UserFunctionCompiler
             compiledSuccessfully = false;
         }
 
-        if (!context.Symbols.TryLookup<InstanceTypeSymbol>(definition.ReturnType.Name, out var returnTypeSymbol))
+        if (!TryLookupType(context, definition.ReturnType, out var returnType))
         {
-            context.Reporter.ReportError(definition.ReturnType.Selection, ReportMessage.UndefinedValue($"type '{definition.ReturnType.Name}'"));
             compiledSuccessfully = false;
         }
 
@@ -57,34 +58,34 @@ internal static class UserFunctionCompiler
 
         foreach (var defArgument in definition.Arguments)
         {
-            if (context.Symbols.TryLookup<InstanceTypeSymbol>(defArgument.Type.Name, out var argumentTypeSymbol))
+            if (!TryLookupType(context, defArgument.Type, out var argumentType))
             {
-                if (argumentTypeSymbol.Type.IsAssignableTo(VoidInstance.InstanceType))
-                {
-                    context.Reporter.ReportError(defArgument.Type.Selection, ReportMessage.TypeIsNotAllowed(argumentTypeSymbol.Type));
-                    compiledSuccessfully = false;
-                    continue;
-                }
-
-                arguments.Add((defArgument.Name, argumentTypeSymbol.Type));
-            }
-            else
-            {
-                context.Reporter.ReportError(defArgument.Type.Selection, ReportMessage.UndefinedValue($"type '{defArgument.Type.Name}'"));
                 compiledSuccessfully = false;
+                continue;
             }
+
+            if (argumentType.IsAssignableTo(VoidInstance.InstanceType))
+            {
+                context.Reporter.ReportError(defArgument.Type.Selection, ReportMessage.TypeIsNotAllowed(argumentType));
+                compiledSuccessfully = false;
+                continue;
+            }
+
+            arguments.Add((defArgument.Name, argumentType));
         }
 
         return compiledSuccessfully
-            ? new CallSignature(returnTypeSymbol!.Type, arguments)
+            ? new CallSignature(returnType!, arguments)
             : null;
     }
 
-    private static IReadOnlyList<Instruction> CompileBody(CompilationContext context, CallSignature signature, ValueExpressionNode body)
+    private static IReadOnlyList<Instruction> CompileBody(CompilationContext context, CallSignature signature, FunctionDefinition definition)
     {
+        context.CompletionProvider.AddDefinitionScope(TextSelection.FromTokens(definition.NameToken, definition.EqualsToken), context.Symbols);
+
         context = context.WithChildSymbols();
 
-        context.CompletionProvider.AddScope(body.Selection, context.Symbols);
+        context.CompletionProvider.AddExpressionScope(TextSelection.FromTokens(definition.EqualsToken, definition.EndToken), context.Symbols);
 
         var functionContextSymbol = new FunctionContextSymbol(signature.ReturnType);
         context.Symbols.Insert(functionContextSymbol);
@@ -100,10 +101,24 @@ internal static class UserFunctionCompiler
             functionInstructions.Add(new StoreInstruction(address, true));
         }
 
-        var compiledBody = ValueExpressionCompiler.Compile(context, body, signature.ReturnType);
+        var compiledBody = ValueExpressionCompiler.Compile(context, definition.ValueExpression, signature.ReturnType);
 
         functionInstructions.AddRange(compiledBody.Instructions);
 
         return functionInstructions;
+    }
+
+    private static bool TryLookupType(CompilationContext context, TypeNode typeNode, [NotNullWhen(true)] out InstanceType? type)
+    {
+        if (context.Symbols.TryLookup<InstanceTypeSymbol>(typeNode.Name, out var typeSymbol))
+        {
+            type = typeSymbol.Type;
+            return true;
+        }
+
+        context.Reporter.ReportError(typeNode.Selection, ReportMessage.UndefinedValue($"type '{typeNode.Name}'"));
+
+        type = null;
+        return false;
     }
 }

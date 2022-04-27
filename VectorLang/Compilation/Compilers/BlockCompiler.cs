@@ -10,7 +10,7 @@ internal static class BlockCompiler
     public static CompiledExpression Compile(CompilationContext context, BlockNode block)
     {
         context = context.WithChildSymbols();
-        context.CompletionProvider.AddScope(block.Selection, context.Symbols);
+        context.CompletionProvider.AddExpressionScope(block.Selection, context.Symbols);
 
         var priorExpressions = block.PriorExpressions.Select(expression => ValueExpressionCompiler.Compile(context, expression)).ToList();
 

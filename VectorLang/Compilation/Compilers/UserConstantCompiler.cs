@@ -3,6 +3,7 @@ using VectorLang.Diagnostics;
 using VectorLang.Interpretation;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
+using VectorLang.Tokenization;
 
 namespace VectorLang.Compilation;
 
@@ -12,8 +13,7 @@ internal static class UserConstantCompiler
     {
         var constantName = constantDefinition.Name;
 
-        // TODO: definition "ScopeSelection"?
-        context.CompletionProvider.AddScope(constantDefinition.ValueExpression.Selection, context.Symbols);
+        context.CompletionProvider.AddExpressionScope(TextSelection.FromTokens(constantDefinition.EqualsToken, constantDefinition.EndToken), context.Symbols);
 
         var compiledValue = ValueExpressionCompiler.Compile(context, constantDefinition.ValueExpression);
 

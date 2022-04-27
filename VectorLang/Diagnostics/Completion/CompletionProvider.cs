@@ -7,18 +7,30 @@ namespace VectorLang.Diagnostics;
 
 internal sealed class CompletionProvider
 {
-    private readonly List<Completion> _DefaultCompletions = new()
+    private static readonly List<Completion> _GlobalScopeCompletions = new()
     {
         Completion.OfKeyword(TokenType.KeywordDef),
         Completion.OfKeyword(TokenType.KeywordConst),
         Completion.OfKeyword(TokenType.KeywordExternal),
     };
 
+    private static readonly List<Completion> _ExpressionScopeKeywordCompletions = new()
+    {
+        Completion.OfKeyword(TokenType.KeywordVal),
+        Completion.OfKeyword(TokenType.KeywordIf),
+        Completion.OfKeyword(TokenType.KeywordElse),
+    };
+
     private readonly Stack<CompletionScope> _Scopes = new();
 
-    public void AddScope(TextSelection selection, SymbolTable symbols)
+    public void AddDefinitionScope(TextSelection selection, SymbolTable symbols)
     {
-        _Scopes.Push(new CompletionScope(selection, symbols));
+        _Scopes.Push(new CompletionScope(selection, CompletionScopeType.Definition, symbols));
+    }
+
+    public void AddExpressionScope(TextSelection selection, SymbolTable symbols)
+    {
+        _Scopes.Push(new CompletionScope(selection, CompletionScopeType.Expression, symbols));
     }
 
     public IReadOnlyList<Completion> GetCompletions(TextLocation cursorLocation)
@@ -27,18 +39,23 @@ internal sealed class CompletionProvider
 
         if (currentScope is null)
         {
-            return _DefaultCompletions;
+            return _GlobalScopeCompletions;
         }
 
-        var completions = new List<Completion>()
+        var completions = new List<Completion>();
+
+        if (currentScope.Type is CompletionScopeType.Expression)
         {
-            Completion.OfKeyword(TokenType.KeywordVal),
-            Completion.OfKeyword(TokenType.KeywordIf),
-            Completion.OfKeyword(TokenType.KeywordElse),
-        };
+            completions.AddRange(_ExpressionScopeKeywordCompletions);
+        }
 
         foreach (var symbol in currentScope.Symbols)
         {
+            if (!FilterSymbol(currentScope.Type, symbol))
+            {
+                continue;
+            }
+
             if (SymbolToCompletion(symbol) is { } completion)
             {
                 completions.Add(completion);
@@ -47,6 +64,15 @@ internal sealed class CompletionProvider
 
         return completions;
     }
+
+    private static bool FilterSymbol(CompletionScopeType scopeType, Symbol symbol) => scopeType switch
+    {
+        CompletionScopeType.Definition => symbol is InstanceTypeSymbol,
+
+        CompletionScopeType.Expression => symbol is not InstanceTypeSymbol,
+
+        _ => throw new System.NotImplementedException(),
+    };
 
     private static Completion? SymbolToCompletion(Symbol symbol) => symbol switch
     {
