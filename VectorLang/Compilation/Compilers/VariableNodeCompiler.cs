@@ -10,20 +10,22 @@ internal static class VariableNodeCompiler
     {
         var variableName = variableNode.Identifier;
 
-        context.Symbols.TryLookup(variableName, out VariableSymbol? variableSymbol);
-
-        context.Symbols.TryLookup(variableName, out ConstantSymbol? constantSymbol);
-
-        if (variableSymbol is not null)
+        if (context.Symbols.TryLookup<VariableSymbol>(variableName, out var variableSymbol))
         {
             return new(variableSymbol.Type, new LoadInstruction(variableSymbol.Address));
         }
 
-        if (constantSymbol is not null)
+        if (context.Symbols.TryLookup<ConstantSymbol>(variableName, out var constantSymbol))
         {
             return constantSymbol.Value is not null
                 ? new(constantSymbol.InstanceType, new PushInstruction(constantSymbol.Value))
                 : new(constantSymbol.InstanceType);
+        }
+
+        if (context.Symbols.TryLookup<ExternalValueSymbol>(variableName, out var externalValueSymbol))
+        {
+            var externalValue = externalValueSymbol.ExternalValue.ValueInstance;
+            return new(externalValue.Type, new PushInstruction(externalValue));
         }
 
         context.Reporter.ReportError(variableNode.Selection, ReportMessage.UndefinedValue($"variable or constant '{variableName}'"));

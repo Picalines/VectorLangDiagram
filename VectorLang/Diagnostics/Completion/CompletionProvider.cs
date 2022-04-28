@@ -80,6 +80,8 @@ internal sealed class CompletionProvider
 
         FunctionSymbol { Function: var function } => Completion.OfFunction(function),
 
+        ExternalValueSymbol { Name: var name, ExternalValue.ValueInstance.Type: var type } => Completion.OfExternalValue(name, type),
+
         ConstantSymbol { Name: var name, InstanceType: var type } => Completion.OfConstant(name, type),
 
         VariableSymbol { Name: var name, Type: var type } => Completion.OfVariable(name, type),

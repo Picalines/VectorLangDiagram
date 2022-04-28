@@ -70,4 +70,11 @@ public sealed class Completion
 
         return new(CompletionKind.Constant, name, type.Name, name);
     }
+
+    internal static Completion OfExternalValue(string name, InstanceType type)
+    {
+        // TODO: may add new completion kind
+
+        return new(CompletionKind.Constant, name, type.Name, name);
+    }
 }

@@ -10,6 +10,8 @@ namespace VectorLang.Compilation;
 
 public static class ProgramCompiler
 {
+    private const string MainFunctionName = "main";
+
     private static readonly List<InstanceType> _InstanceTypes = new()
     {
         NumberInstance.InstanceType,
@@ -90,12 +92,16 @@ public static class ProgramCompiler
             return null;
         }
 
-        return new ExecutableProgram(plotLibrary, mainFunction);
+        var externalValues = context.Symbols
+            .OfType<ExternalValueSymbol>()
+            .ToDictionary(symbol => symbol.Name, symbol => symbol.ExternalValue);
+
+        return new ExecutableProgram(plotLibrary, externalValues, mainFunction);
     }
 
     private static Function? CompileMainFunction(CompilationContext context, Program program)
     {
-        if (!context.Symbols.TryLookup<FunctionSymbol>("main", out var mainFunctionSymbol))
+        if (!context.Symbols.TryLookup<FunctionSymbol>(MainFunctionName, out var mainFunctionSymbol))
         {
             context.Reporter.ReportError(new TextSelection(new(1, 1), 1), ReportMessage.MainFunctionNotFound);
             return null;
@@ -105,7 +111,10 @@ public static class ProgramCompiler
 
         if (mainFunction.Signature.Arguments.Any())
         {
-            var mainFunctionDefinition = program.Definitions.OfType<FunctionDefinition>().First(def => def.Name == "main");
+            var mainFunctionDefinition = program.Definitions
+                .OfType<FunctionDefinition>()
+                .First(def => def.Name == MainFunctionName);
+
             context.Reporter.ReportError(mainFunctionDefinition.NameToken.Selection, ReportMessage.MainFunctionMustHaveNoArguments);
             return null;
         }
@@ -135,6 +144,11 @@ public static class ProgramCompiler
 
     private static void CompileUserDefinitions(Program program, CompilationContext context)
     {
+        foreach (var externalValueDefinition in program.Definitions.OfType<ExternalValueDefinition>())
+        {
+            ExternalValueCompiler.Compile(context, externalValueDefinition);
+        }
+
         foreach (var constantDefinition in program.Definitions.OfType<ConstantDefinition>())
         {
             UserConstantCompiler.Compile(context, constantDefinition);
