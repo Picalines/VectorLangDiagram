@@ -3,13 +3,13 @@ using VectorLang.Model;
 
 namespace VectorLang.Compilation;
 
-public sealed class CompiledProgram
+public sealed class ExecutableProgram
 {
     private readonly PlotLibrary _PlotLibrary;
 
     private readonly Function _MainFunction;
 
-    internal CompiledProgram(PlotLibrary plotLibrary, Function mainFunction)
+    internal ExecutableProgram(PlotLibrary plotLibrary, Function mainFunction)
     {
         _PlotLibrary = plotLibrary;
         _MainFunction = mainFunction;

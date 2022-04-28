@@ -25,7 +25,7 @@ public static class ProgramCompiler
         ColorLibrary.Instance,
     };
 
-    public static CompiledProgram? Compile(string code, out Diagnoser diagnoser)
+    public static ExecutableProgram? Compile(string code, out Diagnoser diagnoser)
     {
         var context = new CompilationContext();
         var (reporter, completionProvider, _) = context;
@@ -61,17 +61,17 @@ public static class ProgramCompiler
             return null;
         }
 
-        var compiledProgram = Compile(context, syntaxTree.Value);
+        var executable = Compile(context, syntaxTree.Value);
 
         if (reporter.AnyErrors())
         {
             return null;
         }
 
-        return compiledProgram;
+        return executable;
     }
 
-    internal static CompiledProgram? Compile(CompilationContext context, Program program)
+    internal static ExecutableProgram? Compile(CompilationContext context, Program program)
     {
         DefineInstanceTypes(context.Symbols);
 
@@ -90,7 +90,7 @@ public static class ProgramCompiler
             return null;
         }
 
-        return new CompiledProgram(plotLibrary, mainFunction);
+        return new ExecutableProgram(plotLibrary, mainFunction);
     }
 
     private static Function? CompileMainFunction(CompilationContext context, Program program)

@@ -72,21 +72,21 @@ def main() -> void = [
 
     private async Task CompileAndRunProgram()
     {
-        var compiledProgram = ProgramCompiler.Compile(CodeEditor.Value, out Diagnoser);
+        var executable = ProgramCompiler.Compile(CodeEditor.Value, out Diagnoser);
 
         foreach (var report in Diagnoser.Reports)
         {
             await CodeEditor.AddReportAsync(report);
         }
 
-        if (compiledProgram is null)
+        if (executable is null)
         {
             return;
         }
 
         try
         {
-            LastPlottedVectors = compiledProgram.PlotVectors();
+            LastPlottedVectors = executable.PlotVectors();
         }
         catch (RuntimeException runtimeException)
         {
