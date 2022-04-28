@@ -10,12 +10,7 @@ internal static class VariableAssignmentCompiler
 {
     public static CompiledExpression Compile(CompilationContext context, VariableAssignmentNode variableAssignment)
     {
-        var variableName = variableAssignment.TargetVariable.Identifier;
-
-        if (!context.Symbols.TryLookup<VariableSymbol>(variableName, out var varSymbol))
-        {
-            context.Reporter.ReportError(variableAssignment.TargetVariable.Selection, ReportMessage.UndefinedValue($"variable '{variableName}'"));
-        }
+        var varSymbol = LookupVariable(context, variableAssignment.TargetVariable);
 
         var expectedValueType = varSymbol?.Type ?? InvalidInstanceType.Instance;
 
@@ -30,5 +25,24 @@ internal static class VariableAssignmentCompiler
             expectedValueType,
             compiledValue.Instructions.Append(new StoreInstruction(varSymbol.Address, false))
         );
+    }
+
+    private static VariableSymbol? LookupVariable(CompilationContext context, VariableNode variable)
+    {
+        context.Symbols.TryLookup(variable.Identifier, out var symbol);
+
+        if (symbol is null)
+        {
+            context.Reporter.ReportError(variable.Selection, ReportMessage.UndefinedValue($"variable '{variable.Identifier}'"));
+            return null;
+        }
+
+        if (symbol is not VariableSymbol variableSymbol)
+        {
+            context.Reporter.ReportError(variable.Selection, ReportMessage.NotAssignableValue(variable.Identifier));
+            return null;
+        }
+
+        return variableSymbol;
     }
 }

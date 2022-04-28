@@ -19,6 +19,9 @@ internal static class ReportMessage
     public static string WrongArgumentType(int argumentIndex, string argumentName, InstanceType gotType, InstanceType expectedType) =>
         $"{NotAssignableType(gotType, expectedType)} in argument #{argumentIndex + 1} '{argumentName}'";
 
+    public static string NotAssignableValue(string value) =>
+        $"{value} cannot be assigned";
+
     public static string RedefinedValue(string value) =>
         $"{value} is already defined";
 
