@@ -31,7 +31,7 @@ internal static class UserFunctionCompiler
 
         if (context.Symbols.ContainsLocal(definition.Name))
         {
-            context.Reporter.ReportError(definition.NameToken.Selection, ReportMessage.RedefinedValue($"function {definition.Name}"));
+            context.Reporter.ReportError(definition.NameToken.Selection, ReportMessage.RedefinedValue(definition.Name));
             compiledSuccessfully = false;
         }
 
