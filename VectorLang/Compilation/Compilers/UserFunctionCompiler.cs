@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using VectorLang.Diagnostics;
 using VectorLang.Interpretation;
@@ -12,11 +11,11 @@ namespace VectorLang.Compilation;
 
 internal static class UserFunctionCompiler
 {
-    public static UserFunction? Compile(CompilationContext context, FunctionDefinition definition)
+    public static void Compile(CompilationContext context, FunctionDefinition definition)
     {
         if (CompileSignature(context, definition) is not CallSignature signature)
         {
-            return null;
+            return;
         }
 
         var lazyBody = new Lazy<IReadOnlyList<Instruction>>(() => CompileBody(context, signature, definition));
@@ -24,8 +23,6 @@ internal static class UserFunctionCompiler
         var userFunction = new UserFunction(definition.Name, signature, lazyBody);
 
         context.Symbols.Insert(new FunctionSymbol(userFunction));
-
-        return userFunction;
     }
 
     private static CallSignature? CompileSignature(CompilationContext context, FunctionDefinition definition)
@@ -49,20 +46,13 @@ internal static class UserFunctionCompiler
             compiledSuccessfully = false;
         }
 
-        if (!TryLookupType(context, definition.ReturnType, out var returnType))
-        {
-            compiledSuccessfully = false;
-        }
+        var returnType = TypeNodeCompiler.Compile(context, definition.ReturnType);
 
         var arguments = new List<(string, InstanceType)>();
 
         foreach (var defArgument in definition.Arguments)
         {
-            if (!TryLookupType(context, defArgument.Type, out var argumentType))
-            {
-                compiledSuccessfully = false;
-                continue;
-            }
+            var argumentType = TypeNodeCompiler.Compile(context, defArgument.Type);
 
             if (argumentType.IsAssignableTo(VoidInstance.InstanceType))
             {
@@ -106,19 +96,5 @@ internal static class UserFunctionCompiler
         functionInstructions.AddRange(compiledBody.Instructions);
 
         return functionInstructions;
-    }
-
-    private static bool TryLookupType(CompilationContext context, TypeNode typeNode, [NotNullWhen(true)] out InstanceType? type)
-    {
-        if (context.Symbols.TryLookup<InstanceTypeSymbol>(typeNode.Name, out var typeSymbol))
-        {
-            type = typeSymbol.Type;
-            return true;
-        }
-
-        context.Reporter.ReportError(typeNode.Selection, ReportMessage.UndefinedValue($"type '{typeNode.Name}'"));
-
-        type = null;
-        return false;
     }
 }
