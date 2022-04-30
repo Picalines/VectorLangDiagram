@@ -1,0 +1,110 @@
+﻿@page "/editor"
+
+@using System.Timers
+@using VectorLang.Compilation
+@using VectorLang.Diagnostics
+@using VectorLang.Model
+@using VectorLang.Tokenization
+
+<div id="sections">
+    <section id="code-editor-section">
+        <CodeEditor @ref=_CodeEditor InitialValue=@ExampleProgram
+            OnChange=OnCodeEdited
+            CompletionProvider=ProvideCompletions />
+    </section>
+    <section>
+        <DiagramView Vectors=_LastPlottedVectors ErrorMessage=@_RuntimeErrorMessage />
+    </section>
+</div>
+
+@code {
+    private const string ExampleProgram = @"
+// Velcome to VectorLang!
+
+def sum(vector a, vector b) -> vector = a + b;
+
+def main() -> void = [
+    val a := {1, 0};
+    val b := {0, 1};
+
+    fill(RED);
+    plot(a);
+
+    fill(BLUE);
+    plot(b);
+
+    fill(MAGENTA);
+    plot(sum(a, b));
+];
+";
+    private readonly Timer _Timer = new(250);
+
+    private CodeEditor _CodeEditor = null!;
+
+    private Diagnoser? _Diagnoser = null;
+
+    private IReadOnlyList<PlottedVector> _LastPlottedVectors = Array.Empty<PlottedVector>();
+
+    private string? _RuntimeErrorMessage = null;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _Timer.Elapsed += async (_, _) => await InvokeAsync(CompileAndRunProgram);
+        _Timer.AutoReset = false;
+
+        _Timer.Start();
+    }
+
+    private async Task OnCodeEdited(string code)
+    {
+        await _CodeEditor.ClearReportsAsync();
+
+        _RuntimeErrorMessage = null;
+
+        _Timer.Stop();
+        _Timer.Start();
+    }
+
+    private async Task CompileAndRunProgram()
+    {
+        var executable = ProgramCompiler.Compile(_CodeEditor.Value, out _Diagnoser);
+
+        foreach (var report in _Diagnoser.Reports)
+        {
+            await _CodeEditor.AddReportAsync(report);
+        }
+
+        if (executable is null)
+        {
+            return;
+        }
+
+        try
+        {
+            _LastPlottedVectors = executable.PlotVectors();
+        }
+        catch (RuntimeException runtimeException)
+        {
+            _RuntimeErrorMessage = runtimeException.Message;
+
+            if (runtimeException.Selection is { } selection)
+            {
+                _RuntimeErrorMessage = $"{selection}: {_RuntimeErrorMessage}";
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private IReadOnlyList<Completion> ProvideCompletions(TextLocation location)
+    {
+        if (_Diagnoser is not null)
+        {
+            return _Diagnoser.GetCompletions(location);
+        }
+
+        return Array.Empty<Completion>();
+    }
+}
