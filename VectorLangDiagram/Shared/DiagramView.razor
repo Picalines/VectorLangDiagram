@@ -50,7 +50,7 @@
     [Parameter]
     public string? ErrorMessage { get; set; } = null;
 
-    private IJSObjectReference? PanZoom;
+    private IJSObjectReference? _PanZoom;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -58,15 +58,15 @@
 
         if (firstRender)
         {
-            PanZoom = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createPanZoom", "#view");
+            _PanZoom = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createPanZoom", "#view");
         }
     }
 
     private async Task OnResetViewClick()
     {
-        if (PanZoom is not null)
+        if (_PanZoom is not null)
         {
-            await PanZoom.InvokeVoidAsync("reset");
+            await _PanZoom.InvokeVoidAsync("reset");
         }
     }
 }

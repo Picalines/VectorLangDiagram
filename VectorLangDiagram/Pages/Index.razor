@@ -8,12 +8,12 @@
 
 <div id="sections">
     <section id="code-editor-section">
-        <CodeEditor @ref=CodeEditor InitialValue=@ExampleProgram
+        <CodeEditor @ref=_CodeEditor InitialValue=@ExampleProgram
             OnChange=OnCodeEdited
-            CompletionProvider="(location) => Diagnoser?.GetCompletions(location)" />
+            CompletionProvider=ProvideCompletions />
     </section>
     <section>
-        <DiagramView Vectors=LastPlottedVectors ErrorMessage=@RuntimeErrorMessage />
+        <DiagramView Vectors=_LastPlottedVectors ErrorMessage=@_RuntimeErrorMessage />
     </section>
 </div>
 
@@ -37,46 +37,43 @@ def main() -> void = [
     plot(sum(a, b));
 ];
 ";
+    private readonly Timer _Timer = new(250);
 
-    private const double CompilationLatency = 250;
+    private CodeEditor _CodeEditor = null!;
 
-    private readonly Timer Timer = new(CompilationLatency);
+    private Diagnoser? _Diagnoser = null;
 
-    private CodeEditor CodeEditor = null!;
+    private IReadOnlyList<PlottedVector> _LastPlottedVectors = Array.Empty<PlottedVector>();
 
-    private IReadOnlyList<PlottedVector> LastPlottedVectors = Array.Empty<PlottedVector>();
-
-    private string? RuntimeErrorMessage = null;
-
-    private Diagnoser? Diagnoser;
+    private string? _RuntimeErrorMessage = null;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        Timer.Elapsed += async (_, _) => await InvokeAsync(CompileAndRunProgram);
-        Timer.AutoReset = false;
+        _Timer.Elapsed += async (_, _) => await InvokeAsync(CompileAndRunProgram);
+        _Timer.AutoReset = false;
 
-        Timer.Start();
+        _Timer.Start();
     }
 
     private async Task OnCodeEdited(string code)
     {
-        await CodeEditor.ClearReportsAsync();
+        await _CodeEditor.ClearReportsAsync();
 
-        RuntimeErrorMessage = null;
+        _RuntimeErrorMessage = null;
 
-        Timer.Stop();
-        Timer.Start();
+        _Timer.Stop();
+        _Timer.Start();
     }
 
     private async Task CompileAndRunProgram()
     {
-        var executable = ProgramCompiler.Compile(CodeEditor.Value, out Diagnoser);
+        var executable = ProgramCompiler.Compile(_CodeEditor.Value, out _Diagnoser);
 
-        foreach (var report in Diagnoser.Reports)
+        foreach (var report in _Diagnoser.Reports)
         {
-            await CodeEditor.AddReportAsync(report);
+            await _CodeEditor.AddReportAsync(report);
         }
 
         if (executable is null)
@@ -86,18 +83,28 @@ def main() -> void = [
 
         try
         {
-            LastPlottedVectors = executable.PlotVectors();
+            _LastPlottedVectors = executable.PlotVectors();
         }
         catch (RuntimeException runtimeException)
         {
-            RuntimeErrorMessage = runtimeException.Message;
+            _RuntimeErrorMessage = runtimeException.Message;
 
             if (runtimeException.Selection is { } selection)
             {
-                RuntimeErrorMessage = $"{selection}: {RuntimeErrorMessage}";
+                _RuntimeErrorMessage = $"{selection}: {_RuntimeErrorMessage}";
             }
         }
 
         StateHasChanged();
+    }
+
+    private IReadOnlyList<Completion> ProvideCompletions(TextLocation location)
+    {
+        if (_Diagnoser is not null)
+        {
+            return _Diagnoser.GetCompletions(location);
+        }
+
+        return Array.Empty<Completion>();
     }
 }

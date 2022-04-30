@@ -17,13 +17,13 @@
     public EventCallback<string> OnChange { get; set; }
 
     [Parameter]
-    public Func<TextLocation, IReadOnlyList<Completion>?>? CompletionProvider { get; set; }
+    public Func<TextLocation, IReadOnlyList<Completion>>? CompletionProvider { get; set; }
 
     public string Value { get; private set; } = "";
 
-    private DotNetObjectReference<CodeEditor>? ThisJsReference;
+    private DotNetObjectReference<CodeEditor>? _ThisJsReference;
 
-    private IJSObjectReference? MonacoEditorReference;
+    private IJSObjectReference? _MonacoEditorReference;
 
     protected override void OnInitialized()
     {
@@ -38,8 +38,8 @@
 
         if (firstRender)
         {
-            ThisJsReference = DotNetObjectReference.Create(this);
-            MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", ThisJsReference, "#monaco-container", InitialValue);
+            _ThisJsReference = DotNetObjectReference.Create(this);
+            _MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", _ThisJsReference, "#monaco-container", InitialValue);
 
             await OnDidChangeContent(InitialValue);
         }
@@ -47,7 +47,7 @@
 
     void IDisposable.Dispose()
     {
-        ThisJsReference?.Dispose();
+        _ThisJsReference?.Dispose();
     }
 
     [JSInvokable]
@@ -68,17 +68,17 @@
 
     public async Task ClearReportsAsync()
     {
-        if (MonacoEditorReference is not null)
+        if (_MonacoEditorReference is not null)
         {
-            await MonacoEditorReference.InvokeVoidAsync("clearReports");
+            await _MonacoEditorReference.InvokeVoidAsync("clearReports");
         }
     }
 
     public async Task AddReportAsync(Report report)
     {
-        if (MonacoEditorReference is not null)
+        if (_MonacoEditorReference is not null)
         {
-            await MonacoEditorReference.InvokeVoidAsync("addReport", report);
+            await _MonacoEditorReference.InvokeVoidAsync("addReport", report);
         }
     }
 }
