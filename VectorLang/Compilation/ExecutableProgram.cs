@@ -23,7 +23,7 @@ public sealed class ExecutableProgram
 
     public IReadOnlyList<PlottedVector> PlotVectors()
     {
-        _PlotLibrary.ClearVectors();
+        _PlotLibrary.Reset();
 
         _MainFunction.Call();
 

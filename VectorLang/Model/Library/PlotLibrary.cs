@@ -25,14 +25,16 @@ internal sealed class PlotLibrary : ReflectionLibrary
 
     public PlotLibrary()
     {
-        _ContextStack.Push(new PlotContext());
+        Reset();
     }
 
     public IReadOnlyList<PlottedVector> PlottedVectors => _PlottedVectors;
 
-    public void ClearVectors()
+    public void Reset()
     {
         _PlottedVectors.Clear();
+        _ContextStack.Clear();
+        _ContextStack.Push(new PlotContext());
     }
 
     [ReflectionFunction("push")]
