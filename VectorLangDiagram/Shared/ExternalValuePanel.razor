@@ -1,0 +1,16 @@
+﻿@using VectorLang.Model
+
+<div id="externals-panel">
+    @foreach (var (name, externalValue) in ExternalValues)
+    {
+        <ExternalValueControl Name=@name ExternalValue=externalValue OnChange=OnChange />
+    }
+</div>
+
+@code {
+    [Parameter]
+    public IReadOnlyDictionary<string, ExternalValue> ExternalValues { get; set; } = new Dictionary<string, ExternalValue>();
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+}

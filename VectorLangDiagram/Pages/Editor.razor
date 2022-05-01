@@ -13,6 +13,8 @@
             CompletionProvider=ProvideCompletions />
     </section>
     <section>
+        <ExternalValuePanel ExternalValues=_LastExternalValues
+            OnChange=ExecuteProgram />
         <DiagramView Vectors=_LastPlottedVectors ErrorMessage=@_RuntimeErrorMessage />
     </section>
 </div>
@@ -21,11 +23,15 @@
     private const string ExampleProgram = @"
 // Velcome to VectorLang!
 
+external number zoom;
+
 def sum(vector a, vector b) -> vector = a + b;
 
 def main() -> void = [
     val a := {1, 0};
     val b := {0, 1};
+
+    scale({ zoom, zoom });
 
     fill(RED);
     plot(a);
@@ -37,13 +43,18 @@ def main() -> void = [
     plot(sum(a, b));
 ];
 ";
+
     private readonly Timer _Timer = new(250);
 
     private CodeEditor _CodeEditor = null!;
 
     private Diagnoser? _Diagnoser = null;
 
+    private ExecutableProgram? _ExecutableProgram = null;
+
     private IReadOnlyList<PlottedVector> _LastPlottedVectors = Array.Empty<PlottedVector>();
+
+    private IReadOnlyDictionary<string, ExternalValue> _LastExternalValues = new Dictionary<string, ExternalValue>();
 
     private string? _RuntimeErrorMessage = null;
 
@@ -51,8 +62,8 @@ def main() -> void = [
     {
         base.OnInitialized();
 
-        _Timer.Elapsed += async (_, _) => await InvokeAsync(CompileAndRunProgram);
         _Timer.AutoReset = false;
+        _Timer.Elapsed += async (_, _) => await InvokeAsync(OnTimerElapsed);
 
         _Timer.Start();
     }
@@ -67,7 +78,17 @@ def main() -> void = [
         _Timer.Start();
     }
 
-    private async Task CompileAndRunProgram()
+    private async Task OnTimerElapsed()
+    {
+        await CompileProgram();
+
+        if (_ExecutableProgram is not null)
+        {
+            ExecuteProgram();
+        }
+    }
+
+    private async Task CompileProgram()
     {
         var executable = ProgramCompiler.Compile(_CodeEditor.Value, out _Diagnoser);
 
@@ -76,14 +97,23 @@ def main() -> void = [
             await _CodeEditor.AddReportAsync(report);
         }
 
-        if (executable is null)
+        if (executable is not null)
+        {
+            _ExecutableProgram = executable;
+        }
+    }
+
+    private void ExecuteProgram()
+    {
+        if (_ExecutableProgram is null)
         {
             return;
         }
 
         try
         {
-            _LastPlottedVectors = executable.PlotVectors();
+            _LastPlottedVectors = _ExecutableProgram.PlotVectors();
+            _LastExternalValues = _ExecutableProgram.ExternalValues;
         }
         catch (RuntimeException runtimeException)
         {

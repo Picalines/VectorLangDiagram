@@ -1,0 +1,31 @@
+﻿@using VectorLang.Model
+
+<div class="external-value-control">
+    @Name
+    @switch (ExternalValue)
+    {
+        case ExternalNumberValue numberValue:
+            <text><input type="number" value=@numberValue.Value @onchange="NumberValueChanged" /></text>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Name { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public ExternalValue ExternalValue { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback OnChange { get; set; }
+
+    private async Task NumberValueChanged(ChangeEventArgs args)
+    {
+        if (double.TryParse(args.Value as string, out var number))
+        {
+            (ExternalValue as ExternalNumberValue)!.Value = number;
+            await OnChange.InvokeAsync();
+        }
+    }
+}

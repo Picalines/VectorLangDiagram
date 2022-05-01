@@ -1,0 +1,9 @@
+﻿#externals-panel {
+    position: fixed;
+    bottom: 0;
+    margin: 10px;
+
+    z-index: 5;
+
+    color: white;
+}
