@@ -24,8 +24,12 @@ internal static class VariableNodeCompiler
 
         if (context.Symbols.TryLookup<ExternalValueSymbol>(variableName, out var externalValueSymbol))
         {
-            var externalValue = externalValueSymbol.ExternalValue.ValueInstance;
-            return new(externalValue.Type, new PushInstruction(externalValue));
+            var externalValue = externalValueSymbol.ExternalValue;
+
+            return new(externalValue.ValueInstance.Type, new LazyPushInstruction(() =>
+            {
+                return externalValue.ValueInstance;
+            }));
         }
 
         context.Reporter.ReportError(variableNode.Selection, ReportMessage.UndefinedValue($"variable or constant '{variableName}'"));

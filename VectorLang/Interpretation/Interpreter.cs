@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using VectorLang.Compilation;
 using VectorLang.Model;
 
 namespace VectorLang.Interpretation;
@@ -53,6 +52,13 @@ internal static partial class Interpreter
             case PushInstruction { Instance: var value }:
             {
                 context.PushToStack(value);
+            }
+            break;
+
+            case LazyPushInstruction { CreateInstance: var createInstance }:
+            {
+                var newInstance = createInstance();
+                context.PushToStack(newInstance);
             }
             break;
 
