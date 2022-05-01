@@ -4,8 +4,8 @@ public abstract class ExternalValue
 {
     internal Instance ValueInstance { get; private protected set; }
 
-    internal ExternalValue(Instance value)
+    internal ExternalValue(Instance defaultValue)
     {
-        ValueInstance = value;
+        ValueInstance = defaultValue;
     }
 }

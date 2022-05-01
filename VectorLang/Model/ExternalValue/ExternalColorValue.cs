@@ -2,7 +2,7 @@
 
 public sealed class ExternalColorValue : ExternalValue
 {
-    internal ExternalColorValue() : base(ColorLibrary.White)
+    internal ExternalColorValue(ColorInstance color) : base(color)
     {
     }
 

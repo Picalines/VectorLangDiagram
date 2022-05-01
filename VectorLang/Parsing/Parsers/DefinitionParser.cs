@@ -8,16 +8,17 @@ internal static class DefinitionParser
         from constKeyword in ParseToken.KeywordConst
         from name in ParseToken.Identifier.Named("name of constant")
         from equalsOp in ParseToken.OperatorEquals
-        from valueExpression in ValueExpressionParser.Lambda.Named("value of constant")
+        from valueExpression in ValueExpressionParser.Lambda.Named($"value of '{name.Value}'")
         from semicolon in ParseToken.Semicolon
         select new ConstantDefinition(name, equalsOp, semicolon, valueExpression);
 
     public static readonly Parser<ExternalValueDefinition> ExternalValue =
         from externalKeyword in ParseToken.KeywordExternal
-        from type in TypeParser.Type.Named("type of external value")
         from name in ParseToken.Identifier.Named("name of external value")
+        from equalsOp in ParseToken.OperatorEquals
+        from defaultValueExpression in ValueExpressionParser.Lambda.Named($"default value of '{name.Value}'")
         from semicolon in ParseToken.Semicolon
-        select new ExternalValueDefinition(type, name, semicolon);
+        select new ExternalValueDefinition(name, equalsOp, defaultValueExpression, semicolon);
 
     public static readonly Parser<ArgumentDefinition> Argument =
         from type in TypeParser.Type.Named("argument type")

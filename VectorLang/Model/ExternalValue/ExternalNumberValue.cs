@@ -2,7 +2,7 @@
 
 public sealed class ExternalNumberValue : ExternalValue
 {
-    internal ExternalNumberValue() : base(NumberInstance.From(0))
+    internal ExternalNumberValue(NumberInstance number) : base(number)
     {
     }
 

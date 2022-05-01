@@ -2,7 +2,7 @@
 
 public sealed class ExternalVectorValue : ExternalValue
 {
-    internal ExternalVectorValue() : base(new VectorInstance(0, 0))
+    internal ExternalVectorValue(VectorInstance vector) : base(vector)
     {
     }
 

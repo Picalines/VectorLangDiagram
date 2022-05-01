@@ -15,6 +15,7 @@ internal static class UserConstantCompiler
 
         context.CompletionProvider.AddExpressionScope(TextSelection.FromTokens(constantDefinition.EqualsToken, constantDefinition.EndToken), context.Symbols);
 
+        // TODO: create block with FunctionContext
         var compiledValue = ValueExpressionCompiler.Compile(context, constantDefinition.ValueExpression);
 
         if (context.Symbols.ContainsLocal(constantName))
@@ -28,19 +29,7 @@ internal static class UserConstantCompiler
             return;
         }
 
-        Instance? constantValue = null;
-
-        if (!context.Reporter.AnyErrors())
-        {
-            try
-            {
-                constantValue = Interpreter.Interpret(compiledValue.Instructions.ToList());
-            }
-            catch (RuntimeException)
-            {
-                context.Reporter.ReportError(constantDefinition.ValueExpression.Selection, ReportMessage.CantEvaluateConstantExpression);
-            }
-        }
+        var constantValue = TryEvaluateConstant(context, compiledValue, constantDefinition.NameToken.Selection);
 
         ConstantSymbol constantSymbol = constantValue switch
         {
@@ -49,5 +38,23 @@ internal static class UserConstantCompiler
         };
 
         context.Symbols.Insert(constantSymbol);
+    }
+
+    public static Instance? TryEvaluateConstant(CompilationContext context, CompiledExpression compiledValue, TextSelection errorSelection)
+    {
+        if (context.Reporter.AnyErrors())
+        {
+            return null;
+        }
+
+        try
+        {
+            return Interpreter.Interpret(compiledValue.Instructions.ToList());
+        }
+        catch (RuntimeException runtimeException)
+        {
+            context.Reporter.ReportError(errorSelection, ReportMessage.FailedToEvaluateConstantExpression(runtimeException.Message));
+            return null;
+        }
     }
 }

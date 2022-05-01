@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using VectorLang.Diagnostics;
 using VectorLang.Model;
 using VectorLang.SyntaxTree;
+using VectorLang.Tokenization;
 
 namespace VectorLang.Compilation;
 
 internal static class ExternalValueCompiler
 {
-    private static readonly Dictionary<InstanceType, Type> _ExternalValueTypes = new()
+    private static readonly Dictionary<InstanceType, Instance> _DefaultTypeValues = new()
     {
-        [NumberInstance.InstanceType] = typeof(ExternalNumberValue),
-        [BooleanInstance.InstanceType] = typeof(ExternalBooleanValue),
-        [VectorInstance.InstanceType] = typeof(ExternalVectorValue),
-        [ColorInstance.InstanceType] = typeof(ExternalColorValue),
+        [NumberInstance.InstanceType] = NumberInstance.From(0),
+        [BooleanInstance.InstanceType] = BooleanInstance.False,
+        [VectorInstance.InstanceType] = new VectorInstance(0, 0),
+        [ColorInstance.InstanceType] = ColorLibrary.White,
     };
 
     public static void Compile(CompilationContext context, ExternalValueDefinition externalValueDefinition)
     {
         var name = externalValueDefinition.Name;
+
+        context.CompletionProvider.AddExpressionScope(TextSelection.FromTokens(externalValueDefinition.EqualsToken, externalValueDefinition.EndToken), context.Symbols);
 
         if (context.Symbols.ContainsLocal(name))
         {
@@ -27,18 +28,30 @@ internal static class ExternalValueCompiler
             return;
         }
 
-        var type = TypeNodeCompiler.Compile(context, externalValueDefinition.Type);
+        // TODO: create block with FunctionContext
+        var compiledDefaultValue = ValueExpressionCompiler.Compile(context, externalValueDefinition.DefaultValue);
 
-        if (!_ExternalValueTypes.TryGetValue(type, out var externalValueType))
+        var defaultValue = UserConstantCompiler.TryEvaluateConstant(context, compiledDefaultValue, externalValueDefinition.NameToken.Selection);
+
+        var externalValue = _DefaultTypeValues.TryGetValue(compiledDefaultValue.Type, out var defaultValueOfType)
+            ? TryCreateExternalValue(defaultValue ?? defaultValueOfType)
+            : null;
+
+        if (externalValue is null)
         {
-            context.Reporter.ReportError(externalValueDefinition.Type.Selection, ReportMessage.TypeIsNotAllowed(type));
+            context.Reporter.ReportError(externalValueDefinition.NameToken.Selection, ReportMessage.TypeIsNotAllowed(compiledDefaultValue.Type));
             return;
         }
 
-        var externalValue = Activator.CreateInstance(externalValueType, true) as ExternalValue;
-
-        Debug.Assert(externalValue is not null);
-
         context.Symbols.Insert(new ExternalValueSymbol(name, externalValue));
     }
+
+    private static ExternalValue? TryCreateExternalValue(Instance defaultValue) => defaultValue switch
+    {
+        NumberInstance number => new ExternalNumberValue(number),
+        BooleanInstance boolean => new ExternalBooleanValue(boolean),
+        VectorInstance vector => new ExternalVectorValue(vector),
+        ColorInstance color => new ExternalColorValue(color),
+        _ => null,
+    };
 }

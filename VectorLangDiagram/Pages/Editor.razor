@@ -23,7 +23,7 @@
     private const string ExampleProgram = @"
 // Velcome to VectorLang!
 
-external number zoom;
+external zoom = {1, 1};
 
 def sum(vector a, vector b) -> vector = a + b;
 
@@ -31,7 +31,7 @@ def main() -> void = [
     val a := {1, 0};
     val b := {0, 1};
 
-    scale({ zoom, zoom });
+    scale(zoom);
 
     fill(RED);
     plot(a);

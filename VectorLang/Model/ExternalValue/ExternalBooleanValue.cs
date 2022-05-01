@@ -2,7 +2,7 @@
 
 public sealed class ExternalBooleanValue : ExternalValue
 {
-    internal ExternalBooleanValue() : base(BooleanInstance.False)
+    internal ExternalBooleanValue(BooleanInstance boolean) : base(boolean)
     {
     }
 
