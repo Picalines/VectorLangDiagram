@@ -1,6 +1,52 @@
 ﻿.external-value-control {
     padding: 10px;
+    width: fit-content;
+    margin-top: 10px;
+
     border-radius: 10px 10px 10px 0;
 
     background-color: #301965;
+}
+
+.coord-label {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+
+    text-align: center;
+    color: rgb(100%, 100%, 100%, 75%);
+
+    user-select: none;
+}
+
+.top-name {
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.vector-x {
+    background-color: #AA0000;
+}
+
+.vector-y {
+    background-color: #00AA00;
+}
+
+input[type=number] {
+    width: 75px;
+    height: 20px;
+    border: none;
+}
+
+input[type=number]:focus {
+    outline: none;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 6px;
+}
+
+label:last-child {
+    margin-bottom: 0;
 }

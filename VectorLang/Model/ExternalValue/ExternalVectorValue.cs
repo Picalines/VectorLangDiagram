@@ -19,4 +19,16 @@ public sealed class ExternalVectorValue : ExternalValue
             ValueInstance = new VectorInstance(x, y);
         }
     }
+
+    public double X
+    {
+        get => (ValueInstance as VectorInstance)!.X.Value;
+        set => Value = (value, Y);
+    }
+
+    public double Y
+    {
+        get => (ValueInstance as VectorInstance)!.Y.Value;
+        set => Value = (X, value);
+    }
 }

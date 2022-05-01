@@ -23,7 +23,13 @@
     private const string ExampleProgram = @"
 // Velcome to VectorLang!
 
+external aColor = RED;
+external bColor = BLUE;
+
+external useZoom = true;
 external zoom = {1, 1};
+
+external rotation = 0deg;
 
 def sum(vector a, vector b) -> vector = a + b;
 
@@ -31,15 +37,18 @@ def main() -> void = [
     val a := {1, 0};
     val b := {0, 1};
 
-    scale(zoom);
+    if (useZoom)
+        scale(zoom);
 
-    fill(RED);
+    rotate(rotation);
+
+    fill(aColor);
     plot(a);
 
-    fill(BLUE);
+    fill(bColor);
     plot(b);
 
-    fill(MAGENTA);
+    fill(aColor.blend(bColor, 0.5));
     plot(sum(a, b));
 ];
 ";

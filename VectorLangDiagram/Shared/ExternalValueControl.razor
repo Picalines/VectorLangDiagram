@@ -1,12 +1,57 @@
-﻿@using VectorLang.Model
+﻿@using System.Globalization
+@using System.Drawing
+@using VectorLang.Model
 
 <div class="external-value-control">
-    @Name
     @switch (ExternalValue)
     {
         case ExternalNumberValue numberValue:
-            <text><input type="number" value=@numberValue.Value @onchange="NumberValueChanged" /></text>
-            break;
+        {
+            <label>
+                @Name
+                <input type=number step=0.01 value=@NumberInputValue(numberValue.Value)
+                    @onchange="ChangeNumberValue(value => numberValue.Value = value)" />
+            </label>
+        }
+        break;
+
+        case ExternalBooleanValue booleanValue:
+        {
+            <label>
+                @Name
+                <input type=checkbox checked=@booleanValue.Value
+                    @onchange="ChangeValue(value => booleanValue.Value = (bool)value!)" />
+            </label>
+        }
+        break;
+
+        case ExternalVectorValue vectorValue:
+        {
+            <span class="top-name">@Name</span>
+            <br />
+            <label>
+                <span class="coord-label vector-x">X</span>
+                <input type=number step=0.01 value=@NumberInputValue(vectorValue.X)
+                    @onchange="ChangeNumberValue(value => vectorValue.X = value)" />
+            </label>
+            <br />
+            <label>
+                <span class="coord-label vector-y">Y</span>
+                <input type=number step=0.01 value=@NumberInputValue(vectorValue.Y)
+                    @onchange="ChangeNumberValue(value => vectorValue.Y = value)" />
+            </label>
+        }
+        break;
+
+        case ExternalColorValue colorValue:
+        {
+            <label>
+                @Name
+                <input type=color value=@ColorInputValue(colorValue.Value)
+                    @onchange="ChangeValue(value => colorValue.Value = ToTuple(ColorTranslator.FromHtml((value as string)!)))" />
+            </label>
+        }
+        break;
     }
 </div>
 
@@ -20,12 +65,39 @@
     [Parameter]
     public EventCallback OnChange { get; set; }
 
-    private async Task NumberValueChanged(ChangeEventArgs args)
+    private Func<ChangeEventArgs, Task> ChangeValue(Action<object?> setter)
     {
-        if (double.TryParse(args.Value as string, out var number))
+        return async args =>
         {
-            (ExternalValue as ExternalNumberValue)!.Value = number;
+            setter(args.Value);
             await OnChange.InvokeAsync();
-        }
+        };
+    }
+
+    private Func<ChangeEventArgs, Task> ChangeNumberValue(Action<double> setter)
+    {
+        return ChangeValue(value =>
+        {
+            if (double.TryParse(value as string, NumberStyles.Any, CultureInfo.InvariantCulture, out var number))
+            {
+                setter(number);
+            }
+        });
+    }
+
+    private static string NumberInputValue(double value)
+    {
+        return value.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private static string ColorInputValue((double R, double G, double B) value)
+    {
+        var (r, g, b) = value;
+        return ColorTranslator.ToHtml(Color.FromArgb((int)(r * 255), (int)(g * 255), (int)(b * 255)));
+    }
+
+    private static (double R, double G, double B) ToTuple(Color color)
+    {
+        return (color.R / 255.0, color.G / 255.0, color.B / 255.0);
     }
 }
