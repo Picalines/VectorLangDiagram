@@ -2,7 +2,7 @@
 
 namespace VectorLang.Model;
 
-[AttributeUsage(AttributeTargets.Method)]
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 internal sealed class InstanceOperatorAttribute : Attribute
 {
 }
