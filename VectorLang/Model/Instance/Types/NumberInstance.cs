@@ -69,6 +69,15 @@ internal sealed class NumberInstance : ReflectionInstance
     [InstanceMethod("sqrt")]
     public NumberInstance Sqrt() => Math.Sqrt(Value);
 
+    [InstanceMethod("pow")]
+    public NumberInstance Pow(NumberInstance power) => Math.Pow(Value, power.Value);
+
+    [InstanceMethod("degToRad")]
+    public NumberInstance DegToRad() => Value * (Math.PI / 180.0);
+
+    [InstanceMethod("radToDeg")]
+    public NumberInstance RadToDeg() => Value / Math.PI * 180.0;
+
     [InstanceMethod("sin")]
     public NumberInstance Sin() => Math.Sin(Value);
 
