@@ -119,6 +119,8 @@ def main() -> void = [
             return;
         }
 
+        _RuntimeErrorMessage = null;
+
         try
         {
             _LastPlottedVectors = _ExecutableProgram.PlotVectors();
