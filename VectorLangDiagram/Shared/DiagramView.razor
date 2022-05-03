@@ -34,10 +34,12 @@
                 <line x1=-100 y1=0 x2=100 y2=0 stroke="#550000" stroke-width=0.05 />
                 <line x1=0 y1=-100 x2=0 y2=100 stroke="#005500" stroke-width=0.05 />
 
-                @foreach (var vector in Vectors)
-                {
-                    <PlottedVectorView Vector=vector />
-                }
+                <CascadingValue Value="@(new HashSet<string>())">
+                    @foreach (var vector in Vectors)
+                    {
+                        <PlottedVectorView Vector=vector />
+                    }
+                </CascadingValue>
             </g>
         </svg>
     </div>
