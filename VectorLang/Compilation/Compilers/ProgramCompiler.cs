@@ -144,18 +144,14 @@ public static class ProgramCompiler
 
     private static void CompileUserDefinitions(Program program, CompilationContext context)
     {
-        foreach (var externalOrConstant in program.Definitions.Where(def => def is ConstantDefinition or ExternalValueDefinition))
+        foreach (var constantDefinition in program.Definitions.OfType<ConstantDefinition>())
         {
-            switch (externalOrConstant)
-            {
-                case ConstantDefinition constantDefinition:
-                    UserConstantCompiler.Compile(context, constantDefinition);
-                    break;
+            UserConstantCompiler.Compile(context, constantDefinition);
+        }
 
-                case ExternalValueDefinition externalValueDefinition:
-                    ExternalValueCompiler.Compile(context, externalValueDefinition);
-                    break;
-            }
+        foreach (var externalDefinition in program.Definitions.OfType<ExternalValueDefinition>())
+        {
+            ExternalValueCompiler.Compile(context, externalDefinition);
         }
 
         foreach (var functionDefinition in program.Definitions.OfType<FunctionDefinition>())
