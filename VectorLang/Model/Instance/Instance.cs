@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace VectorLang.Model;
 
@@ -21,36 +20,6 @@ internal abstract class Instance
         Debug.Assert(value is not null, $"{nameof(GetFieldInternal)} is not implemented for {Type.FormatMember(name)}");
 
         return value;
-    }
-
-    // TODO: call methods not needed?
-
-    public Instance CallMethod(string name, params Instance[] arguments)
-    {
-        Debug.Assert(Type.Methods.ContainsKey(name));
-
-        return Type.Methods[name].Call(this, arguments);
-    }
-
-    public Instance CallMethod(string name)
-    {
-        return CallMethod(name, Array.Empty<Instance>());
-    }
-
-    public Instance CallOperator(UnaryOperator unaryOperator)
-    {
-        Debug.Assert(Type.UnaryOperators.ContainsKey(unaryOperator));
-
-        return Type.UnaryOperators[unaryOperator].Call(this);
-    }
-
-    public Instance CallOperator(BinaryOperator binaryOperator, Instance rightInstance)
-    {
-        var operatorKey = (binaryOperator, rightInstance.Type);
-
-        Debug.Assert(Type.BinaryOperators.ContainsKey(operatorKey));
-
-        return Type.BinaryOperators[operatorKey].Call(this, rightInstance);
     }
 
     protected virtual Instance? GetFieldInternal(string name)
