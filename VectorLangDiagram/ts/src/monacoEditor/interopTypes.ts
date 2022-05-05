@@ -32,6 +32,7 @@ export const interopCompletionKindMap = {
     4: monaco.languages.CompletionItemKind.Function,
     5: monaco.languages.CompletionItemKind.Variable,
     6: monaco.languages.CompletionItemKind.Constant,
+    7: monaco.languages.CompletionItemKind.Value,
 };
 
 export type InteropCompletionKind = keyof typeof interopCompletionKindMap;

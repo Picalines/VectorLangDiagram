@@ -9,4 +9,5 @@ public enum CompletionKind
     Function,
     Variable,
     Constant,
+    ExternalValue,
 }
