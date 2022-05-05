@@ -20,7 +20,6 @@ internal static class BinaryExpressionCompiler
 
         if (!leftType.BinaryOperators.TryGetValue((binaryExpression.Operator, rightType), out var binaryOperator))
         {
-            // TODO: selection at operator
             context.Reporter.ReportError(binaryExpression.Selection, ReportMessage.UndefinedTypeMember(leftType, binaryExpression.Operator, rightType));
             return CompiledExpression.Invalid;
         }
