@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using VectorLang.Compilation;
 using VectorLang.Model;
 
 namespace VectorLang.Interpretation;
@@ -36,8 +35,6 @@ internal static partial class Interpreter
         {
             _CurrentInstructionIndex += delta;
         }
-
-        // TODO: exceptions?
 
         public Instance PeekStack()
         {
