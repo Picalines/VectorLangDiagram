@@ -28,8 +28,10 @@ internal static class ExternalValueCompiler
             return;
         }
 
-        // TODO: create block with FunctionContext
-        var compiledDefaultValue = ValueExpressionCompiler.Compile(context, externalValueDefinition.DefaultValue);
+        var defaultExpressionContext = context.WithChildSymbols();
+        defaultExpressionContext.Symbols.Insert(new FunctionContextSymbol());
+
+        var compiledDefaultValue = ValueExpressionCompiler.Compile(defaultExpressionContext, externalValueDefinition.DefaultValue);
 
         var defaultValue = UserConstantCompiler.TryEvaluateConstant(context, compiledDefaultValue, externalValueDefinition.NameToken.Selection);
 

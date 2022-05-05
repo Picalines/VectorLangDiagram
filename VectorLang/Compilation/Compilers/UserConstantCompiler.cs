@@ -15,8 +15,10 @@ internal static class UserConstantCompiler
 
         context.CompletionProvider.AddExpressionScope(TextSelection.FromTokens(constantDefinition.EqualsToken, constantDefinition.EndToken), context.Symbols);
 
-        // TODO: create block with FunctionContext
-        var compiledValue = ValueExpressionCompiler.Compile(context, constantDefinition.ValueExpression);
+        var expressionContext = context.WithChildSymbols();
+        expressionContext.Symbols.Insert(new FunctionContextSymbol());
+
+        var compiledValue = ValueExpressionCompiler.Compile(expressionContext, constantDefinition.ValueExpression);
 
         if (context.Symbols.ContainsLocal(constantName))
         {

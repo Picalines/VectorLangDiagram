@@ -22,7 +22,6 @@ internal static class VariableCreationCompiler
 
         context.Symbols.TryLookup<FunctionContextSymbol>(out var functionContext);
 
-        // TODO: create one if not exists?
         Debug.Assert(functionContext is not null);
 
         var compiledValue = ValueExpressionCompiler.Compile(context, variableCreation.ValueExpression);
