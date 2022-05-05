@@ -77,7 +77,7 @@ internal static class UserFunctionCompiler
 
         context.CompletionProvider.AddExpressionScope(TextSelection.FromTokens(definition.EqualsToken, definition.EndToken), context.Symbols);
 
-        var functionContextSymbol = new FunctionContextSymbol(signature.ReturnType);
+        var functionContextSymbol = new FunctionContextSymbol();
         context.Symbols.Insert(functionContextSymbol);
 
         var functionInstructions = new List<Instruction>();
