@@ -15,6 +15,8 @@ internal static class ConstantCompiler
 
         ColorNode { R: var r, G: var g, B: var b } => new(ColorInstance.InstanceType, new PushInstruction(new ColorInstance(r, g, b))),
 
+        VoidNode => new(VoidInstance.InstanceType, new PushInstruction(VoidInstance.Instance)),
+
         _ => throw new NotImplementedException(),
     };
 }

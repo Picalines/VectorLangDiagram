@@ -68,6 +68,7 @@ internal static partial class ValueExpressionParser
         (ConstantParser.Number as Parser<ValueExpressionNode>)
         .XOr(ConstantParser.Boolean)
         .XOr(ConstantParser.Color)
+        .XOr(ConstantParser.Void)
         .XOr(VariableOrAssignment)
         .XOr(Vector)
         .XOr(VariableCreation)

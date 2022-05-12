@@ -45,6 +45,7 @@ public enum TokenType
     [Description("number literal"), TokenRegex(@"(?<value>\d+(\.\d+)?|\.\d+)(?<unit>\w*)", true)] LiteralNumber,
     [Description("boolean literal"), TokenRegex(@"\b((?<true>true)|(?<false>false))\b", true)] LiteralBoolean,
     [Description("color literal"), TokenRegex(@"#(?<r>[a-fA-F\d]{2})(?<g>[a-fA-F\d]{2})(?<b>[a-fA-F\d]{2})", true)] LiteralColor,
+    [Description("void literal"), TokenRegex(@"\bvoid\b")] LiteralVoid,
 
     [Description("identifier"), TokenRegex(@"\b[a-zA-Z_][a-zA-Z0-9_]*\b")] Identifier,
 }

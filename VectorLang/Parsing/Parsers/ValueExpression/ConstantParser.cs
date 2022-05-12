@@ -25,6 +25,10 @@ internal static partial class ValueExpressionParser
             from color in ParseColorLiteral(literalToken)
             select new ColorNode(color.R, color.G, color.B, literalToken.Selection);
 
+        public static readonly Parser<VoidNode> Void =
+            from literalToken in ParseToken.LiteralVoid
+            select new VoidNode(literalToken);
+
         private static Parser<double> ParseNumberLiteral(Token token)
         {
             Debug.Assert(token.RegexGroups is not null);
