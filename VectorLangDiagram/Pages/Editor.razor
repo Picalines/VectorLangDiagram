@@ -6,15 +6,15 @@
 @using VectorLang.Model
 @using VectorLang.Tokenization
 
-<EditorMenu />
+<EditorMenu OnViewSelected="windows => _ShownWindows = windows" />
 
 <div id="sections">
-    <section id="code-editor-section">
+    <section id="code-editor-section" style=@(_ShownWindows.HasFlag(EditorWindows.Code) ? "" : "display: none")>
         <CodeEditor @ref=_CodeEditor InitialValue=@ExampleProgram
             OnChange=OnCodeEdited
             CompletionProvider=ProvideCompletions />
     </section>
-    <section>
+    <section style=@(_ShownWindows.HasFlag(EditorWindows.Diagram) ? "" : "display: none")>
         @if (_ExecutableProgram is not null)
         {
             <ExternalValuePanel ExternalValues=_ExecutableProgram.ExternalValues OnChange=ExecuteProgram />
@@ -56,6 +56,8 @@ def main() -> void = [
     plot(sum(a, b));
 ];
 ";
+
+    private EditorWindows _ShownWindows = EditorWindows.Code | EditorWindows.Diagram;
 
     private readonly Timer _Timer = new(250);
 
