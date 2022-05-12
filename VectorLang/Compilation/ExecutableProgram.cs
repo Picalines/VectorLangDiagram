@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using VectorLang.Model;
 
 namespace VectorLang.Compilation;
 
 public sealed class ExecutableProgram
 {
+    public event Action<PlottedVector>? VectorPlotted;
+
     public IReadOnlyDictionary<string, ExternalValue> ExternalValues { get; }
 
     private readonly PlotLibrary _PlotLibrary;
@@ -19,14 +22,14 @@ public sealed class ExecutableProgram
         _PlotLibrary = plotLibrary;
         ExternalValues = externalValues;
         _MainFunction = mainFunction;
+
+        _PlotLibrary.VectorPlotted += (vector) => VectorPlotted?.Invoke(vector);
     }
 
-    public IReadOnlyList<PlottedVector> PlotVectors()
+    public void Execute()
     {
         _PlotLibrary.Reset();
 
         _MainFunction.Call();
-
-        return _PlotLibrary.PlottedVectors;
     }
 }

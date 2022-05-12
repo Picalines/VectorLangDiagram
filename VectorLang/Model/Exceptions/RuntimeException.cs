@@ -23,5 +23,5 @@ public sealed class RuntimeException : Exception
         new("pop() was called before push()");
 
     internal static RuntimeException PlotLimitReached(int maxPlotCount) =>
-        new($"plot() was called more than ${maxPlotCount} times");
+        new($"plot() was called more than {maxPlotCount} times");
 }

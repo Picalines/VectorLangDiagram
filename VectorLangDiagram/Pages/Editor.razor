@@ -15,9 +15,11 @@
             CompletionProvider=ProvideCompletions />
     </section>
     <section>
-        <ExternalValuePanel ExternalValues=_LastExternalValues
-            OnChange=ExecuteProgram />
-        <DiagramView Vectors=_LastPlottedVectors ErrorMessage=@_RuntimeErrorMessage />
+        @if (_ExecutableProgram is not null)
+        {
+            <ExternalValuePanel ExternalValues=_ExecutableProgram.ExternalValues OnChange=ExecuteProgram />
+        }
+        <DiagramView Vectors=_PlottedVectors ErrorMessage=@_ErrorMessage />
     </section>
 </div>
 
@@ -63,11 +65,9 @@ def main() -> void = [
 
     private ExecutableProgram? _ExecutableProgram = null;
 
-    private IReadOnlyList<PlottedVector> _LastPlottedVectors = Array.Empty<PlottedVector>();
+    private List<PlottedVector> _PlottedVectors = new();
 
-    private IReadOnlyDictionary<string, ExternalValue> _LastExternalValues = new Dictionary<string, ExternalValue>();
-
-    private string? _RuntimeErrorMessage = null;
+    private string? _ErrorMessage = null;
 
     protected override void OnInitialized()
     {
@@ -79,39 +79,38 @@ def main() -> void = [
         _Timer.Start();
     }
 
-    private async Task OnCodeEdited(string code)
+    private void RenderVector(PlottedVector vector)
     {
-        await _CodeEditor.ClearReportsAsync();
-
-        _RuntimeErrorMessage = null;
-
-        _Timer.Stop();
-        _Timer.Start();
-    }
-
-    private async Task OnTimerElapsed()
-    {
-        await CompileProgram();
-
-        if (_ExecutableProgram is not null)
-        {
-            ExecuteProgram();
-        }
+        _PlottedVectors.Add(vector);
     }
 
     private async Task CompileProgram()
     {
-        var executable = ProgramCompiler.Compile(_CodeEditor.Value, out _Diagnoser);
+        if (_ExecutableProgram is not null)
+        {
+            _ExecutableProgram.VectorPlotted -= RenderVector;
+        }
+
+        _ExecutableProgram = ProgramCompiler.Compile(_CodeEditor.Value, out _Diagnoser);
 
         foreach (var report in _Diagnoser.Reports)
         {
             await _CodeEditor.AddReportAsync(report);
         }
 
-        if (executable is not null)
+        int errorsCount = _Diagnoser.Reports.Count(report => report.Severity is ReportSeverity.Error);
+
+        if (errorsCount > 0)
         {
-            _ExecutableProgram = executable;
+            _ErrorMessage = $"{errorsCount} compilation errors";
         }
+
+        if (_ExecutableProgram is not null)
+        {
+            _ExecutableProgram.VectorPlotted += RenderVector;
+        }
+
+        StateHasChanged();
     }
 
     private void ExecuteProgram()
@@ -121,20 +120,20 @@ def main() -> void = [
             return;
         }
 
-        _RuntimeErrorMessage = null;
+        _ErrorMessage = null;
 
         try
         {
-            _LastPlottedVectors = _ExecutableProgram.PlotVectors();
-            _LastExternalValues = _ExecutableProgram.ExternalValues;
+            _PlottedVectors.Clear();
+            _ExecutableProgram.Execute();
         }
         catch (RuntimeException runtimeException)
         {
-            _RuntimeErrorMessage = runtimeException.Message;
+            _ErrorMessage = runtimeException.Message;
 
             if (runtimeException.Selection is { } selection)
             {
-                _RuntimeErrorMessage = $"{selection}: {_RuntimeErrorMessage}";
+                _ErrorMessage = $"{selection}: {_ErrorMessage}";
             }
         }
 
@@ -149,5 +148,25 @@ def main() -> void = [
         }
 
         return Array.Empty<Completion>();
+    }
+
+    private async Task OnCodeEdited(string code)
+    {
+        await _CodeEditor.ClearReportsAsync();
+
+        _ErrorMessage = null;
+
+        _Timer.Stop();
+        _Timer.Start();
+    }
+
+    private async Task OnTimerElapsed()
+    {
+        await CompileProgram();
+
+        if (_ExecutableProgram is not null)
+        {
+            ExecuteProgram();
+        }
     }
 }

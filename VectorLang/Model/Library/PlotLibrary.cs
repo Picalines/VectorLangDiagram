@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace VectorLang.Model;
 
@@ -19,20 +20,20 @@ internal sealed class PlotLibrary : ReflectionLibrary
         public ColorInstance Color { get; set; } = new(1, 1, 1);
     }
 
+    public event Action<PlottedVector>? VectorPlotted;
+
     private readonly Stack<PlotContext> _ContextStack = new();
 
-    private readonly List<PlottedVector> _PlottedVectors = new();
+    private int _PlottedVectorsCount = 0;
 
     public PlotLibrary()
     {
         Reset();
     }
 
-    public IReadOnlyList<PlottedVector> PlottedVectors => _PlottedVectors;
-
     public void Reset()
     {
-        _PlottedVectors.Clear();
+        _PlottedVectorsCount = 0;
         _ContextStack.Clear();
         _ContextStack.Push(new PlotContext());
     }
@@ -104,14 +105,14 @@ internal sealed class PlotLibrary : ReflectionLibrary
     [ReflectionFunction("plot")]
     public VoidInstance Plot(VectorInstance vector)
     {
-        if (_PlottedVectors.Count == MaxPlottedVectorsCount)
+        if (++_PlottedVectorsCount == MaxPlottedVectorsCount)
         {
             throw RuntimeException.PlotLimitReached(MaxPlottedVectorsCount);
         }
 
         var context = _ContextStack.Peek();
 
-        _PlottedVectors.Add(new PlottedVector(
+        VectorPlotted?.Invoke(new PlottedVector(
             context.Offset,
             context.Offset + vector.Scale(context.Scale).Rotate(context.Rotation),
             context.Color
