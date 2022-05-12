@@ -3,9 +3,9 @@
 @inject NavigationManager NavagationManager
 
 @code {
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        base.OnInitialized();
+        base.OnAfterRender(firstRender);
 
         NavagationManager.NavigateTo("/editor");
     }
