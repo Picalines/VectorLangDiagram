@@ -57,7 +57,6 @@ internal static class ParseToken
     public static readonly Parser<Token> LiteralNumber = TokenType.LiteralNumber.Parser();
     public static readonly Parser<Token> LiteralBoolean = TokenType.LiteralBoolean.Parser();
     public static readonly Parser<Token> LiteralColor = TokenType.LiteralColor.Parser();
-    public static readonly Parser<Token> LiteralVoid = TokenType.LiteralVoid.Parser();
 
     public static readonly Parser<Token> Identifier = TokenType.Identifier.Parser();
 }
