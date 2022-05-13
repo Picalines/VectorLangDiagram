@@ -101,7 +101,7 @@ public partial class Editor : ComponentBase
         StateHasChanged();
     }
 
-    private IReadOnlyList<Completion> ProvideCompletions(TextLocation location)
+    private IEnumerable<Completion> ProvideCompletions(TextLocation location)
     {
         if (_CodeDiagnoser is not null)
         {

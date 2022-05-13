@@ -15,7 +15,7 @@ public sealed class Diagnoser
         _CompletionProvider = completionProvider;
     }
 
-    public IReadOnlyList<Report> Reports => _Reporter.Reports;
+    public IEnumerable<Report> Reports => _Reporter.Reports;
 
-    public IReadOnlyList<Completion> GetCompletions(TextLocation cursorLocation) => _CompletionProvider.GetCompletions(cursorLocation);
+    public IEnumerable<Completion> GetCompletions(TextLocation cursorLocation) => _CompletionProvider.GetCompletions(cursorLocation);
 }

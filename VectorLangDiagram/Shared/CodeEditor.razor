@@ -17,7 +17,7 @@
     public EventCallback<string> OnChange { get; set; }
 
     [Parameter]
-    public Func<TextLocation, IReadOnlyList<Completion>>? CompletionProvider { get; set; }
+    public Func<TextLocation, IEnumerable<Completion>>? CompletionProvider { get; set; }
 
     public string Value { get; private set; } = "";
 
@@ -59,7 +59,7 @@
     }
 
     [JSInvokable]
-    public IReadOnlyList<Completion> FetchCompletions(int cursorLine, int cursorColumn)
+    public IEnumerable<Completion> FetchCompletions(int cursorLine, int cursorColumn)
     {
         var cursorLocation = new TextLocation(cursorLine, cursorColumn);
 

@@ -33,20 +33,26 @@ internal sealed class CompletionProvider
         _Scopes.Push(new CompletionScope(selection, CompletionScopeType.Expression, symbols));
     }
 
-    public IReadOnlyList<Completion> GetCompletions(TextLocation cursorLocation)
+    public IEnumerable<Completion> GetCompletions(TextLocation cursorLocation)
     {
         var currentScope = _Scopes.FirstOrDefault(scope => scope.Selection.Contains(cursorLocation));
 
         if (currentScope is null)
         {
-            return _GlobalScopeCompletions;
-        }
+            foreach (var completion in _GlobalScopeCompletions)
+            {
+                yield return completion;
+            }
 
-        var completions = new List<Completion>();
+            yield break;
+        }
 
         if (currentScope.Type is CompletionScopeType.Expression)
         {
-            completions.AddRange(_ExpressionScopeKeywordCompletions);
+            foreach (var completion in _ExpressionScopeKeywordCompletions)
+            {
+                yield return completion;
+            }
         }
 
         foreach (var symbol in currentScope.Symbols)
@@ -58,11 +64,9 @@ internal sealed class CompletionProvider
 
             if (SymbolToCompletion(symbol) is { } completion)
             {
-                completions.Add(completion);
+                yield return completion;
             }
         }
-
-        return completions;
     }
 
     private static bool FilterSymbol(CompletionScopeType scopeType, Symbol symbol) => scopeType switch
