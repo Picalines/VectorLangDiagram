@@ -19,7 +19,7 @@
         {
             <ExternalValuePanel ExternalValues=_ExecutableProgram.ExternalValues OnChange=ExecuteProgram />
         }
-        <DiagramView Vectors=_PlottedVectors ErrorMessage=@_ErrorMessage />
+        <DiagramView Vectors=_PlottedVectors.Reverse() ErrorMessage=@_ErrorMessage />
     </section>
 </div>
 
@@ -56,119 +56,4 @@ def main() -> void = [
     plot(sum(a, b));
 ];
 ";
-
-    private EditorWindows _ShownWindows = EditorWindows.Code | EditorWindows.Diagram;
-
-    private readonly Timer _Timer = new(250);
-
-    private CodeEditor _CodeEditor = null!;
-
-    private Diagnoser? _Diagnoser = null;
-
-    private ExecutableProgram? _ExecutableProgram = null;
-
-    private Stack<PlottedVector> _PlottedVectors = new();
-
-    private string? _ErrorMessage = null;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        _Timer.AutoReset = false;
-        _Timer.Elapsed += async (_, _) => await InvokeAsync(OnTimerElapsed);
-
-        _Timer.Start();
-    }
-
-    private void RenderVector(PlottedVector vector)
-    {
-        _PlottedVectors.Push(vector);
-    }
-
-    private async Task CompileProgram()
-    {
-        if (_ExecutableProgram is not null)
-        {
-            _ExecutableProgram.VectorPlotted -= RenderVector;
-        }
-
-        _ExecutableProgram = ProgramCompiler.Compile(_CodeEditor.Value, out _Diagnoser);
-
-        foreach (var report in _Diagnoser.Reports)
-        {
-            await _CodeEditor.AddReportAsync(report);
-        }
-
-        int errorsCount = _Diagnoser.Reports.Count(report => report.Severity is ReportSeverity.Error);
-
-        if (errorsCount > 0)
-        {
-            _ErrorMessage = $"{errorsCount} compilation errors";
-        }
-
-        if (_ExecutableProgram is not null)
-        {
-            _ExecutableProgram.VectorPlotted += RenderVector;
-        }
-
-        StateHasChanged();
-    }
-
-    private void ExecuteProgram()
-    {
-        if (_ExecutableProgram is null)
-        {
-            return;
-        }
-
-        _ErrorMessage = null;
-
-        try
-        {
-            _PlottedVectors.Clear();
-            _ExecutableProgram.Execute();
-        }
-        catch (RuntimeException runtimeException)
-        {
-            _ErrorMessage = runtimeException.Message;
-
-            if (runtimeException.Selection is { } selection)
-            {
-                _ErrorMessage = $"{selection}: {_ErrorMessage}";
-            }
-        }
-
-        StateHasChanged();
-    }
-
-    private IReadOnlyList<Completion> ProvideCompletions(TextLocation location)
-    {
-        if (_Diagnoser is not null)
-        {
-            return _Diagnoser.GetCompletions(location);
-        }
-
-        return Array.Empty<Completion>();
-    }
-
-    private async Task OnCodeEdited(string code)
-    {
-        await _CodeEditor.ClearReportsAsync();
-
-        _ErrorMessage = null;
-
-        _Timer.Stop();
-        _Timer.Start();
-    }
-
-    private async Task OnTimerElapsed()
-    {
-        await CompileProgram();
-
-        if (_ExecutableProgram is not null)
-        {
-            ExecuteProgram();
-        }
-    }
 }
