@@ -47,7 +47,7 @@
 
 @code {
     [Parameter]
-    public IReadOnlyList<PlottedVector> Vectors { get; set; } = Array.Empty<PlottedVector>();
+    public IEnumerable<PlottedVector> Vectors { get; set; } = Array.Empty<PlottedVector>();
 
     [Parameter]
     public string? ErrorMessage { get; set; } = null;

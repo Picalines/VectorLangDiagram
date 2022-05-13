@@ -67,7 +67,7 @@ def main() -> void = [
 
     private ExecutableProgram? _ExecutableProgram = null;
 
-    private List<PlottedVector> _PlottedVectors = new();
+    private Stack<PlottedVector> _PlottedVectors = new();
 
     private string? _ErrorMessage = null;
 
@@ -83,7 +83,7 @@ def main() -> void = [
 
     private void RenderVector(PlottedVector vector)
     {
-        _PlottedVectors.Add(vector);
+        _PlottedVectors.Push(vector);
     }
 
     private async Task CompileProgram()
