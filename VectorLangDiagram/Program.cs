@@ -32,15 +32,23 @@ app.MapFallbackToPage("/_Host");
 
 if (HybridSupport.IsElectronActive)
 {
-    var electronWindowOptions = new BrowserWindowOptions()
+    Task.Run(async () =>
     {
-        Title = "VectorLangDiagram",
-        Center = true,
-        MinWidth = 500,
-        MinHeight = 400,
-    };
+        var appPath = await Electron.App.GetAppPathAsync();
 
-    Task.Run(() => Electron.WindowManager.CreateWindowAsync(electronWindowOptions));
+        var electronWindowOptions = new BrowserWindowOptions()
+        {
+            Title = "VectorLangDiagram",
+
+            Icon = Path.Join(appPath, "bin", "wwwroot", "icon.png"),
+
+            Center = true,
+            MinWidth = 500,
+            MinHeight = 400,
+        };
+
+        await Electron.WindowManager.CreateWindowAsync(electronWindowOptions);
+    });
 }
 
 app.Run();
