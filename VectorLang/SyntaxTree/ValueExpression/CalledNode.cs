@@ -3,19 +3,10 @@ using VectorLang.Tokenization;
 
 namespace VectorLang.SyntaxTree;
 
-internal sealed record CalledNode : ValueExpressionNode
+internal sealed record CalledNode(
+    ValueExpressionNode CalledValue,
+    IReadOnlyList<ValueExpressionNode> Arguments,
+    Token ClosingParenthesis) : ValueExpressionNode
 {
-    public ValueExpressionNode CalledValue { get; }
-
-    public IReadOnlyList<ValueExpressionNode> Arguments { get; }
-
-    public override TextSelection Selection { get; }
-
-    public CalledNode(ValueExpressionNode calledValue, IReadOnlyList<ValueExpressionNode> arguments, Token closeParen)
-    {
-        CalledValue = calledValue;
-        Arguments = arguments;
-
-        Selection = CalledValue.Selection.Merged(closeParen.Selection);
-    }
+    public override TextSelection Selection { get; } = CalledValue.Selection.Merged(ClosingParenthesis.Selection);
 }

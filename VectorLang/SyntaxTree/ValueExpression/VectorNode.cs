@@ -2,19 +2,11 @@
 
 namespace VectorLang.SyntaxTree;
 
-internal sealed record VectorNode : ValueExpressionNode
+internal sealed record VectorNode(
+    ValueExpressionNode X,
+    ValueExpressionNode Y,
+    Token OpeningBraceToken,
+    Token ClosingBraceToken) : ValueExpressionNode
 {
-    public ValueExpressionNode X { get; }
-
-    public ValueExpressionNode Y { get; }
-
-    public override TextSelection Selection { get; }
-
-    public VectorNode(ValueExpressionNode x, ValueExpressionNode y, Token openBrace, Token closeBrace)
-    {
-        X = x;
-        Y = y;
-
-        Selection = TextSelection.FromTokens(openBrace, closeBrace);
-    }
+    public override TextSelection Selection { get; } = TextSelection.FromTokens(OpeningBraceToken, ClosingBraceToken);
 }
