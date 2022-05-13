@@ -38,7 +38,7 @@ internal static class ConditionalExpressionCompiler
         return new(
             trueType,
             compiledCondition.Instructions
-                .Append(new JumpIfNotInstruction(trueLength + 2, true))
+                .Append(new JumpIfNotInstruction(trueLength + 2))
                 .Concat(trueInstructions)
                 .Append(new JumpInstruction(falseLength + 1))
                 .Concat(falseInstructions)

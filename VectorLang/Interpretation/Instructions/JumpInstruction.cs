@@ -2,6 +2,6 @@
 
 internal record JumpInstruction(int Delta) : Instruction;
 
-internal sealed record JumpIfInstruction(int Delta, bool PopFromStack) : JumpInstruction(Delta);
+internal sealed record JumpIfInstruction(int Delta) : JumpInstruction(Delta);
 
-internal sealed record JumpIfNotInstruction(int Delta, bool PopFromStack) : JumpInstruction(Delta);
+internal sealed record JumpIfNotInstruction(int Delta) : JumpInstruction(Delta);

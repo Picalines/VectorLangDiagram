@@ -39,10 +39,10 @@ internal static class BinaryExpressionCompiler
 
         instructions = binaryExpression.Operator is BinaryOperator.And
             ? instructions
-                .Append(new JumpIfInstruction(3, PopFromStack: true))
+                .Append(new JumpIfInstruction(3))
                 .Append(new PushInstruction(BooleanInstance.False))
             : instructions
-                .Append(new JumpIfNotInstruction(3, PopFromStack: true))
+                .Append(new JumpIfNotInstruction(3))
                 .Append(new PushInstruction(BooleanInstance.True));
 
         var rightInstructions = compiledRight.Instructions.Counted(out int rightLength);

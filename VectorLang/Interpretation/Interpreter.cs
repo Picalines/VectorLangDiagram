@@ -68,9 +68,9 @@ internal static partial class Interpreter
             }
             break;
 
-            case JumpIfInstruction { Delta: var delta, PopFromStack: var popFromStack }:
+            case JumpIfInstruction { Delta: var delta }:
             {
-                var condition = (popFromStack ? context.PopFromStack() : context.PeekStack()) as BooleanInstance;
+                var condition = context.PopFromStack() as BooleanInstance;
                 Debug.Assert(condition is not null);
                 if (jumped = condition.Value)
                 {
@@ -79,9 +79,9 @@ internal static partial class Interpreter
             }
             break;
 
-            case JumpIfNotInstruction { Delta: var delta, PopFromStack: var popFromStack }:
+            case JumpIfNotInstruction { Delta: var delta }:
             {
-                var condition = (popFromStack ? context.PopFromStack() : context.PeekStack()) as BooleanInstance;
+                var condition = context.PopFromStack() as BooleanInstance;
                 Debug.Assert(condition is not null);
                 if (jumped = !condition.Value)
                 {
