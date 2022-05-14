@@ -47,6 +47,8 @@ if (HybridSupport.IsElectronActive)
             MinHeight = 400,
         };
 
+        Electron.Menu.SetApplicationMenu(Array.Empty<MenuItem>());
+
         await Electron.WindowManager.CreateWindowAsync(electronWindowOptions);
     });
 }
