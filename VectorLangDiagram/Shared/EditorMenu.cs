@@ -60,6 +60,7 @@ public sealed class EditorMenu : ComponentBase
 
 #if DEBUG
             new MenuItem() { Role = MenuRole.toggledevtools },
+            new MenuItem() { Role = MenuRole.reload },
 #endif
         },
     };
