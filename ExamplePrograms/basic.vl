@@ -1,4 +1,4 @@
-// Velcome to VectorLang!
+// Welcome to VectorLang!
 
 external aColor = RED;
 external bColor = BLUE;
