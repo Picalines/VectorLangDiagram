@@ -11,15 +11,15 @@
 
 @code {
     [Parameter]
-    public string InitialValue { get; set; } = "";
+    public string InitialContent { get; set; } = "";
 
     [Parameter]
-    public EventCallback<string> OnChange { get; set; }
+    public EventCallback<string> OnContentChange { get; set; }
 
     [Parameter]
     public Func<TextLocation, IEnumerable<Completion>>? CompletionProvider { get; set; }
 
-    public string Value { get; private set; } = "";
+    public string Content { get; private set; } = "";
 
     private DotNetObjectReference<CodeEditor>? _ThisJsReference;
 
@@ -29,7 +29,7 @@
     {
         base.OnInitialized();
 
-        Value = InitialValue;
+        Content = InitialContent;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -39,9 +39,9 @@
         if (firstRender)
         {
             _ThisJsReference = DotNetObjectReference.Create(this);
-            _MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", _ThisJsReference, "#monaco-container", InitialValue);
+            _MonacoEditorReference = await JSRuntime.InvokeAsync<IJSObjectReference>("interop.createMonacoEditor", _ThisJsReference, "#monaco-container", InitialContent);
 
-            await OnDidChangeContent(InitialValue);
+            await OnDidChangeContent(InitialContent);
         }
     }
 
@@ -50,20 +50,20 @@
         _ThisJsReference?.Dispose();
     }
 
-    [JSInvokable]
-    public async Task OnDidChangeContent(string code)
+    public async Task SetContentAsync(string content)
     {
-        Value = code;
-
-        await OnChange.InvokeAsync(code);
+        if (_MonacoEditorReference is not null)
+        {
+            await _MonacoEditorReference.InvokeVoidAsync("setContent", content);
+        }
     }
 
-    [JSInvokable]
-    public IEnumerable<Completion> FetchCompletions(int cursorLine, int cursorColumn)
+    public async Task AddReportAsync(Report report)
     {
-        var cursorLocation = new TextLocation(cursorLine, cursorColumn);
-
-        return CompletionProvider?.Invoke(cursorLocation) ?? Array.Empty<Completion>();
+        if (_MonacoEditorReference is not null)
+        {
+            await _MonacoEditorReference.InvokeVoidAsync("addReport", report);
+        }
     }
 
     public async Task ClearReportsAsync()
@@ -74,11 +74,19 @@
         }
     }
 
-    public async Task AddReportAsync(Report report)
+    [JSInvokable]
+    public async Task OnDidChangeContent(string code)
     {
-        if (_MonacoEditorReference is not null)
-        {
-            await _MonacoEditorReference.InvokeVoidAsync("addReport", report);
-        }
+        Content = code;
+
+        await OnContentChange.InvokeAsync(code);
+    }
+
+    [JSInvokable]
+    public IEnumerable<Completion> FetchCompletions(int cursorLine, int cursorColumn)
+    {
+        var cursorLocation = new TextLocation(cursorLine, cursorColumn);
+
+        return CompletionProvider?.Invoke(cursorLocation) ?? Array.Empty<Completion>();
     }
 }

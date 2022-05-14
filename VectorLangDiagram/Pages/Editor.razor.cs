@@ -19,6 +19,8 @@ public partial class Editor : ComponentBase
 
     private CodeEditor _CodeEditor = null!;
 
+    private ProgramFileManager _ProgramFileManager = null!;
+
     private Diagnoser? _CodeDiagnoser;
 
     private ExecutableProgram? _ExecutableProgram;
@@ -47,7 +49,7 @@ public partial class Editor : ComponentBase
             _ExecutableProgram.VectorPlotted -= RenderVector;
         }
 
-        _ExecutableProgram = ProgramCompiler.Compile(_CodeEditor.Value, out _CodeDiagnoser);
+        _ExecutableProgram = ProgramCompiler.Compile(_CodeEditor.Content, out _CodeDiagnoser);
 
         int errorsCount = 0;
 
@@ -113,6 +115,7 @@ public partial class Editor : ComponentBase
 
     private async Task OnCodeEdited(string code)
     {
+        _ProgramFileManager.FileUnsaved = true;
         await _CodeEditor.ClearReportsAsync();
 
         _ErrorMessage = null;

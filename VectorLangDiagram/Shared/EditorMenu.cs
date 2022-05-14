@@ -9,6 +9,15 @@ public sealed class EditorMenu : ComponentBase
     [Parameter]
     public EventCallback<EditorWindows> OnViewSelected { get; set; }
 
+    [Parameter]
+    public EventCallback OnNewFilePressed { get; set; }
+
+    [Parameter]
+    public EventCallback OnFileOpenPressed { get; set; }
+
+    [Parameter]
+    public EventCallback OnFileSavePressed { get; set; }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -26,14 +35,14 @@ public sealed class EditorMenu : ComponentBase
         });
     }
 
-    private static MenuItem CreateFileMenu() => new()
+    private MenuItem CreateFileMenu() => new()
     {
         Label = "File",
         Submenu = new MenuItem[]
         {
-            new() { Label = "Open", Accelerator = "CommandOrControl+O" },
-            new() { Label = "Save", Accelerator = "CommandOrControl+S" },
-            new() { Label = "Save as...", Accelerator = "CommandOrControl+Shift+S" },
+            new() { Label = "New", Accelerator = "CommandOrControl+N", Click = () => InvokeAsync(OnNewFilePressed.InvokeAsync) },
+            new() { Label = "Open", Accelerator = "CommandOrControl+O", Click = () => InvokeAsync(OnFileOpenPressed.InvokeAsync) },
+            new() { Label = "Save", Accelerator = "CommandOrControl+S", Click = () => InvokeAsync(OnFileSavePressed.InvokeAsync) },
             new() { Type = MenuType.separator },
             new() { Role = MenuRole.quit, Accelerator = "Alt+F4" },
         },

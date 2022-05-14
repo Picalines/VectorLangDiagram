@@ -26,6 +26,11 @@ export class MonacoEditorInterop {
         return MonacoEditorInterop._instance;
     }
 
+    public setContent(content: string) {
+        this.clearReports();
+        this.model.setValue(content);
+    }
+
     public addReport({ selection, message, severity }: InteropReport) {
         const markers = monaco.editor.getModelMarkers({ owner: markersOwner }) as monaco.editor.IMarkerData[];
 

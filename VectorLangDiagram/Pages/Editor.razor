@@ -6,12 +6,20 @@
 @using VectorLang.Model
 @using VectorLang.Tokenization
 
-<EditorMenu OnViewSelected="windows => _ShownWindows = windows" />
+<ProgramFileManager @ref="_ProgramFileManager"
+    OnFileOpened="program => _CodeEditor.SetContentAsync(program)"
+    OnFileCreated="() => _CodeEditor.SetContentAsync(string.Empty)" />
+
+<EditorMenu
+    OnViewSelected="windows => _ShownWindows = windows"
+    OnNewFilePressed="() => _ProgramFileManager!.Create()"
+    OnFileOpenPressed="() => _ProgramFileManager!.TryOpen()"
+    OnFileSavePressed="() => _ProgramFileManager!.TrySave(_CodeEditor.Content)" />
 
 <div id="sections">
     <section id="code-editor-section" style=@(_ShownWindows.HasFlag(EditorWindows.Code) ? "" : "display: none")>
-        <CodeEditor @ref=_CodeEditor InitialValue=@ExampleProgram
-            OnChange=OnCodeEdited
+        <CodeEditor @ref=_CodeEditor
+            OnContentChange=OnCodeEdited
             CompletionProvider=ProvideCompletions />
     </section>
     <section style=@(_ShownWindows.HasFlag(EditorWindows.Diagram) ? "" : "display: none")>
@@ -22,38 +30,3 @@
         <DiagramView Vectors=_PlottedVectors.Reverse() ErrorMessage=@_ErrorMessage />
     </section>
 </div>
-
-@code {
-    private const string ExampleProgram = @"
-// Velcome to VectorLang!
-
-external aColor = RED;
-external bColor = BLUE;
-
-external useZoom = true;
-external zoom = {1, 1};
-
-external rotation = 0deg;
-
-def sum(vector a, vector b) -> vector = a + b;
-
-def main() -> void = [
-    val a := {1, 0};
-    val b := {0, 1};
-
-    if (useZoom)
-        scale(zoom);
-
-    rotate(rotation);
-
-    fill(aColor);
-    plot(a);
-
-    fill(bColor);
-    plot(b);
-
-    fill(aColor.blend(bColor, 0.5));
-    plot(sum(a, b));
-];
-";
-}
