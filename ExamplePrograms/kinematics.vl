@@ -1,0 +1,35 @@
+
+// Welcome To VectorLang!
+// example: kinematics
+
+external V0 = {5, 10};
+external g = 9.8;
+external dt = 0.1;
+
+def height(number t) -> number = [
+    V0.y * t - (g * t.sqr()) / 2
+];
+
+def plotHeight(number t) -> void =
+    if ((val h := height(t)) >= 0) [
+        val prevT := t - dt;
+        val prevH := height(prevT);
+
+        val x := V0.x * t;
+        val prevX := V0.x * prevT;
+
+        push();
+        translate({prevX, prevH});
+        plot({dt * V0.x, h - prevH});
+        pop();
+
+        plotHeight(t + dt);
+    ];
+
+def main() -> void = [
+    fill(RED);
+    plot(V0);
+
+    fill(CYAN);
+    plotHeight(dt);
+];
