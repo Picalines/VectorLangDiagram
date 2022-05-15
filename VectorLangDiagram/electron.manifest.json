@@ -1,8 +1,5 @@
 {
   "executable": "VectorLangDiagram",
-  "splashscreen": {
-    "imageFile": ""
-  },
   "name": "VectorLangDiagram",
   "author": "",
   "singleInstance": false,
@@ -33,7 +30,15 @@
       "**/*"
     ],
     "win": {
+      "target": [ "nsis" ],
       "icon": "bin/wwwroot/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "uninstallDisplayName": "Uninstall VectorLangDiagram",
+      "installerIcon": "bin/wwwroot/icon.ico",
+      "uninstallerIcon": "bin/wwwroot/icon.ico"
     }
   }
 }
