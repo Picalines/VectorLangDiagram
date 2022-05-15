@@ -1,4 +1,5 @@
-﻿@using VectorLang.Model
+﻿@using System.Drawing
+@using VectorLang.Model
 
 @inject IJSRuntime JSRuntime
 
@@ -34,12 +35,14 @@
                 <line x1=-100 y1=0 x2=100 y2=0 stroke="#550000" stroke-width=0.05 />
                 <line x1=0 y1=-100 x2=0 y2=100 stroke="#005500" stroke-width=0.05 />
 
-                <CascadingValue Value="@(new HashSet<string>())">
-                    @foreach (var vector in Vectors)
-                    {
-                        <PlottedVectorView Vector=vector />
-                    }
-                </CascadingValue>
+                @{
+                    _RenderedMarkers.Clear();
+                }
+
+                @foreach (var vector in Vectors)
+                {
+                    @RenderVector(vector)
+                }
             </g>
         </svg>
     </div>
@@ -53,6 +56,8 @@
     public string? ErrorMessage { get; set; } = null;
 
     private IJSObjectReference? _PanZoom;
+
+    private readonly HashSet<string> _RenderedMarkers = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -71,4 +76,65 @@
             await _PanZoom.InvokeVoidAsync("reset");
         }
     }
+
+    private RenderFragment RenderVector(PlottedVector vector) => __builder =>
+    {
+        var vectorColor = GetVectorHTMLColor(vector);
+        var (x1, y1, x2, y2) = GetVectorSVGCoords(vector);
+        var vectorLength = GetVectorLength(vector);
+
+        var strokeWidth = ToSVGLength(Math.Clamp(vectorLength, 0.2, 0.7) / 10);
+
+        if (vectorLength > 0)
+        {
+            var markerId = $"plotted-vector-arrow-{vectorColor}";
+
+            if (_RenderedMarkers.Add(markerId))
+            {
+                <marker id=@markerId markerWidth=5 markerHeight=5
+                        refX=3 refY=3 orient=auto>
+                    <line x1=3 y1=3 x2=1 y2=2 stroke=@vectorColor stroke-linecap=round />
+                    <line x1=3 y1=3 x2=1 y2=4 stroke=@vectorColor stroke-linecap=round />
+                </marker>
+            }
+
+            <line x1=@x1 y1=@y1 x2=@x2 y2=@y2
+                    stroke=@vectorColor stroke-width=@strokeWidth stroke-linecap=round
+                    marker-end="url(#@markerId)">
+                <title>@vector.Start -> @vector.End</title>
+            </line>
+        }
+        else
+        {
+            <circle cx=@x1 cy=@y1 r=@strokeWidth fill=@vectorColor>
+                <title>@vector.Start</title>
+            </circle>
+        }
+    };
+
+    private static string GetVectorHTMLColor(PlottedVector vector)
+    {
+        var (r, g, b) = vector.Color;
+        return ColorTranslator.ToHtml(Color.FromArgb((int)(r * 255), (int)(g * 255), (int)(b * 255)));
+    }
+
+    private static (string x1, string y1, string x2, string y2) GetVectorSVGCoords(PlottedVector vector)
+    {
+        var x1 = ToSVGLength(vector.Start.X);
+        var y1 = ToSVGLength(-vector.Start.Y);
+        var x2 = ToSVGLength(vector.End.X);
+        var y2 = ToSVGLength(-vector.End.Y);
+
+        return (x1, y1, x2, y2);
+    }
+
+    private static double GetVectorLength(PlottedVector vector)
+    {
+        var dx = vector.End.X - vector.Start.X;
+        var dy = vector.End.Y - vector.Start.Y;
+
+        return Math.Sqrt(dx * dx + dy * dy);
+    }
+
+    private static string ToSVGLength(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
 }
