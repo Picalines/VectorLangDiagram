@@ -1,5 +1,4 @@
 // Welcome to VectorLang!
-
 // example: binary tree
 
 external branchLengthMult = 0.84;
