@@ -22,11 +22,6 @@ public sealed class EditorMenu : ComponentBase
     {
         base.OnInitialized();
 
-        if (!HybridSupport.IsElectronActive)
-        {
-            return;
-        }
-
         Electron.Menu.SetApplicationMenu(new[]
         {
             CreateFileMenu(),

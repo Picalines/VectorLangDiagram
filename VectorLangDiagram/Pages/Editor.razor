@@ -1,20 +1,24 @@
 ﻿@page "/editor"
 
 @using System.Timers
+@using ElectronNET.API
 @using VectorLang.Compilation
 @using VectorLang.Diagnostics
 @using VectorLang.Model
 @using VectorLang.Tokenization
 
-<ProgramFileManager @ref="_ProgramFileManager"
-    OnFileOpened="program => _CodeEditor.SetContentAsync(program)"
-    OnFileCreated="() => _CodeEditor.SetContentAsync(string.Empty)" />
+@if (HybridSupport.IsElectronActive)
+{
+    <ProgramFileManager @ref="_ProgramFileManager"
+        OnFileOpened="program => _CodeEditor.SetContentAsync(program)"
+        OnFileCreated="() => _CodeEditor.SetContentAsync(string.Empty)" />
 
-<EditorMenu
-    OnViewSelected="windows => _ShownWindows = windows"
-    OnNewFilePressed="() => _ProgramFileManager!.Create()"
-    OnFileOpenPressed="() => _ProgramFileManager!.TryOpen()"
-    OnFileSavePressed="() => _ProgramFileManager!.TrySave(_CodeEditor.Content)" />
+    <EditorMenu
+        OnViewSelected="windows => _ShownWindows = windows"
+        OnNewFilePressed="() => _ProgramFileManager!.Create()"
+        OnFileOpenPressed="() => _ProgramFileManager!.TryOpen()"
+        OnFileSavePressed="() => _ProgramFileManager!.TrySave(_CodeEditor.Content)" />   
+}
 
 <div id="sections">
     <section id="code-editor-section" style=@(_ShownWindows.HasFlag(EditorWindows.Code) ? "" : "display: none")>
@@ -27,6 +31,6 @@
         {
             <ExternalValuePanel ExternalValues=_ExecutableProgram.ExternalValues OnChange=ExecuteProgram />
         }
-        <DiagramView Vectors=_PlottedVectors.Reverse() ErrorMessage=@_ErrorMessage />
+        <DiagramView Vectors=_PlottedVectors ErrorMessage=@_ErrorMessage />
     </section>
 </div>

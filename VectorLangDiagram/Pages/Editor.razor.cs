@@ -13,13 +13,13 @@ public partial class Editor : ComponentBase
 {
     private EditorWindows _ShownWindows = EditorWindows.Code | EditorWindows.Diagram;
 
-    private readonly Stack<PlottedVector> _PlottedVectors = new();
+    private readonly List<PlottedVector> _PlottedVectors = new();
 
     private readonly Timer _RecompileTimer = new(250);
 
     private CodeEditor _CodeEditor = null!;
 
-    private ProgramFileManager _ProgramFileManager = null!;
+    private ProgramFileManager? _ProgramFileManager;
 
     private Diagnoser? _CodeDiagnoser;
 
@@ -39,7 +39,7 @@ public partial class Editor : ComponentBase
 
     private void RenderVector(PlottedVector vector)
     {
-        _PlottedVectors.Push(vector);
+        _PlottedVectors.Add(vector);
     }
 
     private async Task CompileProgram()
@@ -115,7 +115,11 @@ public partial class Editor : ComponentBase
 
     private async Task OnCodeEdited(string code)
     {
-        _ProgramFileManager.FileUnsaved = true;
+        if (_ProgramFileManager is not null)
+        {
+            _ProgramFileManager.FileUnsaved = true;
+        }
+
         await _CodeEditor.ClearReportsAsync();
 
         _ErrorMessage = null;
