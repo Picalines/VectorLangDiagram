@@ -1,6 +1,6 @@
 ﻿namespace VectorLang.Model;
 
-public sealed class PlottedVector
+public readonly struct PlottedVector
 {
     public (double X, double Y) Start { get; }
 
