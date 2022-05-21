@@ -5,9 +5,9 @@ public sealed record TextSelection(TextLocation Start, TextLocation End)
     public TextSelection(TextLocation start, int columnOffset)
         : this(start, start.Shifted(0, columnOffset)) { }
 
-    public static TextSelection FromToken(Token token) => FromTokens(token, token);
+    internal static TextSelection FromToken(Token token) => FromTokens(token, token);
 
-    public static TextSelection FromTokens(Token start, Token end) => new(
+    internal static TextSelection FromTokens(Token start, Token end) => new(
         start.Location,
         end.Location.Shifted(0, end.Value.Length)
     );

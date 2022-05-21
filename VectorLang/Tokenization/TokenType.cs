@@ -2,7 +2,7 @@
 
 namespace VectorLang.Tokenization;
 
-public enum TokenType
+internal enum TokenType
 {
     [Description("whitespace"), TokenRegex(@"\s+")] Space,
     [Description("comment"), TokenRegex(@"\/\/.*\n?")] Comment,

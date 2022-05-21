@@ -2,7 +2,7 @@
 
 namespace VectorLang.Tokenization;
 
-public sealed record Token(TextLocation Location, string Value, TokenType Type)
+internal sealed record Token(TextLocation Location, string Value, TokenType Type)
 {
     public GroupCollection? RegexGroups { get; init; }
 

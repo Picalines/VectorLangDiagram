@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace VectorLang.Tokenization;
 
-public static class Tokenizer
+internal static class Tokenizer
 {
     private static readonly Dictionary<TokenType, TokenRegexAttribute> _TokenRegexes;
 
