@@ -150,12 +150,12 @@ internal static class Parse
         return parser.Select(r => new List<T> { r });
     }
 
-    public static Parser<List<T>> Many<T>(this Parser<T> parser, int listCapacity = 0) => input =>
+    public static Parser<List<T>> Many<T>(this Parser<T> parser) => input =>
     {
-        ParseInput lastRemainder = input;
-        List<T> resultValues = new(listCapacity);
-        IParseResult<T> result;
+        var lastRemainder = input;
+        var resultValues = new List<T>();
 
+        IParseResult<T> result;
         while ((result = parser(lastRemainder)).IsSuccessfull)
         {
             resultValues.Add(result.Value);
