@@ -4,11 +4,11 @@ using System.Reflection;
 
 namespace VectorLang.Tokenization;
 
-public static class TokenTypeExtensions
+internal static class TokenTypeExtensions
 {
     private static readonly Dictionary<TokenType, TokenRegexAttribute> _CachedRegexAttributes = new();
 
-    internal static TokenRegexAttribute GetRegexAttribute(this TokenType tokenType)
+    public static TokenRegexAttribute GetRegexAttribute(this TokenType tokenType)
     {
         if (!_CachedRegexAttributes.TryGetValue(tokenType, out var regexAttribute))
         {

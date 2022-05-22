@@ -1,4 +1,6 @@
-﻿namespace VectorLang.Model;
+﻿using System;
+
+namespace VectorLang.Model;
 
 internal sealed class VectorInstance : ReflectionInstance
 {
@@ -11,15 +13,14 @@ internal sealed class VectorInstance : ReflectionInstance
     [InstanceField("y")]
     public NumberInstance Y { get; }
 
-    [InstanceField("length")]
-    public NumberInstance Length { get; }
+    private readonly Lazy<NumberInstance> _Length;
 
     public VectorInstance(NumberInstance x, NumberInstance y) : base(InstanceType)
     {
         X = x;
         Y = y;
 
-        Length = (X * X + Y * Y).Sqrt();
+        _Length = new(() => (X * X + Y * Y).Sqrt());
     }
 
     public VectorInstance(double x, double y)
@@ -29,14 +30,17 @@ internal sealed class VectorInstance : ReflectionInstance
 
     public (double X, double Y) ToTuple() => (X.Value, Y.Value);
 
-    [InstanceMethod("normalize")]
-    public VectorInstance Normalize() => Length.Value > 0.0 ? new VectorInstance(X / Length, Y / Length) : this;
+    [InstanceMethod("length")]
+    public NumberInstance Length() => _Length.Value;
+
+    [InstanceMethod("normalized")]
+    public VectorInstance Normalized() => Length().Value > 0.0 ? new VectorInstance(X / Length(), Y / Length()) : this;
 
     [InstanceMethod("dot")]
     public NumberInstance Dot(VectorInstance other) => X * other.X + Y * other.Y;
 
     [InstanceMethod("angleCos")]
-    public NumberInstance AngleCos(VectorInstance other) => Dot(other) / (Length * other.Length);
+    public NumberInstance AngleCos(VectorInstance other) => Dot(other) / (Length() * other.Length());
 
     [InstanceMethod("angle")]
     public NumberInstance Angle(VectorInstance other) => AngleCos(other).Acos();
@@ -45,7 +49,7 @@ internal sealed class VectorInstance : ReflectionInstance
     public VectorInstance Lerp(VectorInstance to, NumberInstance progress) => new(X.Lerp(to.X, progress), Y.Lerp(to.Y, progress));
 
     [InstanceMethod("clampLength")]
-    public VectorInstance ClampLength(NumberInstance minLength, NumberInstance maxLength) => Normalize() * Length.Clamp(minLength, maxLength);
+    public VectorInstance ClampLength(NumberInstance minLength, NumberInstance maxLength) => Normalized() * Length().Clamp(minLength, maxLength);
 
     [InstanceMethod("rotate")]
     public VectorInstance Rotate(NumberInstance angle) => new(

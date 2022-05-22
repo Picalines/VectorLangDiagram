@@ -21,7 +21,7 @@ monaco.languages.setMonarchTokensProvider(vectorLangId, {
     tokenizer: {
         root: [
             // function
-            [/(\b[a-z_][a-zA-Z0-9_]*)(\s*)(\()/, [
+            [/(\b[a-zA-Z_][a-zA-Z0-9_]*)(\s*)(\()/, [
                 {
                     cases: {
                         '@typeKeywords': 'type.identifier',

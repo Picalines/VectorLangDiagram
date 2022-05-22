@@ -14,8 +14,8 @@ const step = 0.5;
 def fieldComponent(vector pos, number q, vector qPos) -> vector = [
     val diff := pos - qPos;
 
-    val r := diff.length;
-    val n := diff.normalize();
+    val r := diff.length();
+    val n := diff.normalized();
 
     if (r > 0)
         n * (q / r.sqr())
@@ -36,8 +36,8 @@ def plotField(vector pos) -> void = if (pos.x <= gridWidth and pos.y <= gridWidt
 
     val pf := field(pos);
 
-    if (pf.length > step) [
-        fill(WHITE.blend(RED, (pf.length - step) / step));
+    if (pf.length() > step) [
+        fill(WHITE.blend(RED, (pf.length() - step) / step));
         pf := pf.clampLength(0, step);
     ];
 
