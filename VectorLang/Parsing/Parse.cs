@@ -65,6 +65,20 @@ internal static class Parse
             : firstFailure;
     }
 
+    public static Parser<T> OneOf<T>(params Parser<T>[] parsers)
+    {
+        Debug.Assert(parsers.Any());
+
+        return parsers.Aggregate((a, b) => a.Or(b));
+    }
+
+    public static Parser<T> XOneOf<T>(params Parser<T>[] parsers)
+    {
+        Debug.Assert(parsers.Any());
+
+        return parsers.Aggregate((a, b) => a.XOr(b));
+    }
+
     public static Parser<T> Return<T>(T value)
     {
         return input => ParseResult<T>.Success(input, value);

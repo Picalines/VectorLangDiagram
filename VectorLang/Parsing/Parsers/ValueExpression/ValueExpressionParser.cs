@@ -65,14 +65,16 @@ internal static partial class ValueExpressionParser
         select new VectorNode(x, y, openBrace, closeBrace);
 
     private static readonly Parser<ValueExpressionNode> PrimaryTerm =
-        (ConstantParser.Number as Parser<ValueExpressionNode>)
-        .XOr(ConstantParser.Boolean)
-        .XOr(ConstantParser.Color)
-        .XOr(VariableOrAssignment)
-        .XOr(Vector)
-        .XOr(VariableCreation)
-        .XOr(InnerExpression)
-        .XOr(Block);
+        Parse.XOneOf(
+            ConstantParser.Number,
+            ConstantParser.Boolean,
+            ConstantParser.Color,
+            VariableOrAssignment,
+            Vector,
+            VariableCreation,
+            InnerExpression,
+            Block
+        );
 
     private static readonly Parser<CallInfo> Call =
         from openParen in ParseToken.OpenParenthesis
@@ -85,24 +87,29 @@ internal static partial class ValueExpressionParser
         from identifier in ParseToken.Identifier
         select identifier;
 
+    private static readonly Parser<object> TermMapper =
+        Parse.OneOf<object>(Call, Member);
+
     private static readonly Parser<ValueExpressionNode> MappedTerm =
-        PrimaryTerm.MaybeThen(factor =>
-            (Call as Parser<object>).Or(Member).AtLeastOnce()
+        PrimaryTerm.MaybeThen(term =>
+            TermMapper.AtLeastOnce()
             .Select(rightOps => rightOps.Aggregate(
-                factor,
-                (left, operation) => operation switch
+                term,
+                (mappedTerm, operation) => operation switch
                 {
-                    CallInfo(var arguments, var closeParen) => new CalledNode(left, arguments, closeParen),
-                    Token member => new MemberNode(left, member),
+                    CallInfo(var arguments, var closeParen) => new CalledNode(mappedTerm, arguments, closeParen),
+                    Token member => new MemberNode(mappedTerm, member),
                     _ => throw new NotImplementedException(),
                 }
             ))
         );
 
     private static readonly Parser<ValueExpressionNode> SignedTerm =
-        ParseToken.OperatorPlus.Select(token => new { Operator = UnaryOperator.Plus, Token = token })
-        .Or(ParseToken.OperatorMinus.Select(token => new { Operator = UnaryOperator.Minus, Token = token }))
-        .Then(op => MappedTerm.Select(factor => new UnaryExpressionNode(factor, op.Operator, op.Token)))
+        Parse.OneOf(
+            ParseToken.OperatorPlus.Select(token => new { Operator = UnaryOperator.Plus, Token = token }),
+            ParseToken.OperatorMinus.Select(token => new { Operator = UnaryOperator.Minus, Token = token })
+        )
+        .Then(op => MappedTerm.Select(term => new UnaryExpressionNode(term, op.Operator, op.Token)))
         .XOr(MappedTerm);
 
     private static readonly Func<BinaryOperator, ValueExpressionNode, ValueExpressionNode, BinaryExpressionNode> CreateBinaryExpression =
@@ -110,34 +117,42 @@ internal static partial class ValueExpressionParser
 
     private static readonly Parser<ValueExpressionNode> Multiplication =
         Parse.ChainOperator(
-            ParseToken.OperatorMultiply.As(BinaryOperator.Multiply)
-            .Or(ParseToken.OperatorDivide.As(BinaryOperator.Divide))
-            .Or(ParseToken.OperatorModulo.As(BinaryOperator.Modulo)),
+            Parse.OneOf(
+                ParseToken.OperatorMultiply.As(BinaryOperator.Multiply),
+                ParseToken.OperatorDivide.As(BinaryOperator.Divide),
+                ParseToken.OperatorModulo.As(BinaryOperator.Modulo)
+            ),
             SignedTerm,
             CreateBinaryExpression
         );
 
     private static readonly Parser<ValueExpressionNode> Addition =
         Parse.ChainOperator(
-            ParseToken.OperatorPlus.As(BinaryOperator.Plus)
-            .Or(ParseToken.OperatorMinus.As(BinaryOperator.Minus)),
+            Parse.OneOf(
+                ParseToken.OperatorPlus.As(BinaryOperator.Plus),
+                ParseToken.OperatorMinus.As(BinaryOperator.Minus)
+            ),
             Multiplication,
             CreateBinaryExpression
         );
 
+    private static readonly Parser<BinaryOperator> RelationOperator =
+        Parse.OneOf(
+            ParseToken.OperatorEquals.As(BinaryOperator.Equals),
+            ParseToken.OperatorNotEquals.As(BinaryOperator.NotEquals),
+            ParseToken.OperatorLess.As(BinaryOperator.Less),
+            ParseToken.OperatorLessOrEqual.As(BinaryOperator.LessOrEqual),
+            ParseToken.OperatorGreater.As(BinaryOperator.Greater),
+            ParseToken.OperatorGreaterOrEqual.As(BinaryOperator.GreaterOrEqual)
+        );
+
     private static readonly Parser<ValueExpressionNode> Relation =
         Addition.MaybeThen(left =>
-            ParseToken.OperatorEquals.As(BinaryOperator.Equals)
-            .Or(ParseToken.OperatorNotEquals.As(BinaryOperator.NotEquals))
-            .Or(ParseToken.OperatorLess.As(BinaryOperator.Less))
-            .Or(ParseToken.OperatorLessOrEqual.As(BinaryOperator.LessOrEqual))
-            .Or(ParseToken.OperatorGreater.As(BinaryOperator.Greater))
-            .Or(ParseToken.OperatorGreaterOrEqual.As(BinaryOperator.GreaterOrEqual))
+            RelationOperator
             .Then(op =>
                 Addition.Select(right => new BinaryExpressionNode(left, right, op))
             )
         );
-
 
     private static readonly Parser<ValueExpressionNode> Not =
         ParseToken.OperatorNot.Then(notToken =>
@@ -145,10 +160,8 @@ internal static partial class ValueExpressionParser
         )
         .XOr(Relation);
 
-
     private static readonly Parser<ValueExpressionNode> And =
         Parse.ChainOperator(ParseToken.OperatorAnd.As(BinaryOperator.And), Not, CreateBinaryExpression);
-
 
     private static readonly Parser<ValueExpressionNode> BooleanExpression =
         Parse.ChainOperator(ParseToken.OperatorOr.As(BinaryOperator.Or), And, CreateBinaryExpression);
