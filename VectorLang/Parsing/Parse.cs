@@ -14,7 +14,7 @@ internal static class Parse
 
     public static Parser<N> Then<T, N>(this Parser<T> current, Func<T, Parser<N>> next)
     {
-        return input => current(input).IfSuccess(result => next(result.Value)(result.Remainder));
+        return input => current(input).IfSuccess(result => next(result.Value!)(result.Remainder));
     }
 
     public static Parser<T> Or<T>(this Parser<T> first, Parser<T> second) => input =>

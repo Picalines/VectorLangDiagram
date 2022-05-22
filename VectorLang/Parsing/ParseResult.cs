@@ -7,12 +7,13 @@ namespace VectorLang.Parsing;
 
 internal interface IParseResult<out T>
 {
-    ParseInput Remainder { get; }
-
-    T Value { get; }
-
+    [MemberNotNullWhen(true, nameof(Value))]
     [MemberNotNullWhen(false, nameof(ErrorMessage))]
     bool IsSuccessfull { get; }
+
+    ParseInput Remainder { get; }
+
+    T? Value { get; }
 
     string? ErrorMessage { get; }
 
@@ -39,15 +40,7 @@ internal class ParseResult<T> : IParseResult<T>
 
     public bool IsSuccessfull => ErrorMessage is null;
 
-    public T Value
-    {
-        get
-        {
-            Debug.Assert(IsSuccessfull);
-
-            return _Value!;
-        }
-    }
+    public T? Value => IsSuccessfull ? _Value : default;
 
     public static IParseResult<T> Success(ParseInput remainder, T value)
     {
