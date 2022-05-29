@@ -3,10 +3,8 @@
 
 external Q1 = 1;
 external Q1pos = {3.5, 3.5};
-
 external Q2 = -1;
 external Q2pos = {6.5, 6.5};
-
 external gridWidth = 10;
 
 const step = 0.5;
@@ -14,21 +12,12 @@ const step = 0.5;
 def fieldComponent(vector pos, number q, vector qPos) -> vector = [
     val diff := pos - qPos;
 
-    val r := diff.length();
-    val n := diff.normalized();
-
-    if (r > 0)
-        n * (q / r.sqr())
-    else
-        {0, 0}
+    if (pos != qPos) diff.normalized() * (q / diff.length().sqr())
+    else {0, 0}
 ];
 
-def field(vector pos) -> vector = [
-    val E1 := fieldComponent(pos, Q1, Q1pos);
-    val E2 := fieldComponent(pos, Q2, Q2pos);
-
-    E1 + E2
-];
+def field(vector pos) -> vector
+    = fieldComponent(pos, Q1, Q1pos) + fieldComponent(pos, Q2, Q2pos);
 
 def plotField(vector pos) -> void = if (pos.x <= gridWidth and pos.y <= gridWidth) [
     push();
@@ -44,12 +33,10 @@ def plotField(vector pos) -> void = if (pos.x <= gridWidth and pos.y <= gridWidt
     plot(pf);
     pop();
 
-    if (pos.x >= gridWidth)
-        plotField(pos + {-pos.x, step})
-    else
-        plotField(pos + {step, 0});
+    plotField(pos + (
+        if (pos.x >= gridWidth) {-pos.x, step}
+        else {step, 0}
+    ));
 ];
 
-def main() -> void = [
-    plotField({0, 0});
-];
+def main() -> void = plotField({0, 0});
