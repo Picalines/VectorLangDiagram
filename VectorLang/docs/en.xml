@@ -1,0 +1,647 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>VectorLang</name>
+    </assembly>
+    <members>
+        <member name="T:VectorLang.Model.BooleanInstance">
+            <vl-doc>
+            <name>boolean</name>
+            <summary>
+            Type that has only two values - true and false
+            </summary>
+            <example>
+            let flag = true; // or false
+            </example>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.BooleanInstance.op_LogicalNot(VectorLang.Model.BooleanInstance)">
+            <vl-doc>
+            <returns>
+            true for false, false for true
+            </returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.BooleanInstance.op_Equality(VectorLang.Model.BooleanInstance,VectorLang.Model.BooleanInstance)">
+            <vl-doc>
+            <returns>
+            true for (true, true) and (false, false)
+            </returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.BooleanInstance.op_Inequality(VectorLang.Model.BooleanInstance,VectorLang.Model.BooleanInstance)">
+            <vl-doc>
+            <returns>
+            false for (true, true) and (false, false)
+            </returns>
+            </vl-doc>
+        </member>
+        <member name="T:VectorLang.Model.ColorInstance">
+            <vl-doc>
+            <name>color</name>
+            <summary>
+            Type that represents RGB color
+            </summary>
+            <example>
+            let redClr = #ff0000; // or rgb(1, 0, 0) or RED constant
+            </example>
+            </vl-doc>
+        </member>
+        <member name="P:VectorLang.Model.ColorInstance.R">
+            <vl-doc>
+            <name>r</name>
+            <summary>Red component of RGB (0..1)</summary>
+            </vl-doc>
+        </member>
+        <member name="P:VectorLang.Model.ColorInstance.G">
+            <vl-doc>
+            <name>g</name>
+            <summary>Green component of RGB (0..1)</summary>
+            </vl-doc>
+        </member>
+        <member name="P:VectorLang.Model.ColorInstance.B">
+            <vl-doc>
+            <name>b</name>
+            <summary>Blue component of RGB (0..1)</summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.ColorInstance.Blend(VectorLang.Model.ColorInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>blend</name>
+            <returns>
+            new color with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
+            </returns>
+            <param name="to">target color</param>
+            <param name="progress">lerp parameter (0 - current color, .. , 1 - <paramref name="to"/>)</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.ColorInstance.op_Addition(VectorLang.Model.ColorInstance,VectorLang.Model.ColorInstance)">
+            <vl-doc>
+            <returns>
+            half-lerped color between the two. The same as calling <see cref="M:VectorLang.Model.ColorInstance.Blend(VectorLang.Model.ColorInstance,VectorLang.Model.NumberInstance)"/> with 0.5
+            </returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.ColorInstance.op_Equality(VectorLang.Model.ColorInstance,VectorLang.Model.ColorInstance)">
+            <vl-doc>
+            <returns>true for two colors with exact same components</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.ColorInstance.op_Inequality(VectorLang.Model.ColorInstance,VectorLang.Model.ColorInstance)">
+            <vl-doc>
+            <returns>true for two colors with different components</returns>
+            </vl-doc>
+        </member>
+        <member name="T:VectorLang.Model.NumberInstance">
+            <vl-doc>
+            <name>number</name>
+            <summary>
+            Type that represents a real number
+            </summary>
+            <example>
+            let x = 123;
+            let xDeg = 45deg; // converted to pi/4 radiands
+            let xRad = 1rad; // same as just "1". Use to indicate that the value is an angle
+            </example>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Abs">
+            <vl-doc>
+            <name>abs</name>
+            <returns>absolute value of number</returns>
+            <example>
+            123.abs() // 123
+            (-123).abs() // 123
+            </example>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Sign">
+            <vl-doc>
+            <name>sign</name>
+            <returns>a sign (-1, 0, 1) of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Sqr">
+            <vl-doc>
+            <name>sqr</name>
+            <returns>a squared number</returns>
+            <example>
+            (-2).sqr() // 4
+            </example>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Sqrt">
+            <vl-doc>
+            <name>sqrt</name>
+            <returns>square root of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Pow(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>pow</name>
+            <returns>number raised to <paramref name="power"/></returns>
+            <param name="power">power of number</param>
+            <example>
+            2.pow(4) // 16
+            </example>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.DegToRad">
+            <vl-doc>
+            <name>degToRad</name>
+            <summary>converts degrees to radians</summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.RadToDeg">
+            <vl-doc>
+            <name>radToDeg</name>
+            <summary>converts radiands to degrees</summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Sin">
+            <vl-doc>
+            <name>sin</name>
+            <returns>sine of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Cos">
+            <vl-doc>
+            <name>sin</name>
+            <returns>cosine of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Tan">
+            <vl-doc>
+            <name>tan</name>
+            <returns>tangent of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Cot">
+            <vl-doc>
+            <name>cot</name>
+            <returns>cot of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Asin">
+            <vl-doc>
+            <name>asin</name>
+            <returns>arc sine of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Acos">
+            <vl-doc>
+            <name>acos</name>
+            <returns>arc cosing of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Atan">
+            <vl-doc>
+            <name>atan</name>
+            <returns>arc tangent of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Exp">
+            <vl-doc>
+            <name>exp</name>
+            <returns>e constant raised to the power of current number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Ln">
+            <vl-doc>
+            <name>ln</name>
+            <returns>natural (base e) log of number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Log(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>log</name>
+            <returns>log of number in <paramref name="logBase"/></returns>
+            <param name="logBase">log base</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Lerp(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>lerp</name>
+            <returns>number linearly interpolated between the current number and <paramref name="to"/> by <paramref name="progress"/></returns>
+            <param name="to">target number</param>
+            <param name="progress">0 - current number, .., 1 - target number</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Min(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>min</name>
+            <returns>min of current number and <paramref name="other"/></returns>
+            <param name="other">other number</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Max(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>max</name>
+            <returns>max of current number and <paramref name="other"/></returns>
+            <param name="other">other number</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Clamp(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>clamp</name>
+            <returns>number clamped between <paramref name="min"/> and <paramref name="max"/></returns>
+            <param name="min">lower bound</param>
+            <param name="max">upper bound</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Round">
+            <vl-doc>
+            <name>round</name>
+            <returns>closest integer number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Floor">
+            <vl-doc>
+            <name>floor</name>
+            <returns>biggest integer number that is less than the current number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.Ceil">
+            <vl-doc>
+            <name>ceil</name>
+            <returns>smallest integer number that is bigger than the current number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.IsInt">
+            <vl-doc>
+            <name>isInt</name>
+            <returns>true if the number is integer</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.RoundDigits(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>roundDigits</name>
+            <returns>rounds current number with specified number of digits</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_UnaryPlus(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>returns the current number (exists for simmetry)</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_UnaryNegation(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>current number with the opposite sign</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Addition(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>the sum of two numbers</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Subtraction(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>the difference between the two numbers</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Multiply(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>multiplication product of two numbers</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Division(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>division result of two numbers. Crashes the program on 0 denominator</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Modulus(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>remainder of division of two numbers. Crashes the program on 0 denominator</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Multiply(VectorLang.Model.NumberInstance,VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>vector multiplied by a scalar</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Division(VectorLang.Model.NumberInstance,VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>vector divided by a scalar</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_LessThan(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>true for number less than the other number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_LessThanOrEqual(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>true for number less than or equal to the other number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_GreaterThan(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>true for number greater than the other number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_GreaterThanOrEqual(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>true for number greater than or equal to the other number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Equality(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>true for number equal to the other number</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.NumberInstance.op_Inequality(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>true for number not equal to the other number</returns>
+            </vl-doc>
+        </member>
+        <member name="T:VectorLang.Model.VectorInstance">
+            <vl-doc>
+            <name>vector</name>
+            <summary>Type that represents a 2D vector</summary>
+            <example>
+            let v = {123, 456};
+            </example>
+            </vl-doc>
+        </member>
+        <member name="P:VectorLang.Model.VectorInstance.X">
+            <vl-doc>
+            <name>x</name>
+            <summary>X component of vector</summary>
+            </vl-doc>
+        </member>
+        <member name="P:VectorLang.Model.VectorInstance.Y">
+            <vl-doc>
+            <name>y</name>
+            <summary>Y component of vector</summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.Length">
+            <vl-doc>
+            <name>length</name>
+            <returns>length of vector</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.Normalized">
+            <vl-doc>
+            <name>normalized</name>
+            <returns>vector with same direction but length of 1 (or zero)</returns>
+            <example>
+            {5, 0}.normalized() // {1, 0}
+            {0, 0.1}.normalized() // {0, 1}
+            {1, 1}.normalized() // {sqrt(2), sqrt(2)}
+            </example>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.Dot(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <name>dot</name>
+            <returns>dot product of two vectors (sum of multiplied components)</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.AngleCos(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <name>angleCos</name>
+            <returns>cosine of angle between two vectors</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.Angle(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <name>angle</name>
+            <returns>angle between two vectors (in radians)</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.Lerp(VectorLang.Model.VectorInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>lerp</name>
+            <returns>
+            new vector with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
+            </returns>
+            <param name="to">target vector</param>
+            <param name="progress">lerp parameter (0 - current vector, .. , 1 - <paramref name="to"/>)</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.ClampLength(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>clampLength</name>
+            <returns>
+            new vector with length clamped between <paramref name="minLength"/> and <paramref name="maxLength"/>
+            </returns>
+            <param name="minLength">lower length bound</param>
+            <param name="maxLength">upper length bound</param>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.Rotate(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>rotate</name>
+            <returns>vector rotated counterclockwise by <paramref name="angle"/> in radians</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.Scale(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <name>scale</name>
+            <returns>new vector with each component multiplied by components of <paramref name="scale"/></returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_UnaryPlus(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>the current vector (exists for simmetry)</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_UnaryNegation(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>new vector with each component negated</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_Addition(VectorLang.Model.VectorInstance,VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>sum of the two vectors</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_Subtraction(VectorLang.Model.VectorInstance,VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>difference between the two vectors</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_Multiply(VectorLang.Model.VectorInstance,VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>the dot product of the two vectors</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_Multiply(VectorLang.Model.VectorInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>vector multiplied by a scalar</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_Division(VectorLang.Model.VectorInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <returns>vector divided by a scalar. Crashes the program on zero scalar</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_Equality(VectorLang.Model.VectorInstance,VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>true for two vectors with same components</returns>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.VectorInstance.op_Inequality(VectorLang.Model.VectorInstance,VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <returns>true for two vectors with different components</returns>
+            </vl-doc>
+        </member>
+        <member name="T:VectorLang.Model.VoidInstance">
+            <vl-doc>
+            <name>void</name>
+            <summary>
+            Type that represents "empty value"
+            </summary>
+            <example>
+            def drawSmth() -> void = [ ...; ]; // returns "nothing"
+            </example>
+            </vl-doc>
+        </member>
+        <member name="T:VectorLang.Model.ColorLibrary">
+            <vl-library>color constants and functions</vl-library>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.White">
+            <vl-doc>
+            <name>WHITE</name>
+            <summary>Color constant with value #ffffff</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.Black">
+            <vl-doc>
+            <name>BLACK</name>
+            <summary>Color constant with value #000000</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.Red">
+            <vl-doc>
+            <name>RED</name>
+            <summary>Color constant with value #ff0000</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.Greed">
+            <vl-doc>
+            <name>GREEN</name>
+            <summary>Color constant with value #00ff00</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.Blue">
+            <vl-doc>
+            <name>BLUE</name>
+            <summary>Color constant with value #0000ff</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.Yellow">
+            <vl-doc>
+            <name>YELLOW</name>
+            <summary>Color constant with value #ffff00</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.Magenta">
+            <vl-doc>
+            <name>MAGENTA</name>
+            <summary>Color constant with value #ff00ff</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.ColorLibrary.Cyan">
+            <vl-doc>
+            <name>CYAN</name>
+            <summary>Color constant with value #00ffff</summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.ColorLibrary.Rgb(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>rgb</name>
+            <returns>color with components specified in the arguments</returns>
+            </vl-doc>
+        </member>
+        <member name="T:VectorLang.Model.MathLibrary">
+            <vl-library>math constants</vl-library>
+        </member>
+        <member name="F:VectorLang.Model.MathLibrary.PI">
+            <vl-doc>
+            <name>PI</name>
+            <summary>PI constant (3.1415926535897931)</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.MathLibrary.E">
+            <vl-doc>
+            <name>E</name>
+            <summary>E constant (2.7182818284590451)</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.MathLibrary.Tau">
+            <vl-doc>
+            <name>Tau</name>
+            <summary>Tau constant (6.2831853071795862)</summary>
+            </vl-doc>
+        </member>
+        <member name="F:VectorLang.Model.MathLibrary.Epsilon">
+            <vl-doc>
+            <name>Epsilon</name>
+            <summary>Epsilon constant - smallest real number bigger than 0</summary>
+            </vl-doc>
+        </member>
+        <member name="T:VectorLang.Model.PlotLibrary">
+            <vl-library>plotting</vl-library>
+        </member>
+        <member name="M:VectorLang.Model.PlotLibrary.Push">
+            <vl-doc>
+            <name>push</name>
+            <summary>
+            Pushes current transformation matrix.
+            "Starts temporary transformation", that should be ended with <see cref="M:VectorLang.Model.PlotLibrary.Pop"/>
+            </summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.PlotLibrary.Pop">
+            <vl-doc>
+            <name>pop</name>
+            <summary>
+            Pops current transformation matrix.
+            "Ends temporary transformation", that was started with <see cref="M:VectorLang.Model.PlotLibrary.Push"/>
+            </summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.PlotLibrary.Translate(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <name>translate</name>
+            <summary>
+            Translates next plotted vectors by <paramref name="offset"/>
+            </summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.PlotLibrary.Scale(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <name>scale</name>
+            <summary>
+            Scales next plotted vectors by <paramref name="scale"/>
+            </summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.PlotLibrary.Rotate(VectorLang.Model.NumberInstance)">
+            <vl-doc>
+            <name>rotate</name>
+            <summary>
+            Rotates next plotted vectors by <paramref name="rotation"/> in radians
+            </summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.PlotLibrary.Fill(VectorLang.Model.ColorInstance)">
+            <vl-doc>
+            <name>fill</name>
+            <summary>
+            Sets the color of next plotted vectors. Affected by <see cref="M:VectorLang.Model.PlotLibrary.Push"/> and <see cref="M:VectorLang.Model.PlotLibrary.Pop"/>
+            </summary>
+            </vl-doc>
+        </member>
+        <member name="M:VectorLang.Model.PlotLibrary.Plot(VectorLang.Model.VectorInstance)">
+            <vl-doc>
+            <name>plot</name>
+            <summary>
+            Plots given vector to the diagram with applied transformations.
+            </summary>
+            </vl-doc>
+        </member>
+    </members>
+</doc>

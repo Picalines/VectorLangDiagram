@@ -2,10 +2,10 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<DocumentationFile>docs\en.xml</DocumentationFile>
 	</PropertyGroup>
-	<ItemGroup>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-			<_Parameter1>VectorLangDebug</_Parameter1>
-		</AssemblyAttribute>
-	</ItemGroup>
+    <PropertyGroup>
+        <NoWarn>CS1591</NoWarn>
+    </PropertyGroup>
 </Project>

@@ -1,16 +1,37 @@
 ﻿namespace VectorLang.Model;
 
+/// <vl-doc>
+/// <name>color</name>
+/// <summary>
+/// Type that represents RGB color
+/// </summary>
+/// <example>
+/// let redClr = #ff0000; // or rgb(1, 0, 0) or RED constant
+/// </example>
+/// </vl-doc>
 internal sealed class ColorInstance : ReflectionInstance
 {
     [ReflectionInstanceType]
     public static readonly ReflectionInstanceType InstanceType = ReflectionInstanceType.Of<ColorInstance>("color");
 
+    /// <vl-doc>
+    /// <name>r</name>
+    /// <summary>Red component of RGB (0..1)</summary>
+    /// </vl-doc>
     [InstanceField("r")]
     public NumberInstance R { get; }
 
+    /// <vl-doc>
+    /// <name>g</name>
+    /// <summary>Green component of RGB (0..1)</summary>
+    /// </vl-doc>
     [InstanceField("g")]
     public NumberInstance G { get; }
 
+    /// <vl-doc>
+    /// <name>b</name>
+    /// <summary>Blue component of RGB (0..1)</summary>
+    /// </vl-doc>
     [InstanceField("b")]
     public NumberInstance B { get; }
 
@@ -28,6 +49,14 @@ internal sealed class ColorInstance : ReflectionInstance
 
     public (double R, double G, double B) ToTuple() => (R.Value, G.Value, B.Value);
 
+    /// <vl-doc>
+    /// <name>blend</name>
+    /// <returns>
+    /// new color with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
+    /// </returns>
+    /// <param name="to">target color</param>
+    /// <param name="progress">lerp parameter (0 - current color, .. , 1 - <paramref name="to"/>)</param>
+    /// </vl-doc>
     [InstanceMethod("blend")]
     public ColorInstance Blend(ColorInstance to, NumberInstance progress) => new(
         R.Lerp(to.R, progress),
@@ -35,9 +64,17 @@ internal sealed class ColorInstance : ReflectionInstance
         B.Lerp(to.B, progress)
     );
 
+    /// <vl-doc>
+    /// <returns>
+    /// half-lerped color between the two. The same as calling <see cref="Blend(ColorInstance,NumberInstance)"/> with 0.5
+    /// </returns>
+    /// </vl-doc>
     [InstanceOperator]
     public static ColorInstance operator +(ColorInstance left, ColorInstance right) => left.Blend(right, 0.5);
 
+    /// <vl-doc>
+    /// <returns>true for two colors with exact same components</returns>
+    /// </vl-doc>
     [InstanceOperator]
     public static BooleanInstance operator ==(ColorInstance left, ColorInstance right)
     {
@@ -48,6 +85,9 @@ internal sealed class ColorInstance : ReflectionInstance
         return rEquality.Value && gEquality.Value && bEquality.Value;
     }
 
+    /// <vl-doc>
+    /// <returns>true for two colors with different components</returns>
+    /// </vl-doc>
     [InstanceOperator]
     public static BooleanInstance operator !=(ColorInstance left, ColorInstance right)
     {

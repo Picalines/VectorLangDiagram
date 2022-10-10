@@ -1,5 +1,14 @@
 ﻿namespace VectorLang.Model;
 
+/// <vl-doc>
+/// <name>void</name>
+/// <summary>
+/// Type that represents "empty value"
+/// </summary>
+/// <example>
+/// def drawSmth() -> void = [ ...; ]; // returns "nothing"
+/// </example>
+/// </vl-doc>
 internal sealed class VoidInstance : ReflectionInstance
 {
     [ReflectionInstanceType]

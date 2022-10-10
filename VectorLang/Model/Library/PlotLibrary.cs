@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace VectorLang.Model;
 
+/// <vl-library>plotting</vl-library>
 internal sealed class PlotLibrary : ReflectionLibrary
 {
     private const int MaxContextStackSize = 32;
@@ -38,6 +39,13 @@ internal sealed class PlotLibrary : ReflectionLibrary
         _ContextStack.Push(new PlotContext());
     }
 
+    /// <vl-doc>
+    /// <name>push</name>
+    /// <summary>
+    /// Pushes current transformation matrix.
+    /// "Starts temporary transformation", that should be ended with <see cref="Pop"/>
+    /// </summary>
+    /// </vl-doc>
     [ReflectionFunction("push")]
     public VoidInstance Push()
     {
@@ -51,6 +59,13 @@ internal sealed class PlotLibrary : ReflectionLibrary
         return VoidInstance.Instance;
     }
 
+    /// <vl-doc>
+    /// <name>pop</name>
+    /// <summary>
+    /// Pops current transformation matrix.
+    /// "Ends temporary transformation", that was started with <see cref="Push"/>
+    /// </summary>
+    /// </vl-doc>
     [ReflectionFunction("pop")]
     public VoidInstance Pop()
     {
@@ -64,6 +79,12 @@ internal sealed class PlotLibrary : ReflectionLibrary
         return VoidInstance.Instance;
     }
 
+    /// <vl-doc>
+    /// <name>translate</name>
+    /// <summary>
+    /// Translates next plotted vectors by <paramref name="offset"/>
+    /// </summary>
+    /// </vl-doc>
     [ReflectionFunction("translate")]
     public VoidInstance Translate(VectorInstance offset)
     {
@@ -74,6 +95,12 @@ internal sealed class PlotLibrary : ReflectionLibrary
         return VoidInstance.Instance;
     }
 
+    /// <vl-doc>
+    /// <name>scale</name>
+    /// <summary>
+    /// Scales next plotted vectors by <paramref name="scale"/>
+    /// </summary>
+    /// </vl-doc>
     [ReflectionFunction("scale")]
     public VoidInstance Scale(VectorInstance scale)
     {
@@ -84,6 +111,12 @@ internal sealed class PlotLibrary : ReflectionLibrary
         return VoidInstance.Instance;
     }
 
+    /// <vl-doc>
+    /// <name>rotate</name>
+    /// <summary>
+    /// Rotates next plotted vectors by <paramref name="rotation"/> in radians
+    /// </summary>
+    /// </vl-doc>
     [ReflectionFunction("rotate")]
     public VoidInstance Rotate(NumberInstance rotation)
     {
@@ -94,6 +127,12 @@ internal sealed class PlotLibrary : ReflectionLibrary
         return VoidInstance.Instance;
     }
 
+    /// <vl-doc>
+    /// <name>fill</name>
+    /// <summary>
+    /// Sets the color of next plotted vectors. Affected by <see cref="Push"/> and <see cref="Pop"/>
+    /// </summary>
+    /// </vl-doc>
     [ReflectionFunction("fill")]
     public VoidInstance Fill(ColorInstance color)
     {
@@ -102,6 +141,12 @@ internal sealed class PlotLibrary : ReflectionLibrary
         return VoidInstance.Instance;
     }
 
+    /// <vl-doc>
+    /// <name>plot</name>
+    /// <summary>
+    /// Plots given vector to the diagram with applied transformations.
+    /// </summary>
+    /// </vl-doc>
     [ReflectionFunction("plot")]
     public VoidInstance Plot(VectorInstance vector)
     {
