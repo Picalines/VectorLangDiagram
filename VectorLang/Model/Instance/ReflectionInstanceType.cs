@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 
 namespace VectorLang.Model;
@@ -20,12 +19,12 @@ internal sealed class ReflectionInstanceType : InstanceType
         _InstanceReflectionType = instanceReflectionType;
     }
 
-    public static ReflectionInstanceType Of<TInstance>(string name) where TInstance : ReflectionInstance
+    public static ReflectionInstanceType Of<TInstance>(string name) where TInstance : ReflectionInstance<TInstance>
     {
         return new(name, typeof(TInstance));
     }
 
-    public Instance GetInstanceField(ReflectionInstance instance, string fieldName)
+    public Instance GetInstanceField<TInstance>(ReflectionInstance<TInstance> instance, string fieldName) where TInstance : ReflectionInstance<TInstance>
     {
         Debug.Assert(instance.GetType() == _InstanceReflectionType);
 
@@ -98,15 +97,12 @@ internal sealed class ReflectionInstanceType : InstanceType
             return instaceType;
         }
 
-        Debug.Assert(instanceReflectionType.IsSubclassOf(typeof(ReflectionInstance)), $"{instanceReflectionType} is not an {nameof(ReflectionInstance)}");
+        Debug.Assert(instanceReflectionType.BaseType?.GetGenericTypeDefinition() == typeof(ReflectionInstance<>), $"{instanceReflectionType} is not an {typeof(ReflectionInstance<>).Name}");
 
-        var fields = instanceReflectionType.GetFields(BindingFlags.Public | BindingFlags.Static);
+        // why nameof(ReflectionInstance<>.InstanceType) isn't a thing? :/
+        var typeStaticField = instanceReflectionType.GetProperty("InstanceType", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
 
-        var typeStaticField = fields
-            .Where(field => field.IsDefined(typeof(ReflectionInstanceTypeAttribute)))
-            .FirstOrDefault();
-
-        Debug.Assert(typeStaticField is not null, $"{nameof(ReflectionInstance)} must have a public static InstanceType Type field with {nameof(ReflectionInstanceTypeAttribute)}");
+        Debug.Assert(typeStaticField is not null, "ReflectionInstance<>.InstanceType field is not found");
 
         instaceType = (typeStaticField.GetValue(null) as ReflectionInstanceType)!;
         _CachedInstanceTypes.Add(instanceReflectionType, instaceType);

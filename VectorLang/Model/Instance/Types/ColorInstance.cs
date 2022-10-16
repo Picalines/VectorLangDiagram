@@ -1,7 +1,6 @@
 ﻿namespace VectorLang.Model;
 
 /// <vl-doc>
-/// <name>color</name>
 /// <summary>
 /// Type that represents RGB color
 /// </summary>
@@ -9,27 +8,22 @@
 /// let redClr = #ff0000; // or rgb(1, 0, 0) or RED constant
 /// </example>
 /// </vl-doc>
-internal sealed class ColorInstance : ReflectionInstance
+[ReflectionInstanceType("color")]
+internal sealed class ColorInstance : ReflectionInstance<ColorInstance>
 {
-    [ReflectionInstanceType]
-    public static readonly ReflectionInstanceType InstanceType = ReflectionInstanceType.Of<ColorInstance>("color");
-
     /// <vl-doc>
-    /// <name>r</name>
     /// <summary>Red component of RGB (0..1)</summary>
     /// </vl-doc>
     [InstanceField("r")]
     public NumberInstance R { get; }
 
     /// <vl-doc>
-    /// <name>g</name>
     /// <summary>Green component of RGB (0..1)</summary>
     /// </vl-doc>
     [InstanceField("g")]
     public NumberInstance G { get; }
 
     /// <vl-doc>
-    /// <name>b</name>
     /// <summary>Blue component of RGB (0..1)</summary>
     /// </vl-doc>
     [InstanceField("b")]
@@ -50,7 +44,6 @@ internal sealed class ColorInstance : ReflectionInstance
     public (double R, double G, double B) ToTuple() => (R.Value, G.Value, B.Value);
 
     /// <vl-doc>
-    /// <name>blend</name>
     /// <returns>
     /// new color with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
     /// </returns>

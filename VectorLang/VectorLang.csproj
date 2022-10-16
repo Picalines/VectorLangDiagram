@@ -5,6 +5,11 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>docs\en.xml</DocumentationFile>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>VectorLangDocs</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <PropertyGroup>
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>

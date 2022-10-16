@@ -4,7 +4,6 @@ using System.Collections.Generic;
 namespace VectorLang.Model;
 
 /// <vl-doc>
-/// <name>number</name>
 /// <summary>
 /// Type that represents a real number
 /// </summary>
@@ -14,14 +13,12 @@ namespace VectorLang.Model;
 /// let xRad = 1rad; // same as just "1". Use to indicate that the value is an angle
 /// </example>
 /// </vl-doc>
-internal sealed class NumberInstance : ReflectionInstance
+[ReflectionInstanceType("number")]
+internal sealed class NumberInstance : ReflectionInstance<NumberInstance>
 {
     private const int MinCachedValue = -5;
 
     private const int MaxCachedValue = 256;
-
-    [ReflectionInstanceType]
-    public static readonly ReflectionInstanceType InstanceType = ReflectionInstanceType.Of<NumberInstance>("number");
 
     private static readonly Dictionary<double, NumberInstance> _CachedInstances = new();
 
@@ -69,7 +66,6 @@ internal sealed class NumberInstance : ReflectionInstance
     public static implicit operator NumberInstance(double value) => From(value);
 
     /// <vl-doc>
-    /// <name>abs</name>
     /// <returns>absolute value of number</returns>
     /// <example>
     /// 123.abs() // 123
@@ -80,14 +76,12 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Abs() => Math.Abs(Value);
 
     /// <vl-doc>
-    /// <name>sign</name>
     /// <returns>a sign (-1, 0, 1) of number</returns>
     /// </vl-doc>
     [InstanceMethod("sign")]
     public NumberInstance Sign() => Math.Sign(Value);
 
     /// <vl-doc>
-    /// <name>sqr</name>
     /// <returns>a squared number</returns>
     /// <example>
     /// (-2).sqr() // 4
@@ -97,14 +91,12 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Sqr() => Value * Value;
 
     /// <vl-doc>
-    /// <name>sqrt</name>
     /// <returns>square root of number</returns>
     /// </vl-doc>
     [InstanceMethod("sqrt")]
     public NumberInstance Sqrt() => Math.Sqrt(Value);
 
     /// <vl-doc>
-    /// <name>pow</name>
     /// <returns>number raised to <paramref name="power"/></returns>
     /// <param name="power">power of number</param>
     /// <example>
@@ -115,35 +107,30 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Pow(NumberInstance power) => Math.Pow(Value, power.Value);
 
     /// <vl-doc>
-    /// <name>degToRad</name>
     /// <summary>converts degrees to radians</summary>
     /// </vl-doc>
     [InstanceMethod("degToRad")]
     public NumberInstance DegToRad() => Value * (Math.PI / 180.0);
 
     /// <vl-doc>
-    /// <name>radToDeg</name>
     /// <summary>converts radiands to degrees</summary>
     /// </vl-doc>
     [InstanceMethod("radToDeg")]
     public NumberInstance RadToDeg() => Value / Math.PI * 180.0;
 
     /// <vl-doc>
-    /// <name>sin</name>
     /// <returns>sine of number</returns>
     /// </vl-doc>
     [InstanceMethod("sin")]
     public NumberInstance Sin() => Math.Sin(Value);
 
     /// <vl-doc>
-    /// <name>sin</name>
     /// <returns>cosine of number</returns>
     /// </vl-doc>
     [InstanceMethod("cos")]
     public NumberInstance Cos() => Math.Cos(Value);
 
     /// <vl-doc>
-    /// <name>tan</name>
     /// <returns>tangent of number</returns>
     /// </vl-doc>
     [InstanceMethod("tan")]
@@ -151,49 +138,42 @@ internal sealed class NumberInstance : ReflectionInstance
 
     // TODO: lookup proper names
     /// <vl-doc>
-    /// <name>cot</name>
     /// <returns>cot of number</returns>
     /// </vl-doc>
     [InstanceMethod("cot")]
     public NumberInstance Cot() => 1.0 / Math.Tan(Value);
 
     /// <vl-doc>
-    /// <name>asin</name>
     /// <returns>arc sine of number</returns>
     /// </vl-doc>
     [InstanceMethod("asin")]
     public NumberInstance Asin() => Math.Asin(Value);
 
     /// <vl-doc>
-    /// <name>acos</name>
     /// <returns>arc cosing of number</returns>
     /// </vl-doc>
     [InstanceMethod("acos")]
     public NumberInstance Acos() => Math.Acos(Value);
 
     /// <vl-doc>
-    /// <name>atan</name>
     /// <returns>arc tangent of number</returns>
     /// </vl-doc>
     [InstanceMethod("atan")]
     public NumberInstance Atan() => Math.Atan(Value);
 
     /// <vl-doc>
-    /// <name>exp</name>
     /// <returns>e constant raised to the power of current number</returns>
     /// </vl-doc>
     [InstanceMethod("exp")]
     public NumberInstance Exp() => Math.Exp(Value);
 
     /// <vl-doc>
-    /// <name>ln</name>
     /// <returns>natural (base e) log of number</returns>
     /// </vl-doc>
     [InstanceMethod("ln")]
     public NumberInstance Ln() => Math.Log(Value);
 
     /// <vl-doc>
-    /// <name>log</name>
     /// <returns>log of number in <paramref name="logBase"/></returns>
     /// <param name="logBase">log base</param>
     /// </vl-doc>
@@ -201,7 +181,6 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Log(NumberInstance logBase) => Math.Log(Value, logBase.Value);
 
     /// <vl-doc>
-    /// <name>lerp</name>
     /// <returns>number linearly interpolated between the current number and <paramref name="to"/> by <paramref name="progress"/></returns>
     /// <param name="to">target number</param>
     /// <param name="progress">0 - current number, .., 1 - target number</param>
@@ -210,7 +189,6 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Lerp(NumberInstance to, NumberInstance progress) => this + progress * (to - this);
 
     /// <vl-doc>
-    /// <name>min</name>
     /// <returns>min of current number and <paramref name="other"/></returns>
     /// <param name="other">other number</param>
     /// </vl-doc>
@@ -218,7 +196,6 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Min(NumberInstance other) => Value < other.Value ? this : other;
 
     /// <vl-doc>
-    /// <name>max</name>
     /// <returns>max of current number and <paramref name="other"/></returns>
     /// <param name="other">other number</param>
     /// </vl-doc>
@@ -226,7 +203,6 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Max(NumberInstance other) => Value > other.Value ? this : other;
 
     /// <vl-doc>
-    /// <name>clamp</name>
     /// <returns>number clamped between <paramref name="min"/> and <paramref name="max"/></returns>
     /// <param name="min">lower bound</param>
     /// <param name="max">upper bound</param>
@@ -235,35 +211,30 @@ internal sealed class NumberInstance : ReflectionInstance
     public NumberInstance Clamp(NumberInstance min, NumberInstance max) => Math.Clamp(Value, min.Value, max.Value);
 
     /// <vl-doc>
-    /// <name>round</name>
     /// <returns>closest integer number</returns>
     /// </vl-doc>
     [InstanceMethod("round")]
     public NumberInstance Round() => Math.Round(Value);
 
     /// <vl-doc>
-    /// <name>floor</name>
     /// <returns>biggest integer number that is less than the current number</returns>
     /// </vl-doc>
     [InstanceMethod("floor")]
     public NumberInstance Floor() => Math.Floor(Value);
 
     /// <vl-doc>
-    /// <name>ceil</name>
     /// <returns>smallest integer number that is bigger than the current number</returns>
     /// </vl-doc>
     [InstanceMethod("ceil")]
     public NumberInstance Ceil() => Math.Ceiling(Value);
 
     /// <vl-doc>
-    /// <name>isInt</name>
     /// <returns>true if the number is integer</returns>
     /// </vl-doc>
     [InstanceMethod("isInt")]
     public BooleanInstance IsInt() => Value % 1 == 0; // may be wrong when close to epsilon
 
     /// <vl-doc>
-    /// <name>roundDigits</name>
     /// <returns>rounds current number with specified number of digits</returns>
     /// </vl-doc>
     [InstanceMethod("roundDigits")]

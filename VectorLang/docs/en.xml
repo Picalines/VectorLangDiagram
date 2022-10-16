@@ -6,7 +6,6 @@
     <members>
         <member name="T:VectorLang.Model.BooleanInstance">
             <vl-doc>
-            <name>boolean</name>
             <summary>
             Type that has only two values - true and false
             </summary>
@@ -38,7 +37,6 @@
         </member>
         <member name="T:VectorLang.Model.ColorInstance">
             <vl-doc>
-            <name>color</name>
             <summary>
             Type that represents RGB color
             </summary>
@@ -49,25 +47,21 @@
         </member>
         <member name="P:VectorLang.Model.ColorInstance.R">
             <vl-doc>
-            <name>r</name>
             <summary>Red component of RGB (0..1)</summary>
             </vl-doc>
         </member>
         <member name="P:VectorLang.Model.ColorInstance.G">
             <vl-doc>
-            <name>g</name>
             <summary>Green component of RGB (0..1)</summary>
             </vl-doc>
         </member>
         <member name="P:VectorLang.Model.ColorInstance.B">
             <vl-doc>
-            <name>b</name>
             <summary>Blue component of RGB (0..1)</summary>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.ColorInstance.Blend(VectorLang.Model.ColorInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>blend</name>
             <returns>
             new color with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
             </returns>
@@ -94,7 +88,6 @@
         </member>
         <member name="T:VectorLang.Model.NumberInstance">
             <vl-doc>
-            <name>number</name>
             <summary>
             Type that represents a real number
             </summary>
@@ -107,7 +100,6 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Abs">
             <vl-doc>
-            <name>abs</name>
             <returns>absolute value of number</returns>
             <example>
             123.abs() // 123
@@ -117,13 +109,11 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Sign">
             <vl-doc>
-            <name>sign</name>
             <returns>a sign (-1, 0, 1) of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Sqr">
             <vl-doc>
-            <name>sqr</name>
             <returns>a squared number</returns>
             <example>
             (-2).sqr() // 4
@@ -132,13 +122,11 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Sqrt">
             <vl-doc>
-            <name>sqrt</name>
             <returns>square root of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Pow(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>pow</name>
             <returns>number raised to <paramref name="power"/></returns>
             <param name="power">power of number</param>
             <example>
@@ -148,80 +136,67 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.DegToRad">
             <vl-doc>
-            <name>degToRad</name>
             <summary>converts degrees to radians</summary>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.RadToDeg">
             <vl-doc>
-            <name>radToDeg</name>
             <summary>converts radiands to degrees</summary>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Sin">
             <vl-doc>
-            <name>sin</name>
             <returns>sine of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Cos">
             <vl-doc>
-            <name>sin</name>
             <returns>cosine of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Tan">
             <vl-doc>
-            <name>tan</name>
             <returns>tangent of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Cot">
             <vl-doc>
-            <name>cot</name>
             <returns>cot of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Asin">
             <vl-doc>
-            <name>asin</name>
             <returns>arc sine of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Acos">
             <vl-doc>
-            <name>acos</name>
             <returns>arc cosing of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Atan">
             <vl-doc>
-            <name>atan</name>
             <returns>arc tangent of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Exp">
             <vl-doc>
-            <name>exp</name>
             <returns>e constant raised to the power of current number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Ln">
             <vl-doc>
-            <name>ln</name>
             <returns>natural (base e) log of number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Log(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>log</name>
             <returns>log of number in <paramref name="logBase"/></returns>
             <param name="logBase">log base</param>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Lerp(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>lerp</name>
             <returns>number linearly interpolated between the current number and <paramref name="to"/> by <paramref name="progress"/></returns>
             <param name="to">target number</param>
             <param name="progress">0 - current number, .., 1 - target number</param>
@@ -229,21 +204,18 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Min(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>min</name>
             <returns>min of current number and <paramref name="other"/></returns>
             <param name="other">other number</param>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Max(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>max</name>
             <returns>max of current number and <paramref name="other"/></returns>
             <param name="other">other number</param>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Clamp(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>clamp</name>
             <returns>number clamped between <paramref name="min"/> and <paramref name="max"/></returns>
             <param name="min">lower bound</param>
             <param name="max">upper bound</param>
@@ -251,31 +223,26 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Round">
             <vl-doc>
-            <name>round</name>
             <returns>closest integer number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Floor">
             <vl-doc>
-            <name>floor</name>
             <returns>biggest integer number that is less than the current number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Ceil">
             <vl-doc>
-            <name>ceil</name>
             <returns>smallest integer number that is bigger than the current number</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.IsInt">
             <vl-doc>
-            <name>isInt</name>
             <returns>true if the number is integer</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.RoundDigits(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>roundDigits</name>
             <returns>rounds current number with specified number of digits</returns>
             </vl-doc>
         </member>
@@ -356,7 +323,6 @@
         </member>
         <member name="T:VectorLang.Model.VectorInstance">
             <vl-doc>
-            <name>vector</name>
             <summary>Type that represents a 2D vector</summary>
             <example>
             let v = {123, 456};
@@ -365,25 +331,21 @@
         </member>
         <member name="P:VectorLang.Model.VectorInstance.X">
             <vl-doc>
-            <name>x</name>
             <summary>X component of vector</summary>
             </vl-doc>
         </member>
         <member name="P:VectorLang.Model.VectorInstance.Y">
             <vl-doc>
-            <name>y</name>
             <summary>Y component of vector</summary>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Length">
             <vl-doc>
-            <name>length</name>
             <returns>length of vector</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Normalized">
             <vl-doc>
-            <name>normalized</name>
             <returns>vector with same direction but length of 1 (or zero)</returns>
             <example>
             {5, 0}.normalized() // {1, 0}
@@ -394,25 +356,21 @@
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Dot(VectorLang.Model.VectorInstance)">
             <vl-doc>
-            <name>dot</name>
             <returns>dot product of two vectors (sum of multiplied components)</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.AngleCos(VectorLang.Model.VectorInstance)">
             <vl-doc>
-            <name>angleCos</name>
             <returns>cosine of angle between two vectors</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Angle(VectorLang.Model.VectorInstance)">
             <vl-doc>
-            <name>angle</name>
             <returns>angle between two vectors (in radians)</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Lerp(VectorLang.Model.VectorInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>lerp</name>
             <returns>
             new vector with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
             </returns>
@@ -422,7 +380,6 @@
         </member>
         <member name="M:VectorLang.Model.VectorInstance.ClampLength(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>clampLength</name>
             <returns>
             new vector with length clamped between <paramref name="minLength"/> and <paramref name="maxLength"/>
             </returns>
@@ -432,13 +389,11 @@
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Rotate(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <name>rotate</name>
             <returns>vector rotated counterclockwise by <paramref name="angle"/> in radians</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Scale(VectorLang.Model.VectorInstance)">
             <vl-doc>
-            <name>scale</name>
             <returns>new vector with each component multiplied by components of <paramref name="scale"/></returns>
             </vl-doc>
         </member>
@@ -489,7 +444,6 @@
         </member>
         <member name="T:VectorLang.Model.VoidInstance">
             <vl-doc>
-            <name>void</name>
             <summary>
             Type that represents "empty value"
             </summary>

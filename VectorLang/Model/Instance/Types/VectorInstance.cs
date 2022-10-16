@@ -3,26 +3,21 @@
 namespace VectorLang.Model;
 
 /// <vl-doc>
-/// <name>vector</name>
 /// <summary>Type that represents a 2D vector</summary>
 /// <example>
 /// let v = {123, 456};
 /// </example>
 /// </vl-doc>
-internal sealed class VectorInstance : ReflectionInstance
+[ReflectionInstanceType("vector")]
+internal sealed class VectorInstance : ReflectionInstance<VectorInstance>
 {
-    [ReflectionInstanceType]
-    public static readonly ReflectionInstanceType InstanceType = ReflectionInstanceType.Of<VectorInstance>("vector");
-
     /// <vl-doc>
-    /// <name>x</name>
     /// <summary>X component of vector</summary>
     /// </vl-doc>
     [InstanceField("x")]
     public NumberInstance X { get; }
 
     /// <vl-doc>
-    /// <name>y</name>
     /// <summary>Y component of vector</summary>
     /// </vl-doc>
     [InstanceField("y")]
@@ -46,14 +41,12 @@ internal sealed class VectorInstance : ReflectionInstance
     public (double X, double Y) ToTuple() => (X.Value, Y.Value);
 
     /// <vl-doc>
-    /// <name>length</name>
     /// <returns>length of vector</returns>
     /// </vl-doc>
     [InstanceMethod("length")]
     public NumberInstance Length() => _Length.Value;
 
     /// <vl-doc>
-    /// <name>normalized</name>
     /// <returns>vector with same direction but length of 1 (or zero)</returns>
     /// <example>
     /// {5, 0}.normalized() // {1, 0}
@@ -65,28 +58,24 @@ internal sealed class VectorInstance : ReflectionInstance
     public VectorInstance Normalized() => Length().Value > 0.0 ? new VectorInstance(X / Length(), Y / Length()) : this;
 
     /// <vl-doc>
-    /// <name>dot</name>
     /// <returns>dot product of two vectors (sum of multiplied components)</returns>
     /// </vl-doc>
     [InstanceMethod("dot")]
     public NumberInstance Dot(VectorInstance other) => X * other.X + Y * other.Y;
 
     /// <vl-doc>
-    /// <name>angleCos</name>
     /// <returns>cosine of angle between two vectors</returns>
     /// </vl-doc>
     [InstanceMethod("angleCos")]
     public NumberInstance AngleCos(VectorInstance other) => Dot(other) / (Length() * other.Length());
 
     /// <vl-doc>
-    /// <name>angle</name>
     /// <returns>angle between two vectors (in radians)</returns>
     /// </vl-doc>
     [InstanceMethod("angle")]
     public NumberInstance Angle(VectorInstance other) => AngleCos(other).Acos();
 
     /// <vl-doc>
-    /// <name>lerp</name>
     /// <returns>
     /// new vector with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
     /// </returns>
@@ -97,7 +86,6 @@ internal sealed class VectorInstance : ReflectionInstance
     public VectorInstance Lerp(VectorInstance to, NumberInstance progress) => new(X.Lerp(to.X, progress), Y.Lerp(to.Y, progress));
 
     /// <vl-doc>
-    /// <name>clampLength</name>
     /// <returns>
     /// new vector with length clamped between <paramref name="minLength"/> and <paramref name="maxLength"/>
     /// </returns>
@@ -108,7 +96,6 @@ internal sealed class VectorInstance : ReflectionInstance
     public VectorInstance ClampLength(NumberInstance minLength, NumberInstance maxLength) => Normalized() * Length().Clamp(minLength, maxLength);
 
     /// <vl-doc>
-    /// <name>rotate</name>
     /// <returns>vector rotated counterclockwise by <paramref name="angle"/> in radians</returns>
     /// </vl-doc>
     [InstanceMethod("rotate")]
@@ -118,7 +105,6 @@ internal sealed class VectorInstance : ReflectionInstance
     );
 
     /// <vl-doc>
-    /// <name>scale</name>
     /// <returns>new vector with each component multiplied by components of <paramref name="scale"/></returns>
     /// </vl-doc>
     [InstanceMethod("scale")]

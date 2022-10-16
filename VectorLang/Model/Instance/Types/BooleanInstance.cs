@@ -1,7 +1,6 @@
 ﻿namespace VectorLang.Model;
 
 /// <vl-doc>
-/// <name>boolean</name>
 /// <summary>
 /// Type that has only two values - true and false
 /// </summary>
@@ -9,11 +8,9 @@
 /// let flag = true; // or false
 /// </example>
 /// </vl-doc>
-internal sealed class BooleanInstance : ReflectionInstance
+[ReflectionInstanceType("boolean")]
+internal sealed class BooleanInstance : ReflectionInstance<BooleanInstance>
 {
-    [ReflectionInstanceType]
-    public static readonly ReflectionInstanceType InstanceType = ReflectionInstanceType.Of<BooleanInstance>("boolean");
-
     public static readonly BooleanInstance True = new(true);
 
     public static readonly BooleanInstance False = new(false);
