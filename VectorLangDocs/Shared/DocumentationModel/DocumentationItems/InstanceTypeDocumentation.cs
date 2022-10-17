@@ -2,13 +2,13 @@
 
 internal sealed class InstanceTypeDocumentation : DocumentationItem
 {
-    public DocumentationRepository<InstanceFieldDocumentation> FieldDocumentations { get; } = new();
+    public DocumentationRepository<InstanceFieldDocumentation> Fields { get; } = new();
 
-    public DocumentationRepository<InstanceMethodDocumentation> MethodDocumentations { get; } = new();
+    public DocumentationRepository<InstanceMethodDocumentation> Methods { get; } = new();
 
-    public DocumentationRepository<InstanceUnaryOperatorDocumentation> UnaryOperatorDocumentations { get; } = new();
+    public DocumentationRepository<InstanceUnaryOperatorDocumentation> UnaryOperators { get; } = new();
 
-    public DocumentationRepository<InstanceBinaryOperatorDocumentation> BinaryOperatorDocumentations { get; } = new();
+    public DocumentationRepository<InstanceBinaryOperatorDocumentation> BinaryOperators { get; } = new();
 
     public InstanceTypeDocumentation(string name) : base(name)
     {

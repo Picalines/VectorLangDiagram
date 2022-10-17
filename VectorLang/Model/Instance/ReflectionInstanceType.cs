@@ -7,7 +7,7 @@ namespace VectorLang.Model;
 
 internal sealed class ReflectionInstanceType : InstanceType
 {
-    private readonly Type _InstanceReflectionType;
+    public Type InstanceReflectionType { get; }
 
     private readonly Dictionary<string, PropertyInfo> _FieldProperties = new();
 
@@ -16,7 +16,7 @@ internal sealed class ReflectionInstanceType : InstanceType
     private ReflectionInstanceType(string name, Type instanceReflectionType)
         : base(name)
     {
-        _InstanceReflectionType = instanceReflectionType;
+        InstanceReflectionType = instanceReflectionType;
     }
 
     public static ReflectionInstanceType Of<TInstance>(string name) where TInstance : ReflectionInstance<TInstance>
@@ -26,7 +26,7 @@ internal sealed class ReflectionInstanceType : InstanceType
 
     public Instance GetInstanceField<TInstance>(ReflectionInstance<TInstance> instance, string fieldName) where TInstance : ReflectionInstance<TInstance>
     {
-        Debug.Assert(instance.GetType() == _InstanceReflectionType);
+        Debug.Assert(instance.GetType() == InstanceReflectionType);
 
         return (_FieldProperties[fieldName].GetValue(instance) as Instance)!;
     }
@@ -35,7 +35,7 @@ internal sealed class ReflectionInstanceType : InstanceType
     {
         const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static;
 
-        var properties = _InstanceReflectionType.GetProperties(bindingFlags);
+        var properties = InstanceReflectionType.GetProperties(bindingFlags);
 
         foreach (var propertyInfo in properties)
         {
@@ -46,7 +46,7 @@ internal sealed class ReflectionInstanceType : InstanceType
             }
         }
 
-        var methodOrOperators = _InstanceReflectionType.GetMethods(bindingFlags);
+        var methodOrOperators = InstanceReflectionType.GetMethods(bindingFlags);
 
         foreach (var methodInfo in methodOrOperators)
         {

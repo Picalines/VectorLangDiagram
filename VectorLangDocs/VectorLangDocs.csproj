@@ -12,4 +12,11 @@
     <ProjectReference Include="..\VectorLang\VectorLang.csproj" />
     <EmbeddedResource Include="../VectorLang/docs/*.xml" />
   </ItemGroup>
+  <Target Name="ModifyEmbeddedResourceNames" BeforeTargets="CreateManifestResourceNames">
+    <ItemGroup>
+      <EmbeddedResource>
+        <LogicalName>$([System.String]::Copy('%(EmbeddedResource.Identity)').Substring(3).Replace('\', '/'))</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
 </Project>

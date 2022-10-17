@@ -8,6 +8,8 @@ internal sealed class InstanceMethodDocumentation : DocumentationItem
 
     public DocumentationRepository<ParameterDocumentation> Parameters { get; } = new();
 
+    public string? ReturnValueInfo { get; init; }
+
     public InstanceMethodDocumentation(
         InstanceTypeDocumentation instanceTypeDocumentation,
         string methodName,

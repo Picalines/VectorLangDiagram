@@ -27,6 +27,16 @@ public static class ProgramCompiler
         ColorLibrary.Instance,
     };
 
+    internal static IReadOnlyList<InstanceType> InstanceTypes
+    {
+        get => _InstanceTypes;
+    }
+
+    internal static IReadOnlyList<Library> Libraries
+    {
+        get => _Libraries;
+    }
+
     public static ExecutableProgram? Compile(string code, out Diagnoser diagnoser)
     {
         var context = new CompilationContext();
@@ -97,6 +107,25 @@ public static class ProgramCompiler
             .ToDictionary(symbol => symbol.Name, symbol => symbol.ExternalValue);
 
         return new ExecutableProgram(plotLibrary, externalValues, mainFunction);
+    }
+
+    internal static void DefineInstanceTypesAndLibraries()
+    {
+        foreach (var instanceType in _InstanceTypes)
+        {
+            if (!instanceType.IsDefined)
+            {
+                instanceType.DefineMembers();
+            }
+        }
+
+        foreach (var library in _Libraries)
+        {
+            if (!library.IsDefined)
+            {
+                library.DefineItems();
+            }
+        }
     }
 
     private static Function? CompileMainFunction(CompilationContext context, Program program)

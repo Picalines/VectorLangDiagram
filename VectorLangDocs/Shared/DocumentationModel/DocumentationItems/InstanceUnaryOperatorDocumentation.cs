@@ -7,7 +7,13 @@ internal sealed class InstanceUnaryOperatorDocumentation : DocumentationItem
 {
     public UnaryOperator UnaryOperator { get; }
 
-    public InstanceUnaryOperatorDocumentation(UnaryOperator unaryOperator) : base(unaryOperator.GetDescription())
+    public InstanceTypeDocumentation ReturnTypeDocumentation { get; }
+
+    public string? ReturnValueInfo { get; init; }
+
+    public InstanceUnaryOperatorDocumentation(UnaryOperator unaryOperator, InstanceTypeDocumentation returnTypeDocumentation)
+        : base(unaryOperator.GetDescription())
     {
+        ReturnTypeDocumentation = returnTypeDocumentation;
     }
 }
