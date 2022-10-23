@@ -206,7 +206,8 @@ internal sealed class VectorLangDocumentation
 
             foreach (var (constantName, consantInstance) in library.Constants)
             {
-                var vlDoc = XmlLangDocByMemberName(xDocument, XmlMemberNameOfField(reflectedConstants[constantName]));
+                var path = XmlMemberNameOfField(reflectedConstants[constantName]);
+                var vlDoc = XmlLangDocByMemberName(xDocument, path);
                 if (vlDoc is null)
                 {
                     continue;
@@ -281,7 +282,7 @@ internal sealed class VectorLangDocumentation
 
         static string XmlMemberNameOfField(FieldInfo fieldInfo)
         {
-            return $"P:{fieldInfo.DeclaringType.FullName}.{fieldInfo.Name}";
+            return $"F:{fieldInfo.DeclaringType.FullName}.{fieldInfo.Name}";
         }
 
         static string XmlMemberNameOfProperty(PropertyInfo propertyInfo)
