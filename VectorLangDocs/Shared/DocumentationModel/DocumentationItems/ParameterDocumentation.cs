@@ -1,6 +1,6 @@
 ﻿namespace VectorLangDocs.Shared.DocumentationModel;
 
-internal sealed class ParameterDocumentation : DocumentationItem
+public sealed class ParameterDocumentation : DocumentationItem
 {
     public InstanceTypeDocumentation ParameterTypeDocumentaion { get; }
 

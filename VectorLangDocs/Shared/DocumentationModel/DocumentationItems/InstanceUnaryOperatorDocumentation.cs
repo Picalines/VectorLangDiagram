@@ -3,7 +3,7 @@ using VectorLang.Model;
 
 namespace VectorLangDocs.Shared.DocumentationModel;
 
-internal sealed class InstanceUnaryOperatorDocumentation : DocumentationItem
+public sealed class InstanceUnaryOperatorDocumentation : DocumentationItem
 {
     public UnaryOperator UnaryOperator { get; }
 

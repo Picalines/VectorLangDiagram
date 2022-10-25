@@ -6,7 +6,7 @@ using VectorLang.Model;
 
 namespace VectorLangDocs.Shared.DocumentationModel;
 
-internal sealed class VectorLangDocumentation
+public sealed class VectorLangDocumentation
 {
     public DocumentationRepository<InstanceTypeDocumentation> Types { get; } = new();
 

@@ -1,6 +1,6 @@
 ﻿namespace VectorLangDocs.Shared.DocumentationModel;
 
-internal sealed class ConstantDocumentation : DocumentationItem
+public sealed class ConstantDocumentation : DocumentationItem
 {
     public InstanceTypeDocumentation ConstantTypeDocumentation { get; }
 

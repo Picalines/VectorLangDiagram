@@ -3,7 +3,7 @@ using VectorLang.Model;
 
 namespace VectorLangDocs.Shared.DocumentationModel;
 
-internal sealed class InstanceBinaryOperatorDocumentation : DocumentationItem
+public sealed class InstanceBinaryOperatorDocumentation : DocumentationItem
 {
     public BinaryOperator BinaryOperator { get; }
 

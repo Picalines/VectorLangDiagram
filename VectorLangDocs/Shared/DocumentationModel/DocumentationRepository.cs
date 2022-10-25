@@ -2,7 +2,7 @@
 
 namespace VectorLangDocs.Shared.DocumentationModel;
 
-internal class DocumentationRepository<TItem> where TItem : DocumentationItem
+public class DocumentationRepository<TItem> where TItem : DocumentationItem
 {
     private readonly Dictionary<string, TItem> _Items = new();
 

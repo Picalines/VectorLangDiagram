@@ -1,6 +1,6 @@
 ﻿namespace VectorLangDocs.Shared.DocumentationModel;
 
-internal abstract class DocumentationItem
+public abstract class DocumentationItem
 {
     public string Name { get; }
 
