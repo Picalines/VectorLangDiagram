@@ -240,12 +240,12 @@ public sealed class VectorLangDocumentation
 
         static string? SummaryFrom(XElement vlDoc)
         {
-            return vlDoc.Element("summary")?.Value;
+            return vlDoc.Element("summary")?.Value?.Trim();
         }
 
         static string? UsageExampleFrom(XElement vlDoc)
         {
-            return vlDoc.Element("example")?.Value;
+            return vlDoc.Element("example")?.Value?.Trim();
         }
 
         static string? ReturnValueInfoFrom(XElement vlDoc)

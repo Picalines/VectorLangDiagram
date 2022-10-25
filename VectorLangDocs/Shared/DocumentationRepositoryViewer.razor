@@ -1,0 +1,30 @@
+﻿@using VectorLangDocs.Shared.DocumentationModel
+
+@typeparam TItem where TItem : DocumentationItem
+
+<div id="viewer-root">
+    <nav>
+        <h3>Navigation</h3>
+        @foreach (var item in Repository.Items)
+        {
+            <a>@item.Name</a>
+        }
+    </nav>
+    <div id="item-list">
+        @foreach (var item in Repository.Items)
+        {
+            <details open>
+                <summary><h4>@item.Name</h4></summary>
+                @item.Summary
+                <code>@item.UsageExample</code>
+            </details>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public DocumentationRepository<TItem> Repository { get; set; } = null!;
+
+    public string? NavigateToItem { get; set; } = null;
+}
