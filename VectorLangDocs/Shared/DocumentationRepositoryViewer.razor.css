@@ -4,7 +4,7 @@
     gap: 1em;
 
     max-width: 100%;
-    justify-content: space-evenly;
+    justify-content: center;
 
     padding: 1em;
 }
@@ -15,8 +15,6 @@ nav {
 
     position: sticky;
     top: 6em;
-
-    flex-basis: 15%;
 
     align-items: flex-start;
 
@@ -29,6 +27,11 @@ nav {
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
 }
 
+#item-list {
+    flex-basis: 70%;
+    max-width: 700px;
+}
+
 nav > h3 {
     margin: 0;
     margin-bottom: 1em;
@@ -36,11 +39,6 @@ nav > h3 {
 
 nav > a {
     width: min-content;
-}
-
-#item-list {
-    flex-basis: 70%;
-    max-width: 700px;
 }
 
 details {
@@ -74,4 +72,28 @@ details pre {
     white-space: pre-line;
 
     overflow: auto;
+}
+
+@media (max-width: 600px) {
+    #viewer-root {
+        flex-direction: column;
+    }
+
+    nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1em;
+
+        position: relative;
+        top: 0;
+    }
+
+    #item-list {
+        flex-basis: 0;
+    }
+
+    nav > h3 {
+        margin: 0;
+        flex-basis: 100%;
+    }
 }
