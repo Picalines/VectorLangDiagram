@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using VectorLang.Compilation;
 using VectorLang.Model;
@@ -13,6 +14,8 @@ public sealed class VectorLangDocumentation
     public DocumentationRepository<ConstantDocumentation> Constants { get; } = new();
 
     public DocumentationRepository<FunctionDocumentation> Functions { get; } = new();
+
+    private static readonly Regex _IndentRegex = new(@"^\s*", RegexOptions.Compiled, TimeSpan.FromSeconds(0.5));
 
     private VectorLangDocumentation()
     {
@@ -43,8 +46,8 @@ public sealed class VectorLangDocumentation
 
             documentation.Types.Add(new InstanceTypeDocumentation(reflectionInstanceType.Name)
             {
-                Summary = SummaryFrom(vlDoc),
-                UsageExample = UsageExampleFrom(vlDoc),
+                Summary = FormattedValueOf(vlDoc.Element("summary")),
+                UsageExample = FormattedValueOf(vlDoc.Element("example")),
             });
         }
 
@@ -71,8 +74,8 @@ public sealed class VectorLangDocumentation
 
                 instanceTypeDocumentation.Fields.Add(new InstanceFieldDocumentation(fieldName, fieldTypeDoc)
                 {
-                    Summary = SummaryFrom(vlDoc),
-                    UsageExample = UsageExampleFrom(vlDoc),
+                    Summary = FormattedValueOf(vlDoc.Element("summary")),
+                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
                 });
             }
 
@@ -93,9 +96,9 @@ public sealed class VectorLangDocumentation
 
                 var methodDocumentation = new InstanceMethodDocumentation(instanceTypeDocumentation, methodName, returnTypeDoc)
                 {
-                    Summary = SummaryFrom(vlDoc),
-                    UsageExample = UsageExampleFrom(vlDoc),
-                    ReturnValueInfo = ReturnValueInfoFrom(vlDoc),
+                    Summary = FormattedValueOf(vlDoc.Element("summary")),
+                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
+                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
                 };
 
                 foreach (var parameterDoc in parameterDocs)
@@ -126,9 +129,9 @@ public sealed class VectorLangDocumentation
 
                 instanceTypeDocumentation.UnaryOperators.Add(new InstanceUnaryOperatorDocumentation(unaryOperator, returnTypeDoc)
                 {
-                    Summary = SummaryFrom(vlDoc),
-                    UsageExample = UsageExampleFrom(vlDoc),
-                    ReturnValueInfo = UsageExampleFrom(vlDoc),
+                    Summary = FormattedValueOf(vlDoc.Element("summary")),
+                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
+                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("example")),
                 });
             }
 
@@ -154,9 +157,9 @@ public sealed class VectorLangDocumentation
 
                 instanceTypeDocumentation.BinaryOperators.Add(new InstanceBinaryOperatorDocumentation(binaryOperator, rightTypeDoc, returnTypeDoc)
                 {
-                    Summary = SummaryFrom(vlDoc),
-                    UsageExample = UsageExampleFrom(vlDoc),
-                    ReturnValueInfo = ReturnValueInfoFrom(vlDoc),
+                    Summary = FormattedValueOf(vlDoc.Element("summary")),
+                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
+                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
                 });
             }
         }
@@ -186,9 +189,9 @@ public sealed class VectorLangDocumentation
 
                 var functionDocumentation = new FunctionDocumentation(function.Name, returnTypeDoc)
                 {
-                    Summary = SummaryFrom(vlDoc),
-                    UsageExample = UsageExampleFrom(vlDoc),
-                    ReturnValueInfo = ReturnValueInfoFrom(vlDoc),
+                    Summary = FormattedValueOf(vlDoc.Element("summary")),
+                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
+                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
                 };
 
                 foreach (var parameterDoc in parameterDocs)
@@ -218,8 +221,8 @@ public sealed class VectorLangDocumentation
 
                 documentation.Constants.Add(new ConstantDocumentation(constantName, constantTypeDoc)
                 {
-                    Summary = SummaryFrom(vlDoc),
-                    UsageExample = UsageExampleFrom(vlDoc),
+                    Summary = FormattedValueOf(vlDoc.Element("summary")),
+                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
                 });
             }
         }
@@ -238,19 +241,20 @@ public sealed class VectorLangDocumentation
             return XmlDocMemberByName(xDocument, xmlMemberName)?.Element("vl-doc");
         }
 
-        static string? SummaryFrom(XElement vlDoc)
+        static string? FormattedValueOf(XElement? element)
         {
-            return vlDoc.Element("summary")?.Value?.Trim();
+            return element?.Value is { } str ? RemoveIndentation(str) : null;
         }
 
-        static string? UsageExampleFrom(XElement vlDoc)
+        static string RemoveIndentation(string str)
         {
-            return vlDoc.Element("example")?.Value?.Trim();
-        }
+            var lines = str.Trim().Split('\n');
+            var indentToRemove = lines.LastOrDefault() is { Length: > 0 } lastLine
+                ? _IndentRegex.Match(lastLine).Length
+                : 0;
 
-        static string? ReturnValueInfoFrom(XElement vlDoc)
-        {
-            return vlDoc.Element("returns")?.Value;
+            return string.Join('\n', lines.Select(line => indentToRemove > line.Length ? "" : line[indentToRemove..]))
+                .Trim();
         }
 
         static (InstanceTypeDocumentation ReturnTypeDoc, ParameterDocumentation[] ParameterDocs) SignatureDocumentation(VectorLangDocumentation documentation, XElement vlDocElement, CallSignature signature)
