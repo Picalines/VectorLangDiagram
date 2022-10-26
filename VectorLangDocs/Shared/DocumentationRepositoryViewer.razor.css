@@ -52,6 +52,10 @@ details:not(:first-child), details > :not(:first-child) {
     margin-top: 1em;
 }
 
+details > summary {
+    pointer-events: none;
+}
+
 details > summary::marker {
     display: none;
     content: '';
