@@ -9,7 +9,7 @@
     align-items: center;
 
     background: var(--p-purple-4);
-    box-shadow: var(--p-purple-4) 0px -1px 10px;
+    box-shadow: rgb(0, 0, 0, 10%) 0px -1px 10px;
 
     z-index: 10;
 
