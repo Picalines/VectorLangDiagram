@@ -34,7 +34,7 @@ nav {
 
 nav > h3 {
     margin: 0;
-    margin-bottom: 1em;
+    margin-bottom: 0.5em;
 }
 
 nav > a {
@@ -46,6 +46,21 @@ details {
     padding: 1em;
     border-radius: 10px;
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
+
+    outline: 3px solid transparent;
+}
+
+details:has(summary > h4.highlighted) {
+    animation: details-highlight 2s ease-out;
+}
+
+@keyframes details-highlight {
+    from, 50% {
+        outline-color: var(--p-gold);
+    }
+    to {
+        outline-color: transparent;
+    }
 }
 
 details:not(:first-child), details > :not(:first-child) {

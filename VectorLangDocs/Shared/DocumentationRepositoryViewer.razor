@@ -1,5 +1,7 @@
 ﻿@using VectorLangDocs.Shared.DocumentationModel
 
+@inject IJSRuntime JSRuntime
+
 @typeparam TItem where TItem : DocumentationItem
 
 <div id="viewer-root">
@@ -7,14 +9,14 @@
         <h3>Navigation</h3>
         @foreach (var item in Repository.Items)
         {
-            <a>@item.Name</a>
+            <a href=@GetItemSelector(item) onclick=@(() => HightlightItem(item))>@item.Name</a>
         }
     </nav>
     <div id="item-list">
         @foreach (var item in Repository.Items)
         {
             <details open>
-                <summary><h4>@item.Name</h4></summary>
+                <summary><h4 id=@GetItemId(item)>@item.Name</h4></summary>
                 @item.Summary
                 <pre><code>@item.UsageExample</code></pre>
             </details>
@@ -27,4 +29,17 @@
     public DocumentationRepository<TItem> Repository { get; set; } = null!;
 
     public string? NavigateToItem { get; set; } = null;
+
+    private string GetItemId(TItem item)
+    {
+        return $"doc-{item.Name}";
+    }
+
+    private string GetItemSelector(TItem item) {
+        return $"#{GetItemId(item)}";
+    }
+
+    private async void HightlightItem(TItem item) {
+        await JSRuntime.InvokeVoidAsync("BlazorAddTemporaryClass", GetItemSelector(item), "highlighted", 2000);
+    }
 }

@@ -1,19 +1,23 @@
 :root {
     --p-white: hsl(100, 100%, 99%);
+
     --p-purple-1: hsl(244, 34%, 15%);
     --p-purple-2: hsl(245, 28%, 18%);
     --p-purple-3: hsl(245, 23%, 21%);
     --p-purple-4: hsl(246, 30%, 26%);
-    --p-purple-10: hsl(245, 69%, 77%);
+    --p-purple-9: hsl(245, 65%, 77%);
+    --p-purple-10: hsl(245, 69%, 88%);
+
+    --p-gold: hsl(51, 100%, 50%);
 }
 
 * {
     box-sizing: border-box;
+    scroll-margin-top: 7em;
 }
 
 html {
     font-family: 'JetBrains Mono';
-    scroll-margin-top: 5em;
 }
 
 body {
@@ -22,10 +26,6 @@ body {
 
     color: var(--p-white);
     background: var(--p-purple-1);
-}
-
-a {
-    color: var(--p-purple-10);
 }
 
 main {
@@ -57,6 +57,15 @@ h1 {
         border-radius: 5px;
         border: 3px solid var(--p-purple-1);
     }
+}
+
+a {
+    color: var(--p-purple-9);
+    transition: color ease-in-out 0.1s;
+}
+
+a:hover {
+    color: var(--p-purple-10);
 }
 
 #blazor-error-ui {

@@ -1,0 +1,41 @@
+﻿@implements IDisposable
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await ScrollToFragment();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+    private async void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        await ScrollToFragment();
+    }
+
+    private async Task ScrollToFragment()
+    {
+        var elementId = new Uri(NavigationManager.Uri, UriKind.Absolute).Fragment;
+
+        if (elementId.StartsWith('#') is false)
+        {
+            return;
+        }
+
+        if (string.IsNullOrEmpty(elementId) is false)
+        {
+            await JSRuntime.InvokeVoidAsync("BlazorScrollIntoView", elementId);
+        }
+    }
+}
