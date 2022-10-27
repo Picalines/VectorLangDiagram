@@ -3,7 +3,7 @@ using VectorLang.Model;
 
 namespace VectorLangDocs.Shared.DocumentationModel;
 
-public sealed class InstanceUnaryOperatorDocumentation : DocumentationItem
+public sealed class InstanceUnaryOperatorDocumentation : DocumentationItem, ICallableDocumentationItem
 {
     public UnaryOperator UnaryOperator { get; }
 
@@ -16,4 +16,6 @@ public sealed class InstanceUnaryOperatorDocumentation : DocumentationItem
     {
         ReturnTypeDocumentation = returnTypeDocumentation;
     }
+
+    IEnumerable<ParameterDocumentation> ICallableDocumentationItem.Parameters { get; } = Array.Empty<ParameterDocumentation>();
 }

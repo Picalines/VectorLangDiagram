@@ -91,6 +91,30 @@ details pre {
     overflow: auto;
 }
 
+details > section > h5 {
+    font-style: italic;
+    margin: 0.5em 0 1em 0;
+    color: var(--p-purple-10);
+}
+
+a.type-link {
+    border-radius: 5px;
+    padding: 0 0.3em 0 0.3em;
+
+    background: rgb(0, 0, 0, 40%);
+    text-decoration: none;
+
+    pointer-events: all;
+}
+
+details > section.parameters > div > .name::after {
+    content: ': ';
+}
+
+details > section.parameters > div > .summary::before {
+    content: ' - ';
+}
+
 @media (max-width: 850px) {
     #viewer-root {
         flex-direction: column;

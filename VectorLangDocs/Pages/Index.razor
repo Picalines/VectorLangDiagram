@@ -4,7 +4,16 @@
 
 <h1>Hello, world!</h1>
 
-<DocumentationRepositoryViewer TItem="InstanceTypeDocumentation" Repository="LoadLanguageDocumentation().Types" />
+@{
+    var langDocs = LoadLanguageDocumentation();
+
+    langDocs.Types.TryGet("vector", out var vectorTypeDocs);
+}
+
+<DocumentationRepositoryViewer TItem="InstanceFieldDocumentation" Repository="vectorTypeDocs.Fields" />
+<DocumentationRepositoryViewer TItem="InstanceMethodDocumentation" Repository="vectorTypeDocs.Methods" />
+<DocumentationRepositoryViewer TItem="InstanceBinaryOperatorDocumentation" Repository="vectorTypeDocs.BinaryOperators" />
+<DocumentationRepositoryViewer TItem="InstanceUnaryOperatorDocumentation" Repository="vectorTypeDocs.UnaryOperators" />
 
 @code {
     private VectorLangDocumentation LoadLanguageDocumentation()

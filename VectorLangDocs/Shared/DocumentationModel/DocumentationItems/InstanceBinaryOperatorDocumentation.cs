@@ -3,7 +3,7 @@ using VectorLang.Model;
 
 namespace VectorLangDocs.Shared.DocumentationModel;
 
-public sealed class InstanceBinaryOperatorDocumentation : DocumentationItem
+public sealed class InstanceBinaryOperatorDocumentation : DocumentationItem, ICallableDocumentationItem
 {
     public BinaryOperator BinaryOperator { get; }
 
@@ -13,6 +13,8 @@ public sealed class InstanceBinaryOperatorDocumentation : DocumentationItem
 
     public string? ReturnValueInfo { get; init; }
 
+    private readonly ParameterDocumentation[] _Parameters;
+
     public InstanceBinaryOperatorDocumentation(
         BinaryOperator binaryOperator,
         InstanceTypeDocumentation rightTypeDocumentation,
@@ -21,5 +23,12 @@ public sealed class InstanceBinaryOperatorDocumentation : DocumentationItem
         BinaryOperator = binaryOperator;
         RightTypeDocumentation = rightTypeDocumentation;
         ReturnTypeDocumentation = returnTypeDocumentation;
+
+        _Parameters = new[] { new ParameterDocumentation("right", RightTypeDocumentation) };
+    }
+
+    IEnumerable<ParameterDocumentation> ICallableDocumentationItem.Parameters
+    {
+        get => _Parameters;
     }
 }

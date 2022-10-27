@@ -16,9 +16,45 @@
         @foreach (var item in Repository.Items)
         {
             <details open>
-                <summary><h4 id=@GetItemId(item)>@item.Name</h4></summary>
+                <summary>
+                    @ItemHeader(item)
+                </summary>
+
                 @item.Summary
-                <pre><code>@item.UsageExample</code></pre>
+
+                @if (item is ICallableDocumentationItem { ReturnValueInfo: var returnTypeInfo, Parameters: var parameters })
+                {
+                    if (returnTypeInfo is not null)
+                    {
+                        <section class="returns">
+                            <h5>Returns</h5>
+                            @returnTypeInfo
+                        </section>
+                    }
+
+                    if (parameters.Any())
+                    {
+                        <section class="parameters">
+                            <h5>Parameters</h5>
+                            @foreach (var parameter in parameters)
+                            {
+                                <div>
+                                    <span class="name">@parameter.Name</span>
+                                    @LinkToTypeDocumentation(parameter.ParameterTypeDocumentaion)
+                                    @if (parameter.Summary is { } summary)
+                                    {
+                                        <span class="summary">@summary</span>
+                                    }
+                                </div>
+                            }
+                        </section>
+                    }
+                }
+
+                @if (item.UsageExample is not null)
+                {
+                    <pre><code>@item.UsageExample</code></pre>
+                }
             </details>
         }
     </div>
@@ -35,11 +71,30 @@
         return $"doc-{item.Name}";
     }
 
-    private string GetItemSelector(TItem item) {
+    private string GetItemSelector(TItem item)
+    {
         return $"#{GetItemId(item)}";
     }
 
-    private async void HightlightItem(TItem item) {
+    private async void HightlightItem(TItem item)
+    {
         await JSRuntime.InvokeVoidAsync("BlazorAddTemporaryClass", GetItemSelector(item), "highlighted", 2000);
+    }
+
+    private RenderFragment LinkToTypeDocumentation(InstanceTypeDocumentation instanceType)
+    {
+        return @<a class="type-link" href="/type/@instanceType.Name">@instanceType.Name</a>;
+    }
+
+    private RenderFragment ItemHeader(TItem item)
+    {
+        return
+    @<h4 id=@GetItemId(item)>
+        @item.Name
+        @if (item is ICallableDocumentationItem { ReturnTypeDocumentation: var returnType, Parameters: var parameters })
+        {
+            <span>(@(string.Join(", ", parameters.Select(p => p.Name)))) -> @LinkToTypeDocumentation(returnType)</span>
+        }
+    </h4>;
     }
 }

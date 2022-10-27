@@ -1,6 +1,6 @@
 ﻿namespace VectorLangDocs.Shared.DocumentationModel;
 
-public sealed class FunctionDocumentation : DocumentationItem
+public sealed class FunctionDocumentation : DocumentationItem, ICallableDocumentationItem
 {
     public InstanceTypeDocumentation ReturnTypeDocumentation { get; }
 
@@ -11,5 +11,10 @@ public sealed class FunctionDocumentation : DocumentationItem
     public FunctionDocumentation(string funcName, InstanceTypeDocumentation returnTypeDocumentation) : base(funcName)
     {
         ReturnTypeDocumentation = returnTypeDocumentation;
+    }
+
+    IEnumerable<ParameterDocumentation> ICallableDocumentationItem.Parameters
+    {
+        get => Parameters.Items;
     }
 }
