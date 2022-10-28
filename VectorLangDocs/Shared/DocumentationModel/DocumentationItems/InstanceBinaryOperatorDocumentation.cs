@@ -15,7 +15,7 @@ public sealed class InstanceBinaryOperatorDocumentation : DocumentationItem, IMe
 
     public string? ReturnValueInfo { get; init; }
 
-    private readonly ParameterDocumentation[] _Parameters;
+    IEnumerable<ParameterDocumentation> ICallableDocumentationItem.Parameters { get; } = Array.Empty<ParameterDocumentation>();
 
     public InstanceBinaryOperatorDocumentation(
         BinaryOperator binaryOperator,
@@ -27,17 +27,10 @@ public sealed class InstanceBinaryOperatorDocumentation : DocumentationItem, IMe
         LeftTypeDocumentation = leftTypeDocumentation;
         RightTypeDocumentation = rightTypeDocumentation;
         ReturnTypeDocumentation = returnTypeDocumentation;
-
-        _Parameters = new[] { new ParameterDocumentation("right", RightTypeDocumentation) };
     }
 
     InstanceTypeDocumentation IMemberDocumentationItem.InstanceTypeDocumentation
     {
         get => LeftTypeDocumentation;
-    }
-
-    IEnumerable<ParameterDocumentation> ICallableDocumentationItem.Parameters
-    {
-        get => _Parameters;
     }
 }
