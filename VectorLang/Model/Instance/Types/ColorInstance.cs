@@ -45,10 +45,15 @@ internal sealed class ColorInstance : ReflectionInstance<ColorInstance>
 
     /// <vl-doc>
     /// <returns>
-    /// new color with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
+    /// new color with each component lerped to other color by progress value
     /// </returns>
     /// <param name="to">target color</param>
-    /// <param name="progress">lerp parameter (0 - current color, .. , 1 - <paramref name="to"/>)</param>
+    /// <param name="progress">lerp parameter (0 - current color, .. , 1 - target color)</param>
+    /// <example>
+    /// RED.lerp(BLUE, 0) // RED
+    /// RED.lerp(BLUE, 1) // BLUE
+    /// RED.lerp(BLUE, 0.5) // rgb(0.5, 0, 0.5)
+    /// </example>
     /// </vl-doc>
     [InstanceMethod("blend")]
     public ColorInstance Blend(ColorInstance to, NumberInstance progress) => new(
@@ -59,7 +64,7 @@ internal sealed class ColorInstance : ReflectionInstance<ColorInstance>
 
     /// <vl-doc>
     /// <returns>
-    /// half-lerped color between the two. The same as calling <see cref="Blend(ColorInstance,NumberInstance)"/> with 0.5
+    /// half-lerped color between the two. The same as calling color.lerp with 0.5
     /// </returns>
     /// </vl-doc>
     [InstanceOperator]

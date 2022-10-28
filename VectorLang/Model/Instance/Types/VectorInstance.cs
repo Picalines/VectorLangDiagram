@@ -77,17 +77,22 @@ internal sealed class VectorInstance : ReflectionInstance<VectorInstance>
 
     /// <vl-doc>
     /// <returns>
-    /// new vector with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
+    /// new vector with each component lerped to target vector by progress
     /// </returns>
     /// <param name="to">target vector</param>
-    /// <param name="progress">lerp parameter (0 - current vector, .. , 1 - <paramref name="to"/>)</param>
+    /// <param name="progress">lerp parameter (0 - current vector, .. , 1 - target vector)</param>
+    /// <example>
+    /// {0, 0}.lerp({10, 10}, 0) // {0, 0}
+    /// {0, 0}.lerp({10, 10}, 1) // {10, 10}
+    /// {0, 0}.lerp({10, 10}, 0.5) // {5, 5}
+    /// </example>
     /// </vl-doc>
     [InstanceMethod("lerp")]
     public VectorInstance Lerp(VectorInstance to, NumberInstance progress) => new(X.Lerp(to.X, progress), Y.Lerp(to.Y, progress));
 
     /// <vl-doc>
     /// <returns>
-    /// new vector with length clamped between <paramref name="minLength"/> and <paramref name="maxLength"/>
+    /// new vector with length clamped between lower and upper bounds
     /// </returns>
     /// <param name="minLength">lower length bound</param>
     /// <param name="maxLength">upper length bound</param>
@@ -96,7 +101,7 @@ internal sealed class VectorInstance : ReflectionInstance<VectorInstance>
     public VectorInstance ClampLength(NumberInstance minLength, NumberInstance maxLength) => Normalized() * Length().Clamp(minLength, maxLength);
 
     /// <vl-doc>
-    /// <returns>vector rotated counterclockwise by <paramref name="angle"/> in radians</returns>
+    /// <returns>vector rotated counterclockwise by angle in radians</returns>
     /// </vl-doc>
     [InstanceMethod("rotate")]
     public VectorInstance Rotate(NumberInstance angle) => new(
@@ -105,7 +110,10 @@ internal sealed class VectorInstance : ReflectionInstance<VectorInstance>
     );
 
     /// <vl-doc>
-    /// <returns>new vector with each component multiplied by components of <paramref name="scale"/></returns>
+    /// <returns>new vector with each component multiplied by components of specified vector</returns>
+    /// <example>
+    /// {5, 1}.scale({2, 0.5}) // {10, 0.5}
+    /// </example>
     /// </vl-doc>
     [InstanceMethod("scale")]
     public VectorInstance Scale(VectorInstance scale) => new(X * scale.X, Y * scale.Y);

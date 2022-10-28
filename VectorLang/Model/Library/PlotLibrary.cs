@@ -43,7 +43,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     /// <name>push</name>
     /// <summary>
     /// Pushes current transformation matrix.
-    /// "Starts temporary transformation", that should be ended with <see cref="Pop"/>
+    /// "Starts temporary transformation", that should be ended with pop()
     /// </summary>
     /// </vl-doc>
     [ReflectionFunction("push")]
@@ -63,7 +63,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     /// <name>pop</name>
     /// <summary>
     /// Pops current transformation matrix.
-    /// "Ends temporary transformation", that was started with <see cref="Push"/>
+    /// "Ends temporary transformation", that was started with push()
     /// </summary>
     /// </vl-doc>
     [ReflectionFunction("pop")]
@@ -82,7 +82,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     /// <vl-doc>
     /// <name>translate</name>
     /// <summary>
-    /// Translates next plotted vectors by <paramref name="offset"/>
+    /// Translates next plotted vectors by specified offset
     /// </summary>
     /// </vl-doc>
     [ReflectionFunction("translate")]
@@ -98,7 +98,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     /// <vl-doc>
     /// <name>scale</name>
     /// <summary>
-    /// Scales next plotted vectors by <paramref name="scale"/>
+    /// Scales next plotted vectors by specified scale
     /// </summary>
     /// </vl-doc>
     [ReflectionFunction("scale")]
@@ -114,8 +114,9 @@ internal sealed class PlotLibrary : ReflectionLibrary
     /// <vl-doc>
     /// <name>rotate</name>
     /// <summary>
-    /// Rotates next plotted vectors by <paramref name="rotation"/> in radians
+    /// Rotates next plotted vectors by specified angle in radians
     /// </summary>
+    /// <param name="rotation">angle in radians</param>
     /// </vl-doc>
     [ReflectionFunction("rotate")]
     public VoidInstance Rotate(NumberInstance rotation)
@@ -130,7 +131,7 @@ internal sealed class PlotLibrary : ReflectionLibrary
     /// <vl-doc>
     /// <name>fill</name>
     /// <summary>
-    /// Sets the color of next plotted vectors. Affected by <see cref="Push"/> and <see cref="Pop"/>
+    /// Sets the color of next plotted vectors. Affected by push() and pop()
     /// </summary>
     /// </vl-doc>
     [ReflectionFunction("fill")]

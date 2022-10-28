@@ -63,16 +63,21 @@
         <member name="M:VectorLang.Model.ColorInstance.Blend(VectorLang.Model.ColorInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
             <returns>
-            new color with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
+            new color with each component lerped to other color by progress value
             </returns>
             <param name="to">target color</param>
-            <param name="progress">lerp parameter (0 - current color, .. , 1 - <paramref name="to"/>)</param>
+            <param name="progress">lerp parameter (0 - current color, .. , 1 - target color)</param>
+            <example>
+            RED.lerp(BLUE, 0) // RED
+            RED.lerp(BLUE, 1) // BLUE
+            RED.lerp(BLUE, 0.5) // rgb(0.5, 0, 0.5)
+            </example>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.ColorInstance.op_Addition(VectorLang.Model.ColorInstance,VectorLang.Model.ColorInstance)">
             <vl-doc>
             <returns>
-            half-lerped color between the two. The same as calling <see cref="M:VectorLang.Model.ColorInstance.Blend(VectorLang.Model.ColorInstance,VectorLang.Model.NumberInstance)"/> with 0.5
+            half-lerped color between the two. The same as calling color.lerp with 0.5
             </returns>
             </vl-doc>
         </member>
@@ -127,7 +132,7 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Pow(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <returns>number raised to <paramref name="power"/></returns>
+            <returns>number raised to specified power</returns>
             <param name="power">power of number</param>
             <example>
             2.pow(4) // 16
@@ -191,32 +196,37 @@
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Log(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <returns>log of number in <paramref name="logBase"/></returns>
+            <returns>log of number in specified base</returns>
             <param name="logBase">log base</param>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Lerp(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <returns>number linearly interpolated between the current number and <paramref name="to"/> by <paramref name="progress"/></returns>
+            <returns>number linearly interpolated between the current number and target number by progress</returns>
             <param name="to">target number</param>
             <param name="progress">0 - current number, .., 1 - target number</param>
+            <example>
+            0.lerp(100, 0) // 0
+            0.lerp(100, 1) // 100
+            0.lerp(100, 0.5) // 50
+            </example>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Min(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <returns>min of current number and <paramref name="other"/></returns>
+            <returns>min of current number and specified number</returns>
             <param name="other">other number</param>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Max(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <returns>max of current number and <paramref name="other"/></returns>
+            <returns>max of current number and specified number</returns>
             <param name="other">other number</param>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.NumberInstance.Clamp(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <returns>number clamped between <paramref name="min"/> and <paramref name="max"/></returns>
+            <returns>number clamped between min and lower bounds</returns>
             <param name="min">lower bound</param>
             <param name="max">upper bound</param>
             </vl-doc>
@@ -372,16 +382,21 @@
         <member name="M:VectorLang.Model.VectorInstance.Lerp(VectorLang.Model.VectorInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
             <returns>
-            new vector with each component lerped to <paramref name="to"/> by <paramref name="progress"/>
+            new vector with each component lerped to target vector by progress
             </returns>
             <param name="to">target vector</param>
-            <param name="progress">lerp parameter (0 - current vector, .. , 1 - <paramref name="to"/>)</param>
+            <param name="progress">lerp parameter (0 - current vector, .. , 1 - target vector)</param>
+            <example>
+            {0, 0}.lerp({10, 10}, 0) // {0, 0}
+            {0, 0}.lerp({10, 10}, 1) // {10, 10}
+            {0, 0}.lerp({10, 10}, 0.5) // {5, 5}
+            </example>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.ClampLength(VectorLang.Model.NumberInstance,VectorLang.Model.NumberInstance)">
             <vl-doc>
             <returns>
-            new vector with length clamped between <paramref name="minLength"/> and <paramref name="maxLength"/>
+            new vector with length clamped between lower and upper bounds
             </returns>
             <param name="minLength">lower length bound</param>
             <param name="maxLength">upper length bound</param>
@@ -389,12 +404,15 @@
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Rotate(VectorLang.Model.NumberInstance)">
             <vl-doc>
-            <returns>vector rotated counterclockwise by <paramref name="angle"/> in radians</returns>
+            <returns>vector rotated counterclockwise by angle in radians</returns>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.Scale(VectorLang.Model.VectorInstance)">
             <vl-doc>
-            <returns>new vector with each component multiplied by components of <paramref name="scale"/></returns>
+            <returns>new vector with each component multiplied by components of specified vector</returns>
+            <example>
+            {5, 1}.scale({2, 0.5}) // {10, 0.5}
+            </example>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.VectorInstance.op_UnaryPlus(VectorLang.Model.VectorInstance)">
@@ -544,7 +562,7 @@
             <name>push</name>
             <summary>
             Pushes current transformation matrix.
-            "Starts temporary transformation", that should be ended with <see cref="M:VectorLang.Model.PlotLibrary.Pop"/>
+            "Starts temporary transformation", that should be ended with pop()
             </summary>
             </vl-doc>
         </member>
@@ -553,7 +571,7 @@
             <name>pop</name>
             <summary>
             Pops current transformation matrix.
-            "Ends temporary transformation", that was started with <see cref="M:VectorLang.Model.PlotLibrary.Push"/>
+            "Ends temporary transformation", that was started with push()
             </summary>
             </vl-doc>
         </member>
@@ -561,7 +579,7 @@
             <vl-doc>
             <name>translate</name>
             <summary>
-            Translates next plotted vectors by <paramref name="offset"/>
+            Translates next plotted vectors by specified offset
             </summary>
             </vl-doc>
         </member>
@@ -569,7 +587,7 @@
             <vl-doc>
             <name>scale</name>
             <summary>
-            Scales next plotted vectors by <paramref name="scale"/>
+            Scales next plotted vectors by specified scale
             </summary>
             </vl-doc>
         </member>
@@ -577,15 +595,16 @@
             <vl-doc>
             <name>rotate</name>
             <summary>
-            Rotates next plotted vectors by <paramref name="rotation"/> in radians
+            Rotates next plotted vectors by specified angle in radians
             </summary>
+            <param name="rotation">angle in radians</param>
             </vl-doc>
         </member>
         <member name="M:VectorLang.Model.PlotLibrary.Fill(VectorLang.Model.ColorInstance)">
             <vl-doc>
             <name>fill</name>
             <summary>
-            Sets the color of next plotted vectors. Affected by <see cref="M:VectorLang.Model.PlotLibrary.Push"/> and <see cref="M:VectorLang.Model.PlotLibrary.Pop"/>
+            Sets the color of next plotted vectors. Affected by push() and pop()
             </summary>
             </vl-doc>
         </member>

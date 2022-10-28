@@ -97,7 +97,7 @@ internal sealed class NumberInstance : ReflectionInstance<NumberInstance>
     public NumberInstance Sqrt() => Math.Sqrt(Value);
 
     /// <vl-doc>
-    /// <returns>number raised to <paramref name="power"/></returns>
+    /// <returns>number raised to specified power</returns>
     /// <param name="power">power of number</param>
     /// <example>
     /// 2.pow(4) // 16
@@ -174,36 +174,41 @@ internal sealed class NumberInstance : ReflectionInstance<NumberInstance>
     public NumberInstance Ln() => Math.Log(Value);
 
     /// <vl-doc>
-    /// <returns>log of number in <paramref name="logBase"/></returns>
+    /// <returns>log of number in specified base</returns>
     /// <param name="logBase">log base</param>
     /// </vl-doc>
     [InstanceMethod("log")]
     public NumberInstance Log(NumberInstance logBase) => Math.Log(Value, logBase.Value);
 
     /// <vl-doc>
-    /// <returns>number linearly interpolated between the current number and <paramref name="to"/> by <paramref name="progress"/></returns>
+    /// <returns>number linearly interpolated between the current number and target number by progress</returns>
     /// <param name="to">target number</param>
     /// <param name="progress">0 - current number, .., 1 - target number</param>
+    /// <example>
+    /// 0.lerp(100, 0) // 0
+    /// 0.lerp(100, 1) // 100
+    /// 0.lerp(100, 0.5) // 50
+    /// </example>
     /// </vl-doc>
     [InstanceMethod("lerp")]
     public NumberInstance Lerp(NumberInstance to, NumberInstance progress) => this + progress * (to - this);
 
     /// <vl-doc>
-    /// <returns>min of current number and <paramref name="other"/></returns>
+    /// <returns>min of current number and specified number</returns>
     /// <param name="other">other number</param>
     /// </vl-doc>
     [InstanceMethod("min")]
     public NumberInstance Min(NumberInstance other) => Value < other.Value ? this : other;
 
     /// <vl-doc>
-    /// <returns>max of current number and <paramref name="other"/></returns>
+    /// <returns>max of current number and specified number</returns>
     /// <param name="other">other number</param>
     /// </vl-doc>
     [InstanceMethod("max")]
     public NumberInstance Max(NumberInstance other) => Value > other.Value ? this : other;
 
     /// <vl-doc>
-    /// <returns>number clamped between <paramref name="min"/> and <paramref name="max"/></returns>
+    /// <returns>number clamped between min and lower bounds</returns>
     /// <param name="min">lower bound</param>
     /// <param name="max">upper bound</param>
     /// </vl-doc>
