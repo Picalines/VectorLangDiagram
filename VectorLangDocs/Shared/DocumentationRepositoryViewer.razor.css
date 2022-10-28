@@ -1,7 +1,7 @@
 ﻿#viewer-root {
-    display: flex;
-    flex-direction: row;
-    gap: 1em;
+    display: grid;
+    grid-template-columns: minmax(auto, 1fr) minmax(0, 2fr);
+    grid-gap: 1em;
 
     max-width: 100%;
     justify-content: center;
@@ -10,6 +10,8 @@
 }
 
 nav {
+    justify-self: end;
+
     display: flex;
     flex-direction: column;
 
@@ -28,8 +30,10 @@ nav {
 }
 
 #item-list {
-    flex-basis: 70%;
+    justify-self: start;
+
     max-width: 700px;
+    width: 100%;
 }
 
 nav > h3 {
@@ -77,6 +81,7 @@ details > summary > h4 {
     margin-bottom: 1em;
 
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     white-space: pre;
 }
@@ -107,16 +112,52 @@ a.type-link {
     pointer-events: all;
 }
 
+details > section.parameters {
+    counter-reset: parameter-index 0;
+}
+
 details > section.parameters > div > .name::after {
     content: ': ';
 }
 
-details > section.parameters > div > .summary::before {
-    content: ' - ';
+details > section.parameters > div > .summary {
+    display: block;
+    margin-left: 1.6em;
+}
+
+details > section.parameters > div > .name::before {
+    content: counter(parameter-index) '.';
+    counter-increment: parameter-index 1;
+    margin-right: 0.4em;
+}
+
+details > section.parameters > div:nth-child(n+1) {
+    margin-top: 0.5em;
+}
+
+@media (min-width: 851px) {
+    nav > a {
+        text-align: justify;
+        height: 1rem;
+        width: 100%;
+    }
+
+    nav > a::after {
+        /* stretch */
+        content: '';
+        width: 100%;
+        display: inline-block;
+    }
+
+    nav > a:nth-child(n+3) {
+        margin-top: 0.5em;
+    }
 }
 
 @media (max-width: 850px) {
     #viewer-root {
+        display: flex;
+        gap: 1em;
         flex-direction: column;
     }
 
@@ -124,7 +165,6 @@ details > section.parameters > div > .summary::before {
         flex-direction: row;
         flex-wrap: wrap;
         gap: 1em;
-
         position: relative;
         top: 0;
     }
