@@ -131,7 +131,7 @@ public sealed class VectorLangDocumentation
                 {
                     Summary = FormattedValueOf(vlDoc.Element("summary")),
                     UsageExample = FormattedValueOf(vlDoc.Element("example")),
-                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("example")),
+                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
                 });
             }
 
@@ -253,8 +253,16 @@ public sealed class VectorLangDocumentation
                 ? _IndentRegex.Match(lastLine).Length
                 : 0;
 
-            return string.Join('\n', lines.Select(line => indentToRemove > line.Length ? "" : line[indentToRemove..]))
-                .Trim();
+            var linesWithoutIndent = lines
+                .Skip(1)
+                .Select(line => indentToRemove > line.Length ? "" : line[indentToRemove..]);
+
+            if (lines.Length > 0)
+            {
+                linesWithoutIndent = linesWithoutIndent.Prepend(lines.First());
+            }
+
+            return string.Join('\n', linesWithoutIndent).Trim();
         }
 
         static (InstanceTypeDocumentation ReturnTypeDoc, ParameterDocumentation[] ParameterDocs) SignatureDocumentation(VectorLangDocumentation documentation, XElement vlDocElement, CallSignature signature)
