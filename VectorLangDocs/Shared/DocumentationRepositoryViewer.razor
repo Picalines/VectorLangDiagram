@@ -10,7 +10,7 @@
         <h3>Navigation</h3>
         @foreach (var item in Repository.Items)
         {
-            <a href=@GetItemSelector(item) onclick=@(() => HightlightItem(item))>@item.Name</a>
+            <a href=@GetItemSelector(item) onclick=@(() => HightlightItem(item))>@GetFormattedItemName(item)</a>
         }
     </nav>
     <div id="item-list">
@@ -67,19 +67,33 @@
 
     public string? NavigateToItem { get; set; } = null;
 
+    private string GetFormattedItemName(TItem item)
+    {
+        return item switch
+        {
+            InstanceUnaryOperatorDocumentation unaryOperator => unaryOperator.UnaryOperator.GetFormatted(unaryOperator.InstanceTypeDocumentation.Name),
+            InstanceBinaryOperatorDocumentation binaryOperator => binaryOperator.BinaryOperator.GetFormatted(binaryOperator.LeftTypeDocumentation.Name, binaryOperator.RightTypeDocumentation.Name),
+            IMemberDocumentationItem member => $"{member.InstanceTypeDocumentation.Name}.{item.Name}",
+            _ => item.Name,
+        };
+    }
+
     private string GetItemId(TItem item)
     {
-        return $"doc-{item.Name}";
+        var id = item switch
+        {
+            InstanceUnaryOperatorDocumentation unaryOperator => $"op-{unaryOperator.UnaryOperator}-{unaryOperator.InstanceTypeDocumentation.Name}",
+            InstanceBinaryOperatorDocumentation binaryOperator => $"op-{binaryOperator.LeftTypeDocumentation.Name}-{binaryOperator.BinaryOperator}-{binaryOperator.RightTypeDocumentation.Name}",
+            IMemberDocumentationItem member => $"m-{member.InstanceTypeDocumentation.Name}-{item.Name}",
+            _ => item.Name,
+        };
+
+        return $"doc-{id.ToLower()}";
     }
 
     private string GetItemSelector(TItem item)
     {
         return $"#{GetItemId(item)}";
-    }
-
-    private async void HightlightItem(TItem item)
-    {
-        await JSRuntime.InvokeVoidAsync("BlazorAddTemporaryClass", GetItemSelector(item), "highlighted", 2000);
     }
 
     private RenderFragment LinkToTypeDocumentation(InstanceTypeDocumentation instanceType)
@@ -151,5 +165,10 @@
                 throw new NotImplementedException();
         }
     </h4>;
+    }
+
+    private async void HightlightItem(TItem item)
+    {
+        await JSRuntime.InvokeVoidAsync("BlazorAddTemporaryClass", GetItemSelector(item), "highlighted", 2000);
     }
 }
