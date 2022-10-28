@@ -72,7 +72,7 @@ public sealed class VectorLangDocumentation
                 documentation.Types.TryGet(fieldType.Name, out var fieldTypeDoc);
                 Debug.Assert(fieldTypeDoc is not null);
 
-                instanceTypeDocumentation.Fields.Add(new InstanceFieldDocumentation(fieldName, fieldTypeDoc)
+                instanceTypeDocumentation.Fields.Add(new InstanceFieldDocumentation(instanceTypeDocumentation, fieldName, fieldTypeDoc)
                 {
                     Summary = FormattedValueOf(vlDoc.Element("summary")),
                     UsageExample = FormattedValueOf(vlDoc.Element("example")),
@@ -127,7 +127,7 @@ public sealed class VectorLangDocumentation
                 documentation.Types.TryGet(instanceUnaryOperator.ReturnType.Name, out var returnTypeDoc);
                 Debug.Assert(returnTypeDoc is not null);
 
-                instanceTypeDocumentation.UnaryOperators.Add(new InstanceUnaryOperatorDocumentation(unaryOperator, returnTypeDoc)
+                instanceTypeDocumentation.UnaryOperators.Add(new InstanceUnaryOperatorDocumentation(unaryOperator, instanceTypeDocumentation, returnTypeDoc)
                 {
                     Summary = FormattedValueOf(vlDoc.Element("summary")),
                     UsageExample = FormattedValueOf(vlDoc.Element("example")),
@@ -155,7 +155,7 @@ public sealed class VectorLangDocumentation
                 documentation.Types.TryGet(instanceBinaryOperator.ReturnType.Name, out var returnTypeDoc);
                 Debug.Assert(returnTypeDoc is not null);
 
-                instanceTypeDocumentation.BinaryOperators.Add(new InstanceBinaryOperatorDocumentation(binaryOperator, rightTypeDoc, returnTypeDoc)
+                instanceTypeDocumentation.BinaryOperators.Add(new InstanceBinaryOperatorDocumentation(binaryOperator, instanceTypeDocumentation, rightTypeDoc, returnTypeDoc)
                 {
                     Summary = FormattedValueOf(vlDoc.Element("summary")),
                     UsageExample = FormattedValueOf(vlDoc.Element("example")),

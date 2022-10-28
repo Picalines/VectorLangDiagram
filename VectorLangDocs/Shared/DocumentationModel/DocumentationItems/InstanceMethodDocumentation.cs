@@ -1,6 +1,6 @@
 ﻿namespace VectorLangDocs.Shared.DocumentationModel;
 
-public sealed class InstanceMethodDocumentation : DocumentationItem, ICallableDocumentationItem
+public sealed class InstanceMethodDocumentation : DocumentationItem, IMemberDocumentationItem, ICallableDocumentationItem
 {
     public InstanceTypeDocumentation InstanceTypeDocumentation { get; }
 

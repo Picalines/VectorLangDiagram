@@ -1,4 +1,5 @@
-﻿@using VectorLangDocs.Shared.DocumentationModel
+﻿@using VectorLang
+@using VectorLangDocs.Shared.DocumentationModel
 
 @inject IJSRuntime JSRuntime
 
@@ -90,10 +91,64 @@
     {
         return
     @<h4 id=@GetItemId(item)>
-        @item.Name
-        @if (item is ICallableDocumentationItem { ReturnTypeDocumentation: var returnType, Parameters: var parameters })
+        @switch (item)
         {
-            <span>(@(string.Join(", ", parameters.Select(p => p.Name)))) -> @LinkToTypeDocumentation(returnType)</span>
+            case InstanceTypeDocumentation instanceTypeDocumentation:
+            {
+                @LinkToTypeDocumentation(instanceTypeDocumentation)
+            }
+            break;
+
+            case ConstantDocumentation constantDocumentation:
+            {
+                <span>@item.Name: @LinkToTypeDocumentation(constantDocumentation.ConstantTypeDocumentation)</span>
+            }
+            break;
+
+            case FunctionDocumentation functionDocumentation:
+            {
+                <span>@item.Name</span>
+                <span>(@(string.Join(", ", functionDocumentation.Parameters.Items.Select(p => p.Name))))</span>
+                <span> -> @LinkToTypeDocumentation(functionDocumentation.ReturnTypeDocumentation)</span>
+            }
+            break;
+
+            case InstanceFieldDocumentation instanceFieldDocumentation:
+            {
+                @LinkToTypeDocumentation(instanceFieldDocumentation.InstanceTypeDocumentation)
+                <span>.@item.Name</span>
+                <span>: @LinkToTypeDocumentation(instanceFieldDocumentation.FieldTypeDocumentaion)</span>
+            }
+            break;
+
+            case InstanceMethodDocumentation instanceMethodDocumentation:
+            {
+                @LinkToTypeDocumentation(instanceMethodDocumentation.InstanceTypeDocumentation)
+                <span>.@item.Name</span>
+                <span>(@(string.Join(", ", instanceMethodDocumentation.Parameters.Items.Select(p => p.Name))))</span>
+                <span> -> @LinkToTypeDocumentation(instanceMethodDocumentation.ReturnTypeDocumentation)</span>
+            }
+            break;
+
+            case InstanceUnaryOperatorDocumentation instanceUnaryOperatorDocumentation:
+            {
+                <span>@instanceUnaryOperatorDocumentation.UnaryOperator.GetDescription()</span>
+                @LinkToTypeDocumentation(instanceUnaryOperatorDocumentation.InstanceTypeDocumentation)
+                <span> -> @LinkToTypeDocumentation(instanceUnaryOperatorDocumentation.ReturnTypeDocumentation)</span>
+            }
+            break;
+
+            case InstanceBinaryOperatorDocumentation instanceBinaryOperatorDocumentation:
+            {
+                @LinkToTypeDocumentation(instanceBinaryOperatorDocumentation.LeftTypeDocumentation)
+                <span>@(" ")@(instanceBinaryOperatorDocumentation.BinaryOperator.GetDescription())@(" ")</span>
+                @LinkToTypeDocumentation(instanceBinaryOperatorDocumentation.RightTypeDocumentation)
+                <span> -> @LinkToTypeDocumentation(instanceBinaryOperatorDocumentation.ReturnTypeDocumentation)</span>
+            }
+            break;
+
+            default:
+                throw new NotImplementedException();
         }
     </h4>;
     }

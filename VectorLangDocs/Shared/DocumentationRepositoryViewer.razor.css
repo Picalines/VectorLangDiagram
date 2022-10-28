@@ -37,10 +37,6 @@ nav > h3 {
     margin-bottom: 0.5em;
 }
 
-nav > a {
-    width: min-content;
-}
-
 details {
     background: var(--p-purple-4);
     padding: 1em;
@@ -79,6 +75,10 @@ details > summary::marker {
 details > summary > h4 {
     margin: 0;
     margin-bottom: 1em;
+
+    display: flex;
+    flex-direction: row;
+    white-space: pre;
 }
 
 details pre {
