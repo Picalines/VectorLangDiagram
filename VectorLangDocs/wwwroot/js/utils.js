@@ -1,10 +1,19 @@
-﻿function BlazorScrollIntoView(selector) {
+﻿function BlazorScrollToElement(selector) {
     const element = document.querySelector(selector);
     if (!(element instanceof HTMLElement)) {
         return;
     }
 
     element.scrollIntoView();
+}
+
+function BlazorFocusOnElement(selector) {
+    const element = document.querySelector(selector);
+    if (!(element instanceof HTMLElement)) {
+        return;
+    }
+
+    element.focus();
 }
 
 function BlazorAddTemporaryClass(selector, className, durationMs) {

@@ -35,7 +35,8 @@
 
         if (string.IsNullOrEmpty(elementId) is false)
         {
-            await JSRuntime.InvokeVoidAsync("BlazorScrollIntoView", elementId);
+            await JSRuntime.InvokeVoidAsync("BlazorScrollToElement", elementId);
+            await JSRuntime.InvokeVoidAsync("BlazorFocusOnElement", elementId);
         }
     }
 }

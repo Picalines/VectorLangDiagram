@@ -2,6 +2,7 @@
 @using VectorLangDocs.Shared.DocumentationModel
 
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 @typeparam TItem where TItem : DocumentationItem
 
@@ -10,7 +11,7 @@
         <h3>Navigation</h3>
         @foreach (var item in Repository.Items)
         {
-            <a href=@GetItemSelector(item) onclick=@(() => HightlightItem(item))>@GetFormattedItemName(item)</a>
+            <a href=@GetItemSelector(item)>@GetFormattedItemName(item)</a>
         }
     </nav>
     <div id="item-list">
@@ -18,6 +19,8 @@
         {
             <article>
                 @ItemHeader(item)
+
+                @CopyLinkToItemButton(item)
 
                 @item.Summary
 
@@ -52,7 +55,7 @@
 
                 @if (item.UsageExample is not null)
                 {
-                    <pre><code>@item.UsageExample</code></pre>
+                    <pre>@CopyCodeButton(item.UsageExample)<code>@item.UsageExample</code></pre>
                 }
             </article>
         }
@@ -63,7 +66,7 @@
     [Parameter, EditorRequired]
     public DocumentationRepository<TItem> Repository { get; set; } = null!;
 
-    public string? NavigateToItem { get; set; } = null;
+    private readonly Dictionary<TItem, string> _ItemHeaderIds = new();
 
     private string GetFormattedItemName(TItem item)
     {
@@ -78,20 +81,25 @@
 
     private string GetItemHeaderId(TItem item)
     {
-        var id = item switch
+        if (_ItemHeaderIds.TryGetValue(item, out var id))
         {
-            InstanceUnaryOperatorDocumentation unaryOperator => $"op-{unaryOperator.UnaryOperator}-{unaryOperator.InstanceTypeDocumentation.Name}",
-            InstanceBinaryOperatorDocumentation binaryOperator => $"op-{binaryOperator.LeftTypeDocumentation.Name}-{binaryOperator.BinaryOperator}-{binaryOperator.RightTypeDocumentation.Name}",
-            IMemberDocumentationItem member => $"m-{member.InstanceTypeDocumentation.Name}-{item.Name}",
+            return id;
+        }
+
+        id = item switch
+        {
+            InstanceUnaryOperatorDocumentation unaryOperator => $"{unaryOperator.UnaryOperator}-{unaryOperator.InstanceTypeDocumentation.Name}",
+            InstanceBinaryOperatorDocumentation binaryOperator => $"{binaryOperator.LeftTypeDocumentation.Name}-{binaryOperator.BinaryOperator}-{binaryOperator.RightTypeDocumentation.Name}",
+            IMemberDocumentationItem member => $"{member.InstanceTypeDocumentation.Name}-{item.Name}",
             _ => item.Name,
         };
 
-        return $"doc-{id.ToLower()}";
+        return _ItemHeaderIds[item] = $"doc-{id.ToLower()}";
     }
 
     private string GetItemSelector(TItem item)
     {
-        return $"#{GetItemHeaderId(item)}";
+        return "#" + GetItemHeaderId(item);
     }
 
     private RenderFragment LinkToTypeDocumentation(InstanceTypeDocumentation instanceType)
@@ -102,7 +110,7 @@
     private RenderFragment ItemHeader(TItem item)
     {
         return
-    @<h4 id=@GetItemHeaderId(item)>
+    @<h4 id=@GetItemHeaderId(item) tabindex="-1">
         @switch (item)
         {
             case InstanceTypeDocumentation instanceTypeDocumentation:
@@ -165,8 +173,21 @@
     </h4>;
     }
 
-    private async void HightlightItem(TItem item)
+    private RenderFragment CopyCodeButton(string code)
     {
-        await JSRuntime.InvokeVoidAsync("BlazorAddTemporaryClass", GetItemSelector(item), "highlighted", 2000);
+        return @<button class="copy-button" title="Copy code" @onclick="() => CopyToClipboard(code)"><img src="./svg/copy-text-icon.svg" /></button>;
+    }
+
+    private RenderFragment CopyLinkToItemButton(TItem item)
+    {
+        var currentUri = NavigationManager.Uri;
+        var idIndex = currentUri.IndexOf('#') is var index and not -1 ? index : currentUri.Length - 1;
+        var link = currentUri.Substring(0, idIndex + 1) + GetItemSelector(item);
+        return @<button class="copy-button" title="Copy link" @onclick="() => CopyToClipboard(link)"><img src="./svg/copy-link-icon.svg" /></button>;
+    }
+
+    private async void CopyToClipboard(string text)
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
     }
 }

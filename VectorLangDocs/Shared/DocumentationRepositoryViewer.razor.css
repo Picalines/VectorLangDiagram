@@ -48,9 +48,11 @@ article {
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
 
     outline: 3px solid transparent;
+
+    position: relative;
 }
 
-article:has(h4.highlighted) {
+article:has(h4:focus) {
     animation: article-highlight 2s ease-out;
 }
 
@@ -63,7 +65,7 @@ article:has(h4.highlighted) {
     }
 }
 
-article:not(:first-child), article > :not(:first-child) {
+article:not(:first-child), article > :not(:first-child):not(button) {
     margin-top: 1em;
 }
 
@@ -83,6 +85,8 @@ article pre {
     padding: 1em;
     margin: 0;
     border-radius: 5px;
+
+    position: relative;
 
     overflow: auto;
 }
@@ -169,4 +173,39 @@ article > section.parameters > div:nth-child(n+1) {
         margin: 0;
         flex-basis: 100%;
     }
+}
+
+.copy-button {
+    width: 24px;
+    height: 24px;
+
+    padding: 0;
+    margin: 0;
+
+    position: absolute;
+    right: 8px;
+    top: 8px;
+
+    background: transparent;
+    border: none;
+
+    cursor: pointer;
+
+    opacity: 0;
+    transform: scale(1);
+
+    transition: opacity ease-in-out 0.1s, transform ease-in-out 0.1s;
+}
+
+.copy-button:active {
+    transform: scale(0.8);
+}
+
+.copy-button > img {
+    width: 100%;
+    height: 100%;
+}
+
+*:hover > .copy-button {
+    opacity: 0.5;
 }
