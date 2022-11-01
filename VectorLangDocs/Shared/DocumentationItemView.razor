@@ -138,9 +138,9 @@
             case InstanceMethodDocumentation instanceMethodDocumentation:
             {
                 <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceMethodDocumentation.InstanceTypeDocumentation" />
-                <span>.@(Item.Name)(</span>
-                <span>@(string.Join(", ", instanceMethodDocumentation.Parameters.Items.Select(p => p.Name)))</span>
-                <span>) -> </span>
+                <span>.@(Item.Name)</span>
+                <span>(@(string.Join(", ", instanceMethodDocumentation.Parameters.Items.Select(p => p.Name))))</span>
+                <span> -> </span>
                 <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceMethodDocumentation.ReturnTypeDocumentation" />
             }
             break;
