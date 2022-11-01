@@ -1,0 +1,21 @@
+﻿details {
+/*    background: red;*/
+    outline: 5px solid black;
+}
+
+details > summary::marker {
+    content: '';
+}
+
+details > summary > h2 {
+    margin: 0;
+}
+
+details[open] > summary > h2 {
+    margin-bottom: 1em;
+}
+
+details {
+    margin-top: 1em;
+    padding: 1em;
+}

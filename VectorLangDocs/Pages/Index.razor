@@ -5,29 +5,15 @@
 <h1>Hello, world!</h1>
 
 @{
-    var langDocs = LoadLanguageDocumentation();
-
-    langDocs.Types.TryGet("vector", out var vectorTypeDocs);
+    LanguageDocumentation.Types.TryGet("vector", out var vectorTypeDocs);
 }
 
-<DocumentationRepositoryViewer TItem="InstanceFieldDocumentation" Repository="vectorTypeDocs.Fields" />
-<DocumentationRepositoryViewer TItem="InstanceMethodDocumentation" Repository="vectorTypeDocs.Methods" />
-<DocumentationRepositoryViewer TItem="InstanceBinaryOperatorDocumentation" Repository="vectorTypeDocs.BinaryOperators" />
-<DocumentationRepositoryViewer TItem="InstanceUnaryOperatorDocumentation" Repository="vectorTypeDocs.UnaryOperators" />
+<DocumentationRepositoryView Items="vectorTypeDocs.Fields.Items" />
+<DocumentationRepositoryView Items="vectorTypeDocs.Methods.Items" />
+<DocumentationRepositoryView Items="vectorTypeDocs.BinaryOperators.Items" />
+<DocumentationRepositoryView Items="vectorTypeDocs.UnaryOperators.Items" />
 
 @code {
-    private VectorLangDocumentation LoadLanguageDocumentation()
-    {
-        return VectorLangDocumentation.FromXml(ReadEmbeddedResource("VectorLang/docs/en.xml"));
-    }
-
-    private string ReadEmbeddedResource(string resourceName)
-    {
-        var assembly = Assembly.GetExecutingAssembly()!;
-
-        using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
-        using StreamReader reader = new StreamReader(stream);
-
-        return reader.ReadToEnd();
-    }
+    [CascadingParameter]
+    public VectorLangDocumentation LanguageDocumentation { get; set; } = null!;
 }

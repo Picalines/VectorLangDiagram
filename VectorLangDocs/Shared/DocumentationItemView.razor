@@ -1,0 +1,187 @@
+﻿@using VectorLang
+@using VectorLangDocs.Shared.DocumentationModel
+
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<article>
+    @RenderHeader()
+
+    @CopyLinkToItemButton()
+
+    @Item.Summary
+
+    @if (Item is ICallableDocumentationItem { ReturnValueInfo: var returnTypeInfo, Parameters: var parameters })
+    {
+        if (returnTypeInfo is not null)
+        {
+            <section class="returns">
+                <h5>Returns</h5>
+                @returnTypeInfo
+            </section>
+        }
+
+        if (parameters.Any())
+        {
+            <section class="parameters">
+                <h5>Parameters</h5>
+                @foreach (var parameter in parameters)
+                {
+                    <div>
+                        <span class="name">@parameter.Name</span>
+                        <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="parameter.ParameterTypeDocumentaion" />
+                        @if (parameter.Summary is { } summary)
+                        {
+                            <span class="summary">@summary</span>
+                        }
+                    </div>
+                }
+            </section>
+        }
+    }
+     
+    @if (Item.UsageExample is not null)
+    {
+        <pre>@CopyCodeButton(Item.UsageExample)<code>@Item.UsageExample</code></pre>
+    }
+</article>
+
+@code {
+    [Parameter, EditorRequired]
+    public DocumentationItem Item { get; set; } = null!;
+
+    public string HeaderId { get; private set; } = null!;
+
+    public string HeaderSelector { get; private set; } = null!;
+
+    private static readonly Dictionary<DocumentationItem, string> _HeaderIds = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        HeaderId = HeaderIdOf(Item);
+
+        HeaderSelector = HeaderSelectorOf(Item);
+    }
+
+    public string HeaderUri
+    {
+        get => HeaderUriOf(Item, NavigationManager.Uri);
+    }
+
+    public static string HeaderIdOf(DocumentationItem item)
+    {
+        if (_HeaderIds.TryGetValue(item, out var id))
+        {
+            return id;
+        }
+
+        id = item switch
+        {
+            InstanceUnaryOperatorDocumentation unaryOperator => $"{unaryOperator.UnaryOperator}-{unaryOperator.InstanceTypeDocumentation.Name}",
+            InstanceBinaryOperatorDocumentation binaryOperator => $"{binaryOperator.LeftTypeDocumentation.Name}-{binaryOperator.BinaryOperator}-{binaryOperator.RightTypeDocumentation.Name}",
+            IMemberDocumentationItem member => $"{member.InstanceTypeDocumentation.Name}-{item.Name}",
+            _ => item.Name,
+        };
+
+        return _HeaderIds[item] = $"doc-{id.ToLower()}";
+    }
+
+    public static string HeaderSelectorOf(DocumentationItem item)
+    {
+        return $"#{HeaderIdOf(item)}";
+    }
+
+    public static string HeaderUriOf(DocumentationItem item, string currentUri)
+    {
+        var idIndex = currentUri.IndexOf('#') is var index and not -1 ? index : currentUri.Length;
+        return currentUri.Substring(0, idIndex) + HeaderSelectorOf(item);
+    }
+
+    private RenderFragment RenderHeader()
+    {
+        return
+    @<h4 id="@HeaderId" tabindex="-1">
+        @switch (Item)
+        {
+            case InstanceTypeDocumentation instanceTypeDocumentation:
+            {
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceTypeDocumentation" />
+            }
+            break;
+
+            case ConstantDocumentation constantDocumentation:
+            {
+                <span>@Item.Name: </span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="constantDocumentation.ConstantTypeDocumentation" />
+            }
+            break;
+
+            case FunctionDocumentation functionDocumentation:
+            {
+                <span>@Item.Name</span>
+                <span>(@(string.Join(", ", functionDocumentation.Parameters.Items.Select(p => p.Name))))</span>
+                <span> -> </span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="functionDocumentation.ReturnTypeDocumentation" />
+            }
+            break;
+
+            case InstanceFieldDocumentation instanceFieldDocumentation:
+            {
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceFieldDocumentation.InstanceTypeDocumentation" />
+                <span>.@Item.Name: </span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceFieldDocumentation.FieldTypeDocumentaion" />
+            }
+            break;
+
+            case InstanceMethodDocumentation instanceMethodDocumentation:
+            {
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceMethodDocumentation.InstanceTypeDocumentation" />
+                <span>.@(Item.Name)(</span>
+                <span>@(string.Join(", ", instanceMethodDocumentation.Parameters.Items.Select(p => p.Name)))</span>
+                <span>) -> </span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceMethodDocumentation.ReturnTypeDocumentation" />
+            }
+            break;
+
+            case InstanceUnaryOperatorDocumentation instanceUnaryOperatorDocumentation:
+            {
+                <span>@instanceUnaryOperatorDocumentation.UnaryOperator.GetDescription()</span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceUnaryOperatorDocumentation.InstanceTypeDocumentation" />
+                <span> -> </span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceUnaryOperatorDocumentation.ReturnTypeDocumentation" />
+            }
+            break;
+
+            case InstanceBinaryOperatorDocumentation instanceBinaryOperatorDocumentation:
+            {
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceBinaryOperatorDocumentation.LeftTypeDocumentation" />
+                <span>@(" ")@(instanceBinaryOperatorDocumentation.BinaryOperator.GetDescription())@(" ")</span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceBinaryOperatorDocumentation.RightTypeDocumentation" />
+                <span> -> </span>
+                <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="instanceBinaryOperatorDocumentation.ReturnTypeDocumentation" />
+            }
+            break;
+
+            default:
+                throw new NotImplementedException();
+        }
+    </h4>;
+    }
+
+    private RenderFragment CopyCodeButton(string code)
+    {
+        return @<button class="copy-button" title="Copy code" @onclick="() => CopyToClipboard(code)"><img src="./svg/copy-text-icon.svg" /></button>;
+    }
+
+    private RenderFragment CopyLinkToItemButton()
+    {
+        return @<button class="copy-button" title="Copy link" @onclick="() => CopyToClipboard(HeaderUri)"><img src="./svg/copy-link-icon.svg" /></button>;
+    }
+
+    private async void CopyToClipboard(string text)
+    {
+        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
+    }
+}

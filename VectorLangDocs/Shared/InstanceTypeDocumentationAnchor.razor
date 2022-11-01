@@ -1,0 +1,12 @@
+﻿@using VectorLangDocs.Shared.DocumentationModel
+
+@{
+    var name = InstanceTypeDocumentation.Name;
+}
+
+<a href="/type/@name">@name</a>
+
+@code {
+    [Parameter, EditorRequired]
+    public InstanceTypeDocumentation InstanceTypeDocumentation { get; set; } = null!;
+}

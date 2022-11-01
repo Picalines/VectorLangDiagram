@@ -1,54 +1,9 @@
-﻿#viewer-root {
-    display: grid;
-    grid-template-columns: minmax(auto, 1fr) minmax(0, 2fr);
-    grid-gap: 1em;
-
-    max-width: 100%;
-    justify-content: center;
-
-    padding: 1em;
-}
-
-nav {
-    justify-self: end;
-
-    display: flex;
-    flex-direction: column;
-
-    position: sticky;
-    top: 6em;
-
-    align-items: flex-start;
-
-    background: var(--p-purple-3);
-    padding: 1em;
-    border-radius: 10px;
-
-    height: min-content;
-
-    box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
-}
-
-#item-list {
-    justify-self: start;
-
-    max-width: 700px;
-    width: 100%;
-}
-
-nav > h3 {
-    margin: 0;
-    margin-bottom: 0.5em;
-}
-
-article {
+﻿article {
     background: var(--p-purple-4);
     padding: 1em;
     border-radius: 10px;
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
-
     outline: 3px solid transparent;
-
     position: relative;
 }
 
@@ -60,19 +15,19 @@ article:has(h4:focus) {
     from, 50% {
         outline-color: var(--p-gold);
     }
+
     to {
         outline-color: transparent;
     }
 }
 
-article:not(:first-child), article > :not(:first-child):not(button) {
+article > :not(:first-child):not(button) {
     margin-top: 1em;
 }
 
 article > h4 {
     margin: 0;
     margin-bottom: 1em;
-
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -81,13 +36,10 @@ article > h4 {
 
 article pre {
     background: rgb(0, 0, 0, 50%);
-
     padding: 1em;
     margin: 0;
     border-radius: 5px;
-
     position: relative;
-
     overflow: auto;
 }
 
@@ -95,16 +47,6 @@ article > section > h5 {
     font-style: italic;
     margin: 0 0 1em 0;
     color: var(--p-purple-10);
-}
-
-a.type-link {
-    border-radius: 5px;
-    padding: 0 0.3em 0 0.3em;
-
-    background: rgb(0, 0, 0, 40%);
-    text-decoration: none;
-
-    pointer-events: all;
 }
 
 article > section.parameters {
@@ -130,70 +72,19 @@ article > section.parameters > div:nth-child(n+1) {
     margin-top: 0.5em;
 }
 
-@media (min-width: 851px) {
-    nav > a {
-        text-align: justify;
-        height: 1rem;
-        width: 100%;
-    }
-
-    nav > a::after {
-        /* stretch */
-        content: '';
-        width: 100%;
-        display: inline-block;
-    }
-
-    nav > a:nth-child(n+3) {
-        margin-top: 0.5em;
-    }
-}
-
-@media (max-width: 850px) {
-    #viewer-root {
-        display: flex;
-        gap: 1em;
-        flex-direction: column;
-    }
-
-    nav {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 1em;
-        position: relative;
-        top: 0;
-    }
-
-    #item-list {
-        flex-basis: 0;
-        max-width: 100%;
-    }
-
-    nav > h3 {
-        margin: 0;
-        flex-basis: 100%;
-    }
-}
-
 .copy-button {
     width: 24px;
     height: 24px;
-
     padding: 0;
     margin: 0;
-
     position: absolute;
     right: 8px;
     top: 8px;
-
     background: transparent;
     border: none;
-
     cursor: pointer;
-
     opacity: 0;
     transform: scale(1);
-
     transition: opacity ease-in-out 0.1s, transform ease-in-out 0.1s;
 }
 
