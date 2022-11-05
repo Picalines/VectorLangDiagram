@@ -1,0 +1,23 @@
+﻿main {
+    padding: 1em;
+    margin-top: 5em;
+
+    width: 100%;
+    height: fit-content;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.5em;
+}
+
+main > article {
+    max-width: 800px;
+}
+
+@media (max-width: 850px) {
+    main {
+        flex-direction: column;
+        margin-top: calc(5em + 4em);
+    }
+}

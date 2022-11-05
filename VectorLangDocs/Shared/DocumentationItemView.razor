@@ -5,7 +5,7 @@
 @inject IJSRuntime JSRuntime
 
 <article>
-    @RenderHeader()
+    @Header()
 
     @CopyLinkToItemButton()
 
@@ -99,10 +99,21 @@
         return currentUri.Substring(0, idIndex) + HeaderSelectorOf(item);
     }
 
-    private RenderFragment RenderHeader()
+    private string GetFormattedName()
+    {
+        return Item switch
+        {
+            InstanceUnaryOperatorDocumentation unaryOperator => unaryOperator.UnaryOperator.GetFormatted(unaryOperator.InstanceTypeDocumentation.Name),
+            InstanceBinaryOperatorDocumentation binaryOperator => binaryOperator.BinaryOperator.GetFormatted(binaryOperator.LeftTypeDocumentation.Name, binaryOperator.RightTypeDocumentation.Name),
+            IMemberDocumentationItem member => $"{member.InstanceTypeDocumentation.Name}.{Item.Name}",
+            _ => Item.Name,
+        };
+    }
+
+    private RenderFragment Header()
     {
         return
-    @<h4 id="@HeaderId" tabindex="-1">
+    @<h4 id="@HeaderId" tabindex="-1" data-nav-anchor="@GetFormattedName()">
         @switch (Item)
         {
             case InstanceTypeDocumentation instanceTypeDocumentation:

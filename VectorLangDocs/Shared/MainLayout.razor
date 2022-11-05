@@ -5,19 +5,31 @@
 
 <PageTitle>VectorLang Docs</PageTitle>
 
-<AnchorNavigation />
-
 <PageHeader />
 
 <main>
+    <PageNavigation @ref="_PageNavigation" />
+
     <article>
-        <CascadingValue Value="LoadLanguageDocumentation()">
+        <CascadingValue Value="LoadLanguageDocumentation()" IsFixed="true">
             @Body
         </CascadingValue>
     </article>
 </main>
 
 @code {
+    private PageNavigation? _PageNavigation = null;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender)
+        {
+            _PageNavigation?.Update();
+        }
+    }
+
     private VectorLangDocumentation LoadLanguageDocumentation()
     {
         return VectorLangDocumentation.FromXml(ReadEmbeddedResource("VectorLang/docs/en.xml"));

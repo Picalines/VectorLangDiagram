@@ -1,0 +1,78 @@
+﻿@using System.Text.Json
+
+@implements IAsyncDisposable
+
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+
+<nav>
+    <h3 tabindex="-1">Navigation</h3>
+
+    @foreach (var section in _NavSections)
+    {
+        <section>
+            @if (section is { HeaderTitle: { } sectionTitle, HeaderAnchor: { } sectionAnchor })
+            {
+                <h4><a @onclick=@(() => FocusOnElement(sectionAnchor)) tabindex="-1">@sectionTitle</a></h4>
+            }
+            <div class="anchors">
+                @foreach (var anchor in section.Anchors)
+                {
+                    <a @onclick=@(() => FocusOnElement(anchor.Anchor!)) tabindex="-1">@(anchor.Title!)</a>
+                }
+            </div>
+        </section>
+    }
+</nav>
+
+@code {
+    private record NavAnchor(string? Title, string? Anchor);
+
+    private record NavSection(string HeaderTitle, string HeaderAnchor, NavAnchor[] Anchors);
+
+    private IJSObjectReference? _JSModule;
+
+    private DotNetObjectReference<PageNavigation>? _ThisJSReference;
+
+    private NavSection[] _NavSections = Array.Empty<NavSection>();
+
+    private TaskCompletionSource _Initialized = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _ThisJSReference = DotNetObjectReference.Create(this);
+        _JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./js/components/{nameof(PageNavigation)}.js");
+
+        NavigationManager.LocationChanged += (_, _) => Update();
+
+        _Initialized.SetResult();
+    }
+
+    public async void Update()
+    {
+        await _Initialized.Task;
+
+        var jsNavSections = await _JSModule!.InvokeAsync<JsonDocument>("QueryNavSections");
+
+        _NavSections = jsNavSections!.Deserialize<NavSection[]>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true })!;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void FocusOnElement(string anchor)
+    {
+        await JSRuntime.InvokeVoidAsync("BlazorUtils.focusOnElement", "#" + anchor);
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        _ThisJSReference?.Dispose();
+
+        if (_JSModule is not null)
+        {
+            await _JSModule.DisposeAsync();
+        }
+    }
+}

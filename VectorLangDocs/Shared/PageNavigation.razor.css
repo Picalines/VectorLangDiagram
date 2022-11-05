@@ -1,0 +1,158 @@
+﻿nav {
+    justify-self: end;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1em;
+
+    position: sticky;
+    top: 6em;
+
+    background: var(--p-purple-3);
+    padding: 1em;
+    border-radius: 10px;
+    height: min-content;
+    width: fit-content;
+
+    box-shadow: rgb(0 0 0 / 35%) 0px 0px 10px;
+
+    overflow-y: overlay;
+    max-height: calc(100vh - 3em - 4em);
+
+    flex-shrink: 0;
+}
+
+nav :is(h3, h4) {
+    margin-top: 0;
+}
+
+nav > h3 {
+    margin-bottom: 0;
+    font-size: 1em;
+}
+
+nav > section > h4 {
+    margin-bottom: 0.5em;
+    width: fit-content;
+    position: relative;
+    z-index: 1;
+    --thikness: 2px;
+    text-shadow:
+        var(--thikness) 0 0 var(--p-purple-3),
+        calc(-1 * var(--thikness)) 0 0 var(--p-purple-3);
+}
+
+nav > section > h4::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    --height: 1.5px;
+    height: var(--height);
+
+    border-radius: 1px;
+    top: calc(1rem + 1px + var(--height) / 2);
+    left: 0;
+
+    z-index: -1;
+    opacity: 0.9;
+    background-color: var(--p-purple-9);
+    transition: background-color ease-in-out 0.1s;
+}
+
+nav > section > h4:hover::after {
+    background-color: var(--p-purple-10);
+}
+
+nav > section > .anchors {
+    display: flex;
+    flex-direction: column;
+}
+
+nav > section:has(h4) > .anchors {
+    margin-left: 0.5em;
+}
+
+nav > section > .anchors > a {
+    font-variant-ligatures: none;
+}
+
+@media (max-width: 850px) {
+    nav {
+        position: absolute;
+        left: 1em;
+        width: calc(100% - 2em);
+        overflow: hidden;
+        z-index: 3;
+
+        gap: 0;
+        max-height: 3.325em;
+
+        transition-property: max-height, gap;
+        transition-timing-function: ease-in-out;
+        transition-duration: 0.2s;
+    }
+
+    body.is-resizing nav {
+        transition: none;
+    }
+
+    nav > section {
+        opacity: 0;
+        transition-property: opacity;
+        transition-timing-function: ease-in-out;
+        transition-duration: 0.2s;
+    }
+
+    body.is-resizing nav > section {
+        transition: none;
+    }
+
+    nav > h3 {
+        flex-basis: 100%;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+        margin-bottom: 1em;
+
+        transition-property: margin-bottom;
+        transition-timing-function: step-end;
+        transition-duration: 0.3s;
+    }
+
+    nav:focus-within {
+        max-height: 999vh;
+        gap: 1em;
+    }
+
+    nav:focus-within > section {
+        opacity: 1;
+    }
+
+    nav:focus-within > h3 {
+        cursor: default;
+        margin-bottom: 0;
+        transition-timing-function: step-start;
+    }
+
+    nav > section {
+        width: 100%;
+    }
+
+    nav > section > h4 {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    nav > section > .anchors {
+        flex-direction: row;
+        flex-wrap: wrap;
+        column-gap: 1em;
+        row-gap: 0.2em;
+        justify-content: space-evenly;
+    }
+
+    nav > section:has(h4) > .anchors {
+        margin-left: 0;
+    }
+}

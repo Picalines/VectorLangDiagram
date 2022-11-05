@@ -1,0 +1,50 @@
+﻿@using VectorLangDocs.Shared.DocumentationModel
+
+@page "/type/{TypeName}"
+
+@{
+    LanguageDocumentation.Types.TryGet(TypeName, out var typeDocumentation);
+}
+
+@if (typeDocumentation is null)
+{
+    <h1>Type not found</h1>
+}
+else
+{
+    <h1 id="@TypeName" data-nav-anchor="@TypeName">@typeDocumentation.Name</h1>
+
+    @typeDocumentation.Summary
+
+    <div id="sections">
+        @ItemSection("Fields", "fields", typeDocumentation.Fields.Items)
+        @ItemSection("Methods", "methods", typeDocumentation.Methods.Items)
+        @ItemSection("Unary operators", "unary-operators", typeDocumentation.UnaryOperators.Items)
+        @ItemSection("Binary operators", "binary-operators", typeDocumentation.BinaryOperators.Items)
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    public VectorLangDocumentation LanguageDocumentation { get; set; } = null!;
+
+    [Parameter]
+    public string TypeName { get; set; } = null!;
+
+    private RenderFragment ItemSection(string sectionTitle, string sectionAnchor, IEnumerable<DocumentationItem> items)
+    {
+        if (items.Any() is false)
+        {
+            return@<!---->;
+        }
+
+        return
+    @<section>
+        <h2 id="@sectionAnchor" data-nav-section="@sectionTitle" tabindex="-1">@sectionTitle</h2>
+        @foreach (var item in items)
+        {
+            <DocumentationItemView Item="item" />
+        }
+    </section>;
+    }
+}

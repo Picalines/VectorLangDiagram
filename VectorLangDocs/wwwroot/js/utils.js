@@ -1,35 +1,18 @@
-﻿function BlazorScrollToElement(selector) {
-    const element = document.querySelector(selector);
-    if (!(element instanceof HTMLElement)) {
-        return;
-    }
+﻿window.BlazorUtils = {
 
-    element.scrollIntoView();
-}
+    focusOnElement: (selector) => {
+        const element = document.querySelector(selector);
+        if (!(element instanceof HTMLElement)) {
+            return;
+        }
 
-function BlazorFocusOnElement(selector) {
-    const element = document.querySelector(selector);
-    if (!(element instanceof HTMLElement)) {
-        return;
-    }
+        element.focus();
+    },
 
-    element.focus();
-}
+    addEventListener: (objectEvalString, event, dotNetObject, dotNetMethod, once = false) => {
+        const object = eval(objectEvalString);
 
-function BlazorAddTemporaryClass(selector, className, durationMs) {
-    const element = document.querySelector(selector);
-    if (!(element instanceof HTMLElement)) {
-        return;
-    }
+        object.addEventListener(event, () => dotNetObject.invokeMethodAsync(dotNetMethod), { once });
+    },
 
-    element.__temporaryClassTimeouts ??= {};
-
-    element.classList.add(className);
-    const timeout = setTimeout(() => {
-        element.classList.remove(className);
-        delete element.__temporaryClassTimeouts[className];
-    }, durationMs);
-
-    clearTimeout(element.__temporaryClassTimeouts[className])
-    element.__temporaryClassTimeouts[className] = timeout;
 }
