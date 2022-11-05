@@ -50,6 +50,17 @@
         _Initialized.SetResult();
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (firstRender && NavigationManager.Uri.IndexOf('#') is var idIndex and not -1)
+        {
+            var elementId = NavigationManager.Uri[(idIndex + 1)..];
+            FocusOnElement(elementId);
+        }
+    }
+
     public async void Update()
     {
         await _Initialized.Task;
