@@ -1,0 +1,42 @@
+﻿@using VectorLangDocs.Shared.DocumentationModel
+
+@page "/types"
+@page "/constants"
+@page "/functions"
+
+@inject NavigationManager NavigationManager
+
+<h1>@Capitalize(_CurrentPage)</h1>
+
+@code {
+    [CascadingParameter]
+    public VectorLangDocumentation LanguageDocumentation { get; set; } = null!;
+
+    private string _CurrentPage = null!;
+
+    private IEnumerable<DocumentationItem> _Items = null!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _CurrentPage = NavigationManager.Uri[NavigationManager.BaseUri.Length..];
+
+        _Items = _CurrentPage switch
+        {
+            "types" => LanguageDocumentation.Types.Items,
+            "constants" => LanguageDocumentation.Constants.Items,
+            "functions" => LanguageDocumentation.Functions.Items,
+            _ => throw new NotImplementedException(),
+        };
+    }
+
+    private static string Capitalize(string str)
+    {
+        return str.Length switch
+        {
+            0 or 1 => str,
+            _ => char.ToUpper(str[0]).ToString() + str[1..],
+        };
+    }
+}
