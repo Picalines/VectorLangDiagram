@@ -6,29 +6,60 @@
 
 @inject NavigationManager NavigationManager
 
-<h1>@Capitalize(_CurrentPage)</h1>
+<h1>@Capitalize(CurrentPage)</h1>
+
+<div id="sections">
+    @foreach (var itemGroup in GroupedItems)
+    {
+        <section>
+            @if (itemGroup.Key is { } libraryName)
+            {
+                <h2 id="@libraryName" data-nav-section="@libraryName">@Capitalize(libraryName)</h2>
+            }
+
+            @foreach (var item in itemGroup)
+            {
+                <DocumentationItemView Item="item" />
+            }
+        </section>
+    }
+</div>
 
 @code {
     [CascadingParameter]
     public VectorLangDocumentation LanguageDocumentation { get; set; } = null!;
 
-    private string _CurrentPage = null!;
-
-    private IEnumerable<DocumentationItem> _Items = null!;
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        _CurrentPage = NavigationManager.Uri[NavigationManager.BaseUri.Length..];
+        NavigationManager.LocationChanged += (_, _) => StateHasChanged();
+    }
 
-        _Items = _CurrentPage switch
+    private string CurrentPage
+    {
+        get
+        {
+            var baseLength = NavigationManager.BaseUri.Length;
+            var endIndex = NavigationManager.Uri.IndexOf('#') is var index and not -1 ? new System.Index(index) : System.Index.End;
+            return NavigationManager.Uri[baseLength..endIndex];
+        }
+    }
+
+    private IEnumerable<DocumentationItem> Items
+    {
+        get => CurrentPage switch
         {
             "types" => LanguageDocumentation.Types.Items,
             "constants" => LanguageDocumentation.Constants.Items,
             "functions" => LanguageDocumentation.Functions.Items,
             _ => throw new NotImplementedException(),
         };
+    }
+
+    private IEnumerable<IGrouping<string?, DocumentationItem>> GroupedItems
+    {
+        get => Items.GroupBy(docItem => docItem is ILibraryItemDocumentation { LibraryName: var libraryName } ? libraryName : null);
     }
 
     private static string Capitalize(string str)

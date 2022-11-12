@@ -471,7 +471,7 @@
             </vl-doc>
         </member>
         <member name="T:VectorLang.Model.ColorLibrary">
-            <vl-library>color constants and functions</vl-library>
+            <vl-doc><name>Colors</name></vl-doc>
         </member>
         <member name="F:VectorLang.Model.ColorLibrary.White">
             <vl-doc>
@@ -528,7 +528,7 @@
             </vl-doc>
         </member>
         <member name="T:VectorLang.Model.MathLibrary">
-            <vl-library>math constants</vl-library>
+            <vl-doc><name>Math</name></vl-doc>
         </member>
         <member name="F:VectorLang.Model.MathLibrary.PI">
             <vl-doc>
@@ -555,7 +555,7 @@
             </vl-doc>
         </member>
         <member name="T:VectorLang.Model.PlotLibrary">
-            <vl-library>plotting</vl-library>
+            <vl-doc><name>Plotting</name></vl-doc>
         </member>
         <member name="M:VectorLang.Model.PlotLibrary.Push">
             <vl-doc>

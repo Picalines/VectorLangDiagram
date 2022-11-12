@@ -1,7 +1,9 @@
 ﻿namespace VectorLangDocs.Shared.DocumentationModel;
 
-public sealed class FunctionDocumentation : DocumentationItem, ICallableDocumentationItem
+public sealed class FunctionDocumentation : DocumentationItem, ICallableDocumentationItem, ILibraryItemDocumentation
 {
+    public string? LibraryName { get; init; }
+
     public InstanceTypeDocumentation ReturnTypeDocumentation { get; }
 
     public DocumentationRepository<ParameterDocumentation> Parameters { get; } = new();

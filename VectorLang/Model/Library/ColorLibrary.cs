@@ -1,6 +1,6 @@
 ﻿namespace VectorLang.Model;
 
-/// <vl-library>color constants and functions</vl-library>
+/// <vl-doc><name>Colors</name></vl-doc>
 internal sealed class ColorLibrary : ReflectionLibrary
 {
     public static readonly ColorLibrary Instance = new();

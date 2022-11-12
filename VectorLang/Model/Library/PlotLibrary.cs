@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace VectorLang.Model;
 
-/// <vl-library>plotting</vl-library>
+/// <vl-doc><name>Plotting</name></vl-doc>
 internal sealed class PlotLibrary : ReflectionLibrary
 {
     private const int MaxContextStackSize = 32;

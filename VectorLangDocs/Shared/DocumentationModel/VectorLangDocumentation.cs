@@ -170,6 +170,8 @@ public sealed class VectorLangDocumentation
 
         foreach (var library in reflectionLibraries)
         {
+            var libraryName = XmlLangDocByMemberName(xDocument, XmlMemberNameOfLibrary(library))?.Element("name")?.Value;
+
             var libraryType = library.GetType();
 
             var reflectedFunctions = libraryType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
@@ -189,6 +191,7 @@ public sealed class VectorLangDocumentation
 
                 var functionDocumentation = new FunctionDocumentation(function.Name, returnTypeDoc)
                 {
+                    LibraryName = libraryName,
                     Summary = FormattedValueOf(vlDoc.Element("summary")),
                     UsageExample = FormattedValueOf(vlDoc.Element("example")),
                     ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
@@ -221,6 +224,7 @@ public sealed class VectorLangDocumentation
 
                 documentation.Constants.Add(new ConstantDocumentation(constantName, constantTypeDoc)
                 {
+                    LibraryName = libraryName,
                     Summary = FormattedValueOf(vlDoc.Element("summary")),
                     UsageExample = FormattedValueOf(vlDoc.Element("example")),
                 });
@@ -305,6 +309,11 @@ public sealed class VectorLangDocumentation
         static string XmlMemberNameOfMethod(MethodInfo methodInfo)
         {
             return $"M:{methodInfo.DeclaringType.FullName}.{methodInfo.Name}({string.Join(",", methodInfo.GetParameters().Select(p => p.ParameterType.FullName))})";
+        }
+
+        static string XmlMemberNameOfLibrary(Library library)
+        {
+            return $"T:{library.GetType().FullName}";
         }
 
         static UnaryOperator? MethodNameToUnaryOperator(string methodName) => methodName switch

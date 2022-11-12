@@ -2,7 +2,7 @@
 
 namespace VectorLang.Model;
 
-/// <vl-library>math constants</vl-library>
+/// <vl-doc><name>Math</name></vl-doc>
 internal sealed class MathLibrary : ReflectionLibrary
 {
     public static readonly MathLibrary Instance = new();
