@@ -8,7 +8,7 @@
 <PageHeader />
 
 <main>
-    <PageNavigation @ref="_PageNavigation" />
+    <PageNavigation />
 
     <article>
         <CascadingValue Value="LoadLanguageDocumentation()" IsFixed="true">
@@ -18,18 +18,6 @@
 </main>
 
 @code {
-    private PageNavigation? _PageNavigation = null;
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-
-        if (firstRender)
-        {
-            _PageNavigation?.Update();
-        }
-    }
-
     private VectorLangDocumentation LoadLanguageDocumentation()
     {
         return VectorLangDocumentation.FromXml(ReadEmbeddedResource("VectorLang/docs/en.xml"));
