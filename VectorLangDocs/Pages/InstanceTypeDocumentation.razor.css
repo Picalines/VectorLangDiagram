@@ -1,6 +1,13 @@
 ﻿h1 {
     margin-top: 0;
     font-size: 2em;
+    position: relative;
+    width: fit-content;
+}
+
+span#summary {
+    display: block;
+    margin-bottom: 1em;
 }
 
 #sections {
@@ -19,4 +26,6 @@
 
 #sections > section > h2 {
     margin: 0;
+    position: relative;
+    width: fit-content;
 }

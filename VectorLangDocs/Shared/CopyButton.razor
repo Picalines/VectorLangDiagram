@@ -1,0 +1,53 @@
+﻿@using System.Diagnostics.CodeAnalysis;
+@inject IJSRuntime JSRuntime
+
+<button title="@ButtonTitle" @onclick="Copy" class="copy-button @Position.ToString()"><img src="@IconUrl" /></button>
+
+@code {
+    public enum PositionType
+    {
+        InsideParent,
+        AfterInlineParent,
+    }
+
+    [Parameter, EditorRequired]
+    public string IconUrl { get; set; } = null!;
+
+    [Parameter]
+    public PositionType Position { get; set; } = PositionType.InsideParent;
+
+    [Parameter]
+    public string? ButtonTitle { get; set; }
+
+    [Parameter]
+    public string? TextToCopy { get; set; }
+
+    [Parameter]
+    public string? SelectorToCopyFrom { get; set; }
+
+    private IJSObjectReference _JSModule = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if ((TextToCopy, SelectorToCopyFrom) is (null, null) or (not null, not null))
+        {
+            throw new ArgumentException($"{nameof(CopyButton)} target is ambiguous");
+        }
+
+        await base.OnInitializedAsync();
+
+        _JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./js/components/{nameof(CopyButton)}.js");
+    }
+
+    private async void Copy()
+    {
+        if (TextToCopy is not null)
+        {
+            await _JSModule.InvokeVoidAsync("CopyString", TextToCopy);
+        }
+        else
+        {
+            await _JSModule.InvokeVoidAsync("CopyInnerTextOf", SelectorToCopyFrom);
+        }
+    }
+}

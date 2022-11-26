@@ -7,7 +7,7 @@
 <article>
     @Header()
 
-    @CopyLinkToItemButton()
+    <CopyButton IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" TextToCopy="@HeaderUri" />
 
     @Item.Summary
 
@@ -42,7 +42,7 @@
      
     @if (Item.UsageExample is not null)
     {
-        <pre>@CopyCodeButton(Item.UsageExample)<code>@Item.UsageExample</code></pre>
+        <CodeBlock>@Item.UsageExample</CodeBlock>
     }
 </article>
 
@@ -179,20 +179,5 @@
                 throw new NotImplementedException();
         }
     </h4>;
-    }
-
-    private RenderFragment CopyCodeButton(string code)
-    {
-        return @<button class="copy-button" title="Copy code" @onclick="() => CopyToClipboard(code)"><img src="./svg/copy-text-icon.svg" /></button>;
-    }
-
-    private RenderFragment CopyLinkToItemButton()
-    {
-        return @<button class="copy-button" title="Copy link" @onclick="() => CopyToClipboard(HeaderUri)"><img src="./svg/copy-link-icon.svg" /></button>;
-    }
-
-    private async void CopyToClipboard(string text)
-    {
-        await JSRuntime.InvokeVoidAsync("navigator.clipboard.writeText", text);
     }
 }

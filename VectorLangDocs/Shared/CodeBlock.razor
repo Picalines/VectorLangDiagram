@@ -1,0 +1,11 @@
+﻿@{
+    // (html ids can't start from numbers)
+    var guid = "g" + Guid.NewGuid().ToString();
+}
+
+<pre><CopyButton SelectorToCopyFrom=@("code#" + guid) IconUrl="./svg/copy-text-icon.svg" ButtonTitle="Copy code" /><code id="@guid">@ChildContent</code></pre>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+}

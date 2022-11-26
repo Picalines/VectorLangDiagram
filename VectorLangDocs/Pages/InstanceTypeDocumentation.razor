@@ -1,5 +1,7 @@
 ﻿@using VectorLangDocs.Shared.DocumentationModel
 
+@inject NavigationManager NavigationManager
+
 @page "/type/{TypeName}"
 
 @{
@@ -12,9 +14,17 @@
 }
 else
 {
-    <h1 id="@TypeName" data-nav-anchor="@TypeName">@typeDocumentation.Name</h1>
+    <h1 id="@TypeName" data-nav-anchor="@TypeName">
+        @typeDocumentation.Name
+        <CopyButton TextToCopy=@(NavigationManager.Uri) IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
+    </h1>
 
-    @typeDocumentation.Summary
+    <span id="summary">@typeDocumentation.Summary</span>
+
+    @if (typeDocumentation.UsageExample is { } usageExample)
+    {
+        <CodeBlock>@usageExample</CodeBlock>
+    }
 
     <div id="sections">
         @ItemSection("Fields", "fields", typeDocumentation.Fields.Items)
@@ -38,9 +48,14 @@ else
             return@<!---->;
         }
 
+        var sectionUri = PageNavigation.UriOfElement(NavigationManager, sectionAnchor);
+
         return
     @<section>
-        <h2 id="@sectionAnchor" data-nav-section="@sectionTitle" tabindex="-1">@sectionTitle</h2>
+        <h2 id="@sectionAnchor" data-nav-section="@sectionTitle" tabindex="-1">
+            @sectionTitle
+            <CopyButton TextToCopy=@sectionUri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
+        </h2>
         @foreach (var item in items)
         {
             <DocumentationItemView Item="item" />

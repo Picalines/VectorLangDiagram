@@ -32,8 +32,6 @@
 
     private IJSObjectReference? _JSModule;
 
-    private DotNetObjectReference<PageNavigation>? _ThisJSReference;
-
     private NavSection[] _NavSections = Array.Empty<NavSection>();
 
     private TaskCompletionSource _Initialized = new();
@@ -42,7 +40,6 @@
     {
         await base.OnInitializedAsync();
 
-        _ThisJSReference = DotNetObjectReference.Create(this);
         _JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./js/components/{nameof(PageNavigation)}.js");
 
         NavigationManager.LocationChanged += async (_, _) =>
@@ -80,6 +77,18 @@
         StateHasChanged();
     }
 
+    public static string UriOfElement(NavigationManager navigationManager, string anchor)
+    {
+        var currentUri = navigationManager.Uri;
+
+        if (currentUri.IndexOf('#') is var idIndex and not -1)
+        {
+            currentUri = currentUri[..idIndex];
+        }
+
+        return currentUri + '#' + anchor;
+    }
+
     private async void FocusOnElement(string anchor)
     {
         await JSRuntime.InvokeVoidAsync("BlazorUtils.focusOnElement", "#" + anchor);
@@ -87,8 +96,6 @@
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        _ThisJSReference?.Dispose();
-
         if (_JSModule is not null)
         {
             await _JSModule.DisposeAsync();

@@ -6,7 +6,10 @@
 
 @inject NavigationManager NavigationManager
 
-<h1>@Capitalize(CurrentPage)</h1>
+<h1>
+    @Capitalize(CurrentPage)
+    <CopyButton TextToCopy=@NavigationManager.Uri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
+</h1>
 
 <div id="sections">
     @foreach (var itemGroup in GroupedItems)
@@ -14,7 +17,12 @@
         <section>
             @if (itemGroup.Key is { } libraryName)
             {
-                <h2 id="@libraryName" data-nav-section="@libraryName">@Capitalize(libraryName)</h2>
+                var sectionUri = PageNavigation.UriOfElement(NavigationManager, libraryName);
+
+                <h2 id="@libraryName" data-nav-section="@libraryName">
+                    @Capitalize(libraryName)
+                    <CopyButton TextToCopy=@sectionUri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
+                </h2>
             }
 
             @foreach (var item in itemGroup)

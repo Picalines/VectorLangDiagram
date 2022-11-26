@@ -21,7 +21,7 @@ article:has(h4:focus) {
     }
 }
 
-article > :not(:first-child):not(button) {
+article > ::deep :not(button):not(:first-child) {
     margin-top: 1em;
 }
 
@@ -32,15 +32,6 @@ article > h4 {
     flex-wrap: wrap;
     flex-direction: row;
     white-space: pre;
-}
-
-article pre {
-    background: rgb(0, 0, 0, 50%);
-    padding: 1em;
-    margin: 0;
-    border-radius: 5px;
-    position: relative;
-    overflow: auto;
 }
 
 article > section > h5 {
@@ -70,33 +61,4 @@ article > section.parameters > div > .name::before {
 
 article > section.parameters > div:nth-child(n+1) {
     margin-top: 0.5em;
-}
-
-.copy-button {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    right: 8px;
-    top: 8px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-    transform: scale(1);
-    transition: opacity ease-in-out 0.1s, transform ease-in-out 0.1s;
-}
-
-.copy-button:active {
-    transform: scale(0.8);
-}
-
-.copy-button > img {
-    width: 100%;
-    height: 100%;
-}
-
-*:hover > .copy-button {
-    opacity: 0.5;
 }
