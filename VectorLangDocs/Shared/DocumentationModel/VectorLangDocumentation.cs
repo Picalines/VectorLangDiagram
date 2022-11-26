@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using VectorLang.Compilation;
 using VectorLang.Model;
@@ -14,8 +13,6 @@ public sealed class VectorLangDocumentation
     public DocumentationRepository<ConstantDocumentation> Constants { get; } = new();
 
     public DocumentationRepository<FunctionDocumentation> Functions { get; } = new();
-
-    private static readonly Regex _IndentRegex = new(@"^\s*", RegexOptions.Compiled, TimeSpan.FromSeconds(0.5));
 
     private VectorLangDocumentation()
     {
@@ -46,8 +43,8 @@ public sealed class VectorLangDocumentation
 
             documentation.Types.Add(new InstanceTypeDocumentation(reflectionInstanceType.Name)
             {
-                Summary = FormattedValueOf(vlDoc.Element("summary")),
-                UsageExample = FormattedValueOf(vlDoc.Element("example")),
+                Summary = vlDoc.Element("summary")?.Value,
+                UsageExample = vlDoc.Element("example")?.Value,
             });
         }
 
@@ -74,8 +71,8 @@ public sealed class VectorLangDocumentation
 
                 instanceTypeDocumentation.Fields.Add(new InstanceFieldDocumentation(instanceTypeDocumentation, fieldName, fieldTypeDoc)
                 {
-                    Summary = FormattedValueOf(vlDoc.Element("summary")),
-                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
+                    Summary = vlDoc.Element("summary")?.Value,
+                    UsageExample = vlDoc.Element("example")?.Value,
                 });
             }
 
@@ -96,9 +93,9 @@ public sealed class VectorLangDocumentation
 
                 var methodDocumentation = new InstanceMethodDocumentation(instanceTypeDocumentation, methodName, returnTypeDoc)
                 {
-                    Summary = FormattedValueOf(vlDoc.Element("summary")),
-                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
-                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
+                    Summary = vlDoc.Element("summary")?.Value,
+                    UsageExample = vlDoc.Element("example")?.Value,
+                    ReturnValueInfo = vlDoc.Element("returns")?.Value,
                 };
 
                 foreach (var parameterDoc in parameterDocs)
@@ -129,9 +126,9 @@ public sealed class VectorLangDocumentation
 
                 instanceTypeDocumentation.UnaryOperators.Add(new InstanceUnaryOperatorDocumentation(unaryOperator, instanceTypeDocumentation, returnTypeDoc)
                 {
-                    Summary = FormattedValueOf(vlDoc.Element("summary")),
-                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
-                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
+                    Summary = vlDoc.Element("summary")?.Value,
+                    UsageExample = vlDoc.Element("example")?.Value,
+                    ReturnValueInfo = vlDoc.Element("returns")?.Value,
                 });
             }
 
@@ -157,9 +154,9 @@ public sealed class VectorLangDocumentation
 
                 instanceTypeDocumentation.BinaryOperators.Add(new InstanceBinaryOperatorDocumentation(binaryOperator, instanceTypeDocumentation, rightTypeDoc, returnTypeDoc)
                 {
-                    Summary = FormattedValueOf(vlDoc.Element("summary")),
-                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
-                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
+                    Summary = vlDoc.Element("summary")?.Value,
+                    UsageExample = vlDoc.Element("example")?.Value,
+                    ReturnValueInfo = vlDoc.Element("returns")?.Value,
                 });
             }
         }
@@ -192,9 +189,9 @@ public sealed class VectorLangDocumentation
                 var functionDocumentation = new FunctionDocumentation(function.Name, returnTypeDoc)
                 {
                     LibraryName = libraryName,
-                    Summary = FormattedValueOf(vlDoc.Element("summary")),
-                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
-                    ReturnValueInfo = FormattedValueOf(vlDoc.Element("returns")),
+                    Summary = vlDoc.Element("summary")?.Value,
+                    UsageExample = vlDoc.Element("example")?.Value,
+                    ReturnValueInfo = vlDoc.Element("returns")?.Value,
                 };
 
                 foreach (var parameterDoc in parameterDocs)
@@ -225,8 +222,8 @@ public sealed class VectorLangDocumentation
                 documentation.Constants.Add(new ConstantDocumentation(constantName, constantTypeDoc)
                 {
                     LibraryName = libraryName,
-                    Summary = FormattedValueOf(vlDoc.Element("summary")),
-                    UsageExample = FormattedValueOf(vlDoc.Element("example")),
+                    Summary = vlDoc.Element("summary")?.Value,
+                    UsageExample = vlDoc.Element("example")?.Value,
                 });
             }
         }
@@ -243,30 +240,6 @@ public sealed class VectorLangDocumentation
         static XElement? XmlLangDocByMemberName(XDocument xDocument, string xmlMemberName)
         {
             return XmlDocMemberByName(xDocument, xmlMemberName)?.Element("vl-doc");
-        }
-
-        static string? FormattedValueOf(XElement? element)
-        {
-            return element?.Value is { } str ? RemoveIndentation(str) : null;
-        }
-
-        static string RemoveIndentation(string str)
-        {
-            var lines = str.Trim().Split('\n');
-            var indentToRemove = lines.LastOrDefault() is { Length: > 0 } lastLine
-                ? _IndentRegex.Match(lastLine).Length
-                : 0;
-
-            var linesWithoutIndent = lines
-                .Skip(1)
-                .Select(line => indentToRemove > line.Length ? "" : line[indentToRemove..]);
-
-            if (lines.Length > 0)
-            {
-                linesWithoutIndent = linesWithoutIndent.Prepend(lines.First());
-            }
-
-            return string.Join('\n', linesWithoutIndent).Trim();
         }
 
         static (InstanceTypeDocumentation ReturnTypeDoc, ParameterDocumentation[] ParameterDocs) SignatureDocumentation(VectorLangDocumentation documentation, XElement vlDocElement, CallSignature signature)

@@ -1,3 +1,335 @@
-﻿@page "/"
+﻿@using VectorLangDocs.Shared.DocumentationModel
 
-<h1>Hello, world!</h1>
+@page "/"
+
+@inject NavigationManager NavigationManager
+
+<h1 id="VectorLang" data-nav-section="VectorLang">VectorLang</h1>
+
+<section>
+    <b>VectorLang</b> is a simple programming language designed to draw vector diagrams!
+
+    This site contains list of <a href="/types">data types</a>, <a href="/constants">constants</a> and <a href="/functions">functions</a> that you can use to visualize data.
+</section>
+
+<section>
+    @NavigationManager.RenderSectionHeader(2, "syntax", "Syntax", copyButton: true)
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-number-expressions", "Number expressions", copyButton: true)
+
+        <p>
+            @{
+                LanguageDocumentation.Types.TryGet("number", out var numberTypeDocs);
+            }
+
+            There is no division into integer and real numbers in VectorLang - they all have the <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="numberTypeDocs" /> type.
+            As in most languages, simple mathematical operations are available:
+        </p>
+
+        @CodeBlock.Inline(@"
+            1 + 1
+            10 - 1
+            45deg * 2 // deg converts literal to radians
+            90rad / 2 // use rad to indicate that value is an angle
+            19 % 10 // remainder
+            -x
+            +x
+        ")
+
+        <p>
+            Whitespace is ignored by the compiler, so you can spread expressions onto multiple lines.
+        </p>
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-vector-expression", "Vector expression", copyButton: true)
+
+        <p>
+            @{
+                LanguageDocumentation.Types.TryGet("vector", out var vectorTypeDocs);
+            }
+
+            In VectorLang you draw a vector diagrams, so there is a <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="vectorTypeDocs" /> type.
+        </p>
+
+        @CodeBlock.Inline(@"
+            {2, 3}
+            {5, 1} + {-2.5, 2 * 10}
+            v1 - v2
+            v1 * v2 // number, the dot product
+            v1 * 10
+            v1 / 2
+        ")
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-boolean-expressions", "Boolean expressions", copyButton: true)
+
+        <p>
+            Comparison operators return boolean values (true/false), on which you can use boolean operators.
+        </p>
+
+        @CodeBlock.Inline(@"
+            x > 2
+            x <= 5
+            x = y
+            x and y // ""and"" and ""or"" are short circuited
+            x or y  // i.e. ""y"" may not be evaluated!
+            not x
+        ")
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-methods-fields", "Methods and fields", copyButton: true)
+
+        <p>
+            All data types in VectorLange have many methods and sometimes fields.
+        </p>
+
+        @CodeBlock.Inline(@"
+            2.pow(10) // 1024
+            {1, 0}.angle({0, 1}) // 90deg
+            {5, 10}.x // 5
+            #00ff00.g // 1
+        ")
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-if-expression", "If expression", copyButton: true)
+
+        <p>
+            Conditionals are created using the ternary expression:
+        </p>
+
+        @CodeBlock.Inline(@"
+            if (x < min) min else x
+            // both branches must be of the same type!
+        ")
+
+        <p>
+            @{
+                LanguageDocumentation.Types.TryGet("void", out var voidTypeDocs);
+            }
+
+            You can omit the else block, but then the expression must be of type <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="voidTypeDocs" />.
+            See below for more on this.
+        </p>
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-block-expression", "Block expression", copyButton: true)
+
+        <p>
+            Use blocks to group multiple expressions into one. This is useful in combination with <em>val</em> expression, that stores result of expression to a local variable.
+        </p>
+
+        @CodeBlock.Inline(@"
+            val distance = [
+                val far := 100; // separate expressions with semicolon
+                val near := 0.1;
+                var ratio := far / near;
+                far / ((ratio - 1) * depthSample + 1) // !
+            ]
+        ")
+
+        <p>
+            Block returns value of its last expression, after which you <strong>don't place the semicolon</strong>. If you put that semicolon, the block will return a <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="voidTypeDocs" />.
+            You will use expressions of type <InstanceTypeDocumentationAnchor InstanceTypeDocumentation="voidTypeDocs" /> to plot something on the diagram without returning any value.
+        </p>
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-function", "Functions", copyButton: true)
+
+        <p>
+            Functions are defined using the <em>def</em> keyword. Arguments and the return value need the explicit data types.
+            See <a href="/functions">this</a> page for a list of bulit-in functions.
+        </p>
+
+        @CodeBlock.Inline(@"
+            // def <func>(<arg1_type> <arg1>, <arg2_type> <arg2>, ...) -> <type> = <expression>;
+
+            def distance(number near, number far, number depthSample) -> number = [
+                val ratio := far / near;
+                far / ((ratio - 1) * depthSample + 1)
+            ];
+        ")
+
+        <p>
+            Function "main" is an entry point of your program.
+        </p>
+        
+        @CodeBlock.Inline(@"
+            def main() -> void = [
+                ...
+            ];
+        ")
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-const", "Constants", copyButton: true)
+
+        <p>
+            You can extract special values to constants to avoid the "magic numbers" code smell.
+            See <a href="/constants">this</a> page for a list of bulit-in constants.
+        </p>
+
+        @CodeBlock.Inline(@"
+            const IMPORTANT_ANGLE = 123deg;
+
+            def func(number x) -> number = x * IMPORTANT_ANGLE;
+        ")
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "syntax-external", "Externals", copyButton: true)
+
+        <p>
+            So called external values behave the same way as constants do:
+        </p>
+
+        @CodeBlock.Inline(@"
+            const ExternalAngle = 123deg;
+
+            def func(number x) -> number = x * ExternalAngle;
+        ")
+
+        <p>
+            The point is that their values can be changed outside of VectorLang program. In case of VectorLangDiagram application,
+            external values can be modified in GUI. In code you specify only the defaul value.
+        </p>
+
+        <p>
+            That is, the external values are like <a href="https://www.khronos.org/opengl/wiki/Uniform_(GLSL)">uniforms</a> in shaders. Use
+            them as "parameters to programs".
+        </p>
+    </section>
+</section>
+
+<section>
+    @NavigationManager.RenderHeader(2, "example-programs", "Example programs", copyButton: true)
+
+    <section>
+        @NavigationManager.RenderHeader(3, "example-kinematics", "Fall trajectory", copyButton: true)
+
+        @CodeBlock.Inline(@"
+            external V0 = {5, 10};
+            external g = 9.8;
+            external dt = 0.1;
+
+            def height(number t) -> number = [
+                V0.y * t - (g * t.sqr()) / 2
+            ];
+
+            def plotHeight(number t) -> void =
+                if ((val h := height(t)) >= 0) [
+                    val prevT := t - dt;
+                    val prevH := height(prevT);
+
+                    val x := V0.x * t;
+                    val prevX := V0.x * prevT;
+
+                    push();
+                    translate({prevX, prevH});
+                    plot({dt * V0.x, h - prevH});
+                    pop();
+
+                    plotHeight(t + dt);
+                ];
+
+            def main() -> void = [
+                fill(RED);
+                plot(V0);
+
+                fill(CYAN);
+                plotHeight(dt);
+            ];
+        ")
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "example-binary-tree", "Binary tree", copyButton: true)
+
+        @CodeBlock.Inline(@"
+            external branchLengthMult = 0.84;
+            external minBranchLength = 0.2;
+            external branchAngle = 30;
+
+            def branch(number length) -> void = if (length >= minBranchLength) [
+                val v := {0, length};
+                plot(v);
+                translate(v);
+
+                length := length * branchLengthMult;
+
+                val angleRad := branchAngle.degToRad();
+
+                push();
+                rotate(angleRad);
+                branch(length);
+                pop();
+
+                push();
+                rotate(-angleRad);
+                branch(length);
+                pop();
+            ];
+
+            def main() -> void = [
+                branch(1);
+            ];
+        ")
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "example-electrostatics", "Electric field", copyButton: true)
+
+        @CodeBlock.Inline(@"
+            external Q1 = 1;
+            external Q1pos = {3.5, 3.5};
+            external Q2 = -1;
+            external Q2pos = {6.5, 6.5};
+            external gridWidth = 10;
+
+            const step = 0.5;
+
+            def fieldComponent(vector pos, number q, vector qPos) -> vector = [
+                val diff := pos - qPos;
+
+                if (pos != qPos) diff.normalized() * (q / diff.length().sqr())
+                else {0, 0}
+            ];
+
+            def field(vector pos) -> vector
+                = fieldComponent(pos, Q1, Q1pos) + fieldComponent(pos, Q2, Q2pos);
+
+            def plotField(vector pos) -> void = if (pos.x <= gridWidth and pos.y <= gridWidth) [
+                push();
+                translate(pos);
+
+                val pf := field(pos);
+
+                if (pf.length() > step) [
+                    fill(WHITE.blend(RED, (pf.length() - step) / step));
+                    pf := pf.clampLength(0, step);
+                ];
+
+                plot(pf);
+                pop();
+
+                plotField(pos + (
+                    if (pos.x >= gridWidth) {-pos.x, step}
+                    else {step, 0}
+                ));
+            ];
+
+            def main() -> void = plotField({0, 0});
+        ")
+    </section>
+</section>
+
+@code {
+    [CascadingParameter]
+    public VectorLangDocumentation LanguageDocumentation { get; set; } = null!;
+}

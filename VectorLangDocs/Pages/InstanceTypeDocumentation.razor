@@ -23,7 +23,7 @@ else
 
     @if (typeDocumentation.UsageExample is { } usageExample)
     {
-        <CodeBlock>@usageExample</CodeBlock>
+        <CodeBlock Code=@usageExample />
     }
 
     <div id="sections">
@@ -45,21 +45,25 @@ else
     {
         if (items.Any() is false)
         {
-            return@<!---->;
+            return @<!---->;
         }
-
-        var sectionUri = PageNavigation.UriOfElement(NavigationManager, sectionAnchor);
 
         return
     @<section>
-        <h2 id="@sectionAnchor" data-nav-section="@sectionTitle" tabindex="-1">
-            @sectionTitle
-            <CopyButton TextToCopy=@sectionUri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
-        </h2>
+        @ItemSectionHeader(sectionAnchor, sectionTitle)
+
         @foreach (var item in items)
         {
             <DocumentationItemView Item="item" />
         }
     </section>;
+    }
+
+    private RenderFragment ItemSectionHeader(string sectionAnchor, string sectionTitle)
+    {
+        return NavigationManager.RenderSectionHeader(2, sectionAnchor, sectionTitle, sectionUri => @<span>
+        @sectionTitle
+        <CopyButton TextToCopy=@sectionUri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
+    </span>);
     }
 }

@@ -24,7 +24,7 @@ span#summary {
     gap: 1em;
 }
 
-#sections > section > h2 {
+#sections > section > ::deep h2 {
     margin: 0;
     position: relative;
     width: fit-content;

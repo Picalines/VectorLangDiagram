@@ -1,0 +1,29 @@
+﻿@using Microsoft.AspNetCore.Components;
+
+@code {
+    private static readonly Dictionary<string, object> _EmptyAttributes = new();
+
+    public static RenderFragment Header(int level, Dictionary<string, object> attributes, RenderFragment innerContent)
+    {
+        if (level is not (>= 1 and <= 6))
+        {
+            throw new ArgumentException(null, nameof(level));
+        }
+
+        switch (level)
+        {
+            case 1: return@<h1 @attributes=@attributes>@innerContent</h1>;
+            case 2: return@<h2 @attributes=@attributes>@innerContent</h2>;
+            case 3: return@<h3 @attributes=@attributes>@innerContent</h3>;
+            case 4: return@<h4 @attributes=@attributes>@innerContent</h4>;
+            case 5: return@<h5 @attributes=@attributes>@innerContent</h5>;
+            case 6: return@<h6 @attributes=@attributes>@innerContent</h6>;
+            default: throw new NotImplementedException();
+        }
+    }
+
+    public static RenderFragment Header(int level, RenderFragment innerContent)
+    {
+        return Header(level, _EmptyAttributes, innerContent);
+    }
+}

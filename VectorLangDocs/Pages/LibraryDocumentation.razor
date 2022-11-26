@@ -17,12 +17,7 @@
         <section>
             @if (itemGroup.Key is { } libraryName)
             {
-                var sectionUri = PageNavigation.UriOfElement(NavigationManager, libraryName);
-
-                <h2 id="@libraryName" data-nav-section="@libraryName">
-                    @Capitalize(libraryName)
-                    <CopyButton TextToCopy=@sectionUri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
-                </h2>
+                @NavigationManager.RenderSectionHeader(2, libraryName, Capitalize(libraryName), copyButton: true)
             }
 
             @foreach (var item in itemGroup)

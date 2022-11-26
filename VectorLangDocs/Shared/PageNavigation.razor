@@ -26,6 +26,8 @@
 </nav>
 
 @code {
+    public const string BaseDataAttribute = "data-nav-";
+
     private record NavAnchor(string? Title, string? Anchor);
 
     private record NavSection(string HeaderTitle, string HeaderAnchor, NavAnchor[] Anchors);
@@ -75,18 +77,6 @@
 
         _NavSections = jsNavSections!.Deserialize<NavSection[]>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true })!;
         StateHasChanged();
-    }
-
-    public static string UriOfElement(NavigationManager navigationManager, string anchor)
-    {
-        var currentUri = navigationManager.Uri;
-
-        if (currentUri.IndexOf('#') is var idIndex and not -1)
-        {
-            currentUri = currentUri[..idIndex];
-        }
-
-        return currentUri + '#' + anchor;
     }
 
     private async void FocusOnElement(string anchor)

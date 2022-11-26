@@ -29,8 +29,23 @@ body {
     background: var(--p-purple-1);
 }
 
-:is(h1, h2, h3, h4, h5, h6):focus {
+:is(h1, h2, h3, h4, h5, h6) {
     outline: none;
+    width: fit-content;
+    position: relative;
+}
+
+h1 {
+    font-size: 2em;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1em;
 }
 
 @media (pointer: fine) {

@@ -3,9 +3,14 @@
     var guid = "g" + Guid.NewGuid().ToString();
 }
 
-<pre><CopyButton SelectorToCopyFrom=@("code#" + guid) IconUrl="./svg/copy-text-icon.svg" ButtonTitle="Copy code" /><code id="@guid">@ChildContent</code></pre>
+<pre><CopyButton SelectorToCopyFrom=@("code#" + guid) IconUrl="./svg/copy-text-icon.svg" ButtonTitle="Copy code" /><code id="@guid">@Code.RemoveIndentation()</code></pre>
 
 @code {
-    [Parameter]
-    public RenderFragment ChildContent { get; set; } = null!;
+    [Parameter, EditorRequired]
+    public string Code { get; set; } = null!;
+
+    public static RenderFragment Inline(string code)
+    {
+        return@<CodeBlock Code=@(code.RemoveIndentation()) />;
+    }
 }

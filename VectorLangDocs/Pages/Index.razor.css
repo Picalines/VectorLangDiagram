@@ -1,0 +1,17 @@
+﻿section > section {
+    position: relative;
+    padding: 1em;
+    border-radius: 10px;
+    margin-bottom: 1em;
+
+    background: var(--p-purple-4);
+    box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
+}
+
+section > section > ::deep :is(:first-child) {
+    margin-top: 0;
+}
+
+section > section > ::deep :is(:last-child) {
+    margin-bottom: 0;
+}
