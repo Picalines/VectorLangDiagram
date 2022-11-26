@@ -5,7 +5,7 @@ namespace VectorLang.Model;
 /// <vl-doc>
 /// <summary>Type that represents a 2D vector</summary>
 /// <example>
-/// let v = {123, 456};
+/// val v = {123, 456};
 /// </example>
 /// </vl-doc>
 [ReflectionInstanceType("vector")]

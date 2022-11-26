@@ -10,7 +10,7 @@
             Type that has only two values - true and false
             </summary>
             <example>
-            let flag = true; // or false
+            val flag = true; // or false
             </example>
             </vl-doc>
         </member>
@@ -41,7 +41,7 @@
             Type that represents RGB color
             </summary>
             <example>
-            let redClr = #ff0000; // or rgb(1, 0, 0) or RED constant
+            val redClr = #ff0000; // or rgb(1, 0, 0) or RED constant
             </example>
             </vl-doc>
         </member>
@@ -97,9 +97,9 @@
             Type that represents a real number
             </summary>
             <example>
-            let x = 123;
-            let xDeg = 45deg; // converted to pi/4 radiands
-            let xRad = 1rad; // same as just "1". Use to indicate that the value is an angle
+            val x = 123;
+            val xDeg = 45deg; // converted to pi/4 radiands
+            val xRad = 1rad; // same as just "1". Use to indicate that the value is an angle
             </example>
             </vl-doc>
         </member>
@@ -335,7 +335,7 @@
             <vl-doc>
             <summary>Type that represents a 2D vector</summary>
             <example>
-            let v = {123, 456};
+            val v = {123, 456};
             </example>
             </vl-doc>
         </member>

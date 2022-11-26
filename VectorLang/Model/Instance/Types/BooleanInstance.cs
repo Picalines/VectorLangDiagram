@@ -5,7 +5,7 @@
 /// Type that has only two values - true and false
 /// </summary>
 /// <example>
-/// let flag = true; // or false
+/// val flag = true; // or false
 /// </example>
 /// </vl-doc>
 [ReflectionInstanceType("boolean")]

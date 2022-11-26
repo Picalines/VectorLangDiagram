@@ -5,7 +5,7 @@
 /// Type that represents RGB color
 /// </summary>
 /// <example>
-/// let redClr = #ff0000; // or rgb(1, 0, 0) or RED constant
+/// val redClr = #ff0000; // or rgb(1, 0, 0) or RED constant
 /// </example>
 /// </vl-doc>
 [ReflectionInstanceType("color")]

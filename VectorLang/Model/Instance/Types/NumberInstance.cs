@@ -8,9 +8,9 @@ namespace VectorLang.Model;
 /// Type that represents a real number
 /// </summary>
 /// <example>
-/// let x = 123;
-/// let xDeg = 45deg; // converted to pi/4 radiands
-/// let xRad = 1rad; // same as just "1". Use to indicate that the value is an angle
+/// val x = 123;
+/// val xDeg = 45deg; // converted to pi/4 radiands
+/// val xRad = 1rad; // same as just "1". Use to indicate that the value is an angle
 /// </example>
 /// </vl-doc>
 [ReflectionInstanceType("number")]
