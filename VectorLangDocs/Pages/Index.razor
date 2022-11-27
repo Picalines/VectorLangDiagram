@@ -208,6 +208,84 @@
 </section>
 
 <section>
+    @NavigationManager.RenderSectionHeader(2, "drawing-a-diagram", "Drawing a diagram", copyButton: true)
+
+    <p>
+        Vector diagrams using a set of special functions. See <a href="/functions#Plotting">this</a> page for a full list.
+    </p>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "plot-function", "Plot function", copyButton: true)
+
+        <p>
+            A single vector is drawn using the <em>plot</em> function:
+        </p>
+
+        @CodeBlock.Inline(@"
+            def main() -> void = [
+                plot({1, 1});
+            ];
+        ")
+
+        <p>
+            With that you will see an arrow pointing to (1, 1) from the origin.
+        </p>
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "transformations", "Transformations", copyButton: true)
+
+        <p>
+            To move a vector you use <em>translate</em>, <em>rotate</em> and <em>scale</em> functions
+            <strong>before</strong> the <em>plot</em>:
+        </p>
+
+        @CodeBlock.Inline(@"
+            def main() -> void = [
+                scale({2, 2}); // make vector two times bigger on both axes
+                rotate(45deg); // rotate by 45 degrees counterclockwise
+                translate({5, 0}); // shift to right by 5 units
+                plot({1, 1});
+            ];
+        ")
+
+        <p>
+            Keep in mind that the order of these transformations matters. It's easier to imagine that you move not only that tiny arrow,
+            but the entire coordinate space itself.
+        </p>
+    </section>
+
+    <section>
+        @NavigationManager.RenderHeader(3, "push-and-pop", "Push and pop", copyButton: true)
+
+        <p>
+            It's a common scenario, when you want to transform vectors temporarily. Use built-in <em>push</em>
+            to store transformations to the stack, and <em>pop</em> to remove.
+        </p>
+
+        @CodeBlock.Inline(@"
+            def drawUnitBox() -> void = [
+                push();
+                plot({1, 0});
+                plot({0, 1});
+                translate({1, 1});
+                plot({-1, 0});
+                plot({0, -1});
+                pop();
+            ];
+
+            def main() -> void = [
+                scale({2,2});
+                drawUnitBox();
+                translate({1, 0});
+                scale({1/2, 1/2});
+                drawUnitBox();
+            ];
+        ")
+    </section>
+</section>
+
+<section>
     @NavigationManager.RenderSectionHeader(2, "example-programs", "Example programs", copyButton: true)
 
     <section>
