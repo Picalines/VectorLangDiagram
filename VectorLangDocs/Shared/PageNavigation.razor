@@ -5,25 +5,28 @@
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
-<nav>
-    <h3 tabindex="-1">Navigation</h3>
+@if (_NavSections.Any())
+{
+    <nav>
+        <h3 tabindex="-1">Navigation</h3>
 
-    @foreach (var section in _NavSections)
-    {
-        <section>
-            @if (section is { HeaderTitle: { } sectionTitle, HeaderAnchor: { } sectionAnchor })
-            {
-                <h4><a @onclick=@(() => FocusOnElement(sectionAnchor)) tabindex="-1">@sectionTitle</a></h4>
-            }
-            <div class="anchors">
-                @foreach (var anchor in section.Anchors)
+        @foreach (var section in _NavSections)
+        {
+            <section>
+                @if (section is { HeaderTitle: { } sectionTitle, HeaderAnchor: { } sectionAnchor })
                 {
-                    <a @onclick=@(() => FocusOnElement(anchor.Anchor!)) tabindex="-1">@(anchor.Title!)</a>
+                    <h4><a @onclick=@(() => FocusOnElement(sectionAnchor)) tabindex="-1">@sectionTitle</a></h4>
                 }
-            </div>
-        </section>
-    }
-</nav>
+                <div class="anchors">
+                    @foreach (var anchor in section.Anchors)
+                    {
+                        <a @onclick=@(() => FocusOnElement(anchor.Anchor!)) tabindex="-1">@(anchor.Title!)</a>
+                    }
+                </div>
+            </section>
+        }
+    </nav>
+}
 
 @code {
     public const string BaseDataAttribute = "data-nav-";
@@ -88,6 +91,8 @@
     {
         if (_JSModule is not null)
         {
+            _Initialized = new();
+
             await _JSModule.DisposeAsync();
         }
     }
