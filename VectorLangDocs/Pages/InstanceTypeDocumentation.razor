@@ -8,31 +8,21 @@
     LanguageDocumentation.Types.TryGet(TypeName, out var typeDocumentation);
 }
 
-@if (typeDocumentation is null)
+@NavigationManager.RenderHeader(1, TypeName, TypeName, copyButton: true)
+
+<span id="summary">@typeDocumentation!.Summary</span>
+
+@if (typeDocumentation.UsageExample is { } usageExample)
 {
-    <h1>Type not found</h1>
+    <CodeBlock Code=@usageExample />
 }
-else
-{
-    <h1 id="@TypeName" data-nav-anchor="@TypeName">
-        @typeDocumentation.Name
-        <CopyButton TextToCopy=@(NavigationManager.Uri) IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
-    </h1>
 
-    <span id="summary">@typeDocumentation.Summary</span>
-
-    @if (typeDocumentation.UsageExample is { } usageExample)
-    {
-        <CodeBlock Code=@usageExample />
-    }
-
-    <div id="sections">
-        @ItemSection("Fields", "fields", typeDocumentation.Fields.Items)
-        @ItemSection("Methods", "methods", typeDocumentation.Methods.Items)
-        @ItemSection("Unary operators", "unary-operators", typeDocumentation.UnaryOperators.Items)
-        @ItemSection("Binary operators", "binary-operators", typeDocumentation.BinaryOperators.Items)
-    </div>
-}
+<div id="sections">
+    @ItemSection("Fields", "fields", typeDocumentation.Fields.Items)
+    @ItemSection("Methods", "methods", typeDocumentation.Methods.Items)
+    @ItemSection("Unary operators", "unary-operators", typeDocumentation.UnaryOperators.Items)
+    @ItemSection("Binary operators", "binary-operators", typeDocumentation.BinaryOperators.Items)
+</div>
 
 @code {
     [CascadingParameter]
@@ -40,6 +30,16 @@ else
 
     [Parameter]
     public string TypeName { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (LanguageDocumentation.Types.TryGet(TypeName, out _) is false)
+        {
+            NavigationManager.NavigateTo("404", forceLoad: true);
+        }
+    }
 
     private RenderFragment ItemSection(string sectionTitle, string sectionAnchor, IEnumerable<DocumentationItem> items)
     {

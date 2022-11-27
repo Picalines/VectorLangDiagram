@@ -6,10 +6,7 @@
 
 @inject NavigationManager NavigationManager
 
-<h1>
-    @Capitalize(CurrentPage)
-    <CopyButton TextToCopy=@NavigationManager.Uri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
-</h1>
+@NavigationManager.RenderHeader(1, CurrentPage, Capitalize(CurrentPage), copyButton: true)
 
 <div id="sections">
     @foreach (var itemGroup in GroupedItems)
