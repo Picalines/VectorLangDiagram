@@ -50,20 +50,12 @@
 
         return
     @<section>
-        @ItemSectionHeader(sectionAnchor, sectionTitle)
+        @NavigationManager.RenderSectionHeader(2, sectionAnchor, sectionTitle, copyButton: true)
 
         @foreach (var item in items)
         {
             <DocumentationItemView Item="item" />
         }
     </section>;
-    }
-
-    private RenderFragment ItemSectionHeader(string sectionAnchor, string sectionTitle)
-    {
-        return NavigationManager.RenderSectionHeader(2, sectionAnchor, sectionTitle, sectionUri => @<span>
-        @sectionTitle
-        <CopyButton TextToCopy=@sectionUri IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" Position="CopyButton.PositionType.AfterInlineParent" />
-    </span>);
     }
 }
