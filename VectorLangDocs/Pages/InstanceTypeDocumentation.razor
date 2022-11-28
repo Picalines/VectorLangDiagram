@@ -41,11 +41,11 @@
         }
     }
 
-    private RenderFragment ItemSection(string sectionTitle, IEnumerable<DocumentationItem> items)
+    private RenderFragment? ItemSection(string sectionTitle, IEnumerable<DocumentationItem> items)
     {
         if (items.Any() is false)
         {
-            return @<!---->;
+            return null;
         }
 
         return
