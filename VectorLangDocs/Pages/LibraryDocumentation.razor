@@ -1,4 +1,5 @@
 ﻿@using VectorLangDocs.Shared.DocumentationModel
+@using VectorLangDocs.Shared.Extensions;
 
 @page "/types"
 @page "/constants"
@@ -45,8 +46,7 @@
         get
         {
             var baseLength = NavigationManager.BaseUri.Length;
-            var endIndex = NavigationManager.Uri.IndexOf('#') is var index and not -1 ? new System.Index(index) : System.Index.End;
-            return NavigationManager.Uri[baseLength..endIndex];
+            return NavigationManager.UriWithoutId()[baseLength..];
         }
     }
 

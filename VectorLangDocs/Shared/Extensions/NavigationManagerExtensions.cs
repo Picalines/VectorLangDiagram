@@ -15,4 +15,15 @@ internal static class NavigationManagerExtensions
 
         return currentUri + '#' + anchorId;
     }
+
+    public static string UriWithoutId(this NavigationManager navigationManager)
+    {
+        var endIndex = navigationManager.Uri.IndexOf('#') switch
+        {
+            -1 => Index.End,
+            var index => new Index(index),
+        };
+
+        return navigationManager.Uri[..endIndex];
+    }
 }
