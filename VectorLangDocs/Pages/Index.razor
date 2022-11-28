@@ -2,8 +2,6 @@
 
 @page "/"
 
-@inject NavigationManager NavigationManager
-
 <h1 id="VectorLang" data-nav-section="VectorLang">VectorLang</h1>
 
 <section>
@@ -13,10 +11,10 @@
 </section>
 
 <section>
-    @NavigationManager.RenderSectionHeader(2, "syntax", "Syntax", copyButton: true)
+    <NavigationHeader HeaderLevel=2 IsSection=true TextInNavigation="Syntax" />
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-number-expressions", "Number expressions", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Number expressions" />
 
         <p>
             @{
@@ -43,7 +41,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-vector-expression", "Vector expression", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Vector expressions" />
 
         <p>
             @{
@@ -64,7 +62,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-boolean-expressions", "Boolean expressions", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Boolean expressions" />
 
         <p>
             Comparison operators return boolean values (true/false), on which you can use boolean operators.
@@ -81,7 +79,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-methods-fields", "Methods and fields", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Methods and fields" />
 
         <p>
             All data types in VectorLange have many methods and sometimes fields.
@@ -96,7 +94,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-if-expression", "If expression", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="If expression" />
 
         <p>
             Conditionals are created using the ternary expression:
@@ -118,7 +116,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-block-expression", "Block expression", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Block expression" />
 
         <p>
             Use blocks to group multiple expressions into one. This is useful in combination with <em>val</em> expression, that stores result of expression to a local variable.
@@ -140,7 +138,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-function", "Functions", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Functions" />
 
         <p>
             Functions are defined using the <em>def</em> keyword. Arguments and the return value need the explicit data types.
@@ -168,7 +166,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-const", "Constants", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Constants" />
 
         <p>
             You can extract special values to constants to avoid the "magic numbers" code smell.
@@ -183,7 +181,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "syntax-external", "Externals", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Externals" />
 
         <p>
             So called external values behave the same way as constants do:
@@ -208,14 +206,14 @@
 </section>
 
 <section>
-    @NavigationManager.RenderSectionHeader(2, "drawing-a-diagram", "Drawing a diagram", copyButton: true)
+    <NavigationHeader HeaderLevel=2 IsSection=true TextInNavigation="Drawing a diagram" />
 
     <p>
         Vector diagrams using a set of special functions. See <a href="/functions#Plotting">this</a> page for a full list.
     </p>
 
     <section>
-        @NavigationManager.RenderHeader(3, "plot-function", "Plot function", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Plot functions" />
 
         <p>
             A single vector is drawn using the <em>plot</em> function:
@@ -233,7 +231,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "transformations", "Transformations", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Transformations" />
 
         <p>
             To move a vector you use <em>translate</em>, <em>rotate</em> and <em>scale</em> functions
@@ -256,7 +254,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "push-and-pop", "Push and pop", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Push and pop" />
 
         <p>
             It's a common scenario, when you want to transform vectors temporarily. Use built-in <em>push</em>
@@ -286,10 +284,10 @@
 </section>
 
 <section>
-    @NavigationManager.RenderSectionHeader(2, "example-programs", "Example programs", copyButton: true)
+    <NavigationHeader HeaderLevel=2 IsSection=true TextInNavigation="Example programs" />
 
     <section>
-        @NavigationManager.RenderHeader(3, "example-kinematics", "Fall trajectory", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Fall trajectory" />
 
         @CodeBlock.Inline(@"
             external V0 = {5, 10};
@@ -327,7 +325,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "example-binary-tree", "Binary tree", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Binary tree" />
 
         @CodeBlock.Inline(@"
             external branchLengthMult = 0.84;
@@ -361,7 +359,7 @@
     </section>
 
     <section>
-        @NavigationManager.RenderHeader(3, "example-electrostatics", "Electric field", copyButton: true)
+        <NavigationHeader HeaderLevel=3 TextInNavigation="Electric field" />
 
         @CodeBlock.Inline(@"
             external Q1 = 1;

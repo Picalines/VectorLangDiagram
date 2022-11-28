@@ -8,7 +8,7 @@
     LanguageDocumentation.Types.TryGet(TypeName, out var typeDocumentation);
 }
 
-@NavigationManager.RenderHeader(1, TypeName, TypeName, copyButton: true)
+<NavigationHeader HeaderLevel=1 TextInNavigation=@TypeName />
 
 <span id="summary">@typeDocumentation!.Summary</span>
 
@@ -18,10 +18,10 @@
 }
 
 <div id="sections">
-    @ItemSection("Fields", "fields", typeDocumentation.Fields.Items)
-    @ItemSection("Methods", "methods", typeDocumentation.Methods.Items)
-    @ItemSection("Unary operators", "unary-operators", typeDocumentation.UnaryOperators.Items)
-    @ItemSection("Binary operators", "binary-operators", typeDocumentation.BinaryOperators.Items)
+    @ItemSection("Fields", typeDocumentation.Fields.Items)
+    @ItemSection("Methods", typeDocumentation.Methods.Items)
+    @ItemSection("Unary operators", typeDocumentation.UnaryOperators.Items)
+    @ItemSection("Binary operators", typeDocumentation.BinaryOperators.Items)
 </div>
 
 @code {
@@ -41,7 +41,7 @@
         }
     }
 
-    private RenderFragment ItemSection(string sectionTitle, string sectionAnchor, IEnumerable<DocumentationItem> items)
+    private RenderFragment ItemSection(string sectionTitle, IEnumerable<DocumentationItem> items)
     {
         if (items.Any() is false)
         {
@@ -50,7 +50,7 @@
 
         return
     @<section>
-        @NavigationManager.RenderSectionHeader(2, sectionAnchor, sectionTitle, copyButton: true)
+        <NavigationHeader HeaderLevel=2 IsSection=true TextInNavigation=@sectionTitle />
 
         @foreach (var item in items)
         {

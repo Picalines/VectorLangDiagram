@@ -1,0 +1,53 @@
+﻿@using VectorLangDocs.Shared.Extensions;
+
+@inject NavigationManager NavigationManager
+
+<Header HeaderLevel=HeaderLevel @attributes=_HeaderAttributes>
+    @if (ChildContent is not null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        @TextInNavigation
+    }
+
+    <CopyButton
+        TextToCopy=@(NavigationManager.UriOfElement(HeaderId!))
+        ButtonTitle="Copy link"
+        IconUrl="./svg/copy-link-icon.svg"
+        Position="CopyButton.PositionType.AfterInlineParent" />
+</Header>
+
+@code {
+    [Parameter, EditorRequired]
+    public string TextInNavigation { get; set; } = null!;
+
+    [Parameter]
+    public int HeaderLevel { get; set; } = 2;
+
+    [Parameter]
+    public string? HeaderId { get; set; } = null;
+
+    [Parameter]
+    public bool IsSection { get; set; } = false;
+
+    [Parameter]
+    public bool AddCopyButton { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; } = null;
+
+    private Dictionary<string, object> _HeaderAttributes = null!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        HeaderId ??= TextInNavigation.ToHtmlId();
+
+        _HeaderAttributes = new()
+        {
+            [$"data-nav-{(IsSection ? "section" : "anchor")}"] = TextInNavigation,            ["id"] = HeaderId,            ["tabindex"] = 0,        };
+    }
+}

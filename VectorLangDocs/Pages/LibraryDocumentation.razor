@@ -6,7 +6,9 @@
 
 @inject NavigationManager NavigationManager
 
-@NavigationManager.RenderHeader(1, CurrentPage, Capitalize(CurrentPage), copyButton: true)
+<NavigationHeader HeaderLevel=1 TextInNavigation=@CurrentPage>
+    @Capitalize(CurrentPage)
+</NavigationHeader>
 
 <div id="sections">
     @foreach (var itemGroup in GroupedItems)
@@ -14,7 +16,9 @@
         <section>
             @if (itemGroup.Key is { } libraryName)
             {
-                @NavigationManager.RenderSectionHeader(2, libraryName, Capitalize(libraryName), copyButton: true)
+                <NavigationHeader HeaderLevel=2 IsSection=true TextInNavigation=@libraryName>
+                    @Capitalize(libraryName)
+                </NavigationHeader>
             }
 
             @foreach (var item in itemGroup)

@@ -7,7 +7,7 @@
 <article>
     @Header()
 
-    <CopyButton IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" TextToCopy="@HeaderUri" />
+    @*<CopyButton IconUrl="./svg/copy-link-icon.svg" ButtonTitle="Copy link" TextToCopy="@HeaderUri" />*@
 
     @Item.Summary
 
@@ -113,7 +113,7 @@
     private RenderFragment Header()
     {
         return
-    @<h4 id="@HeaderId" tabindex="-1" data-nav-anchor="@GetFormattedName()">
+    @<NavigationHeader HeaderLevel=4 HeaderId=@HeaderId TextInNavigation=@GetFormattedName()>
         @switch (Item)
         {
             case InstanceTypeDocumentation instanceTypeDocumentation:
@@ -178,6 +178,6 @@
             default:
                 throw new NotImplementedException();
         }
-    </h4>;
+    </NavigationHeader>;
     }
 }

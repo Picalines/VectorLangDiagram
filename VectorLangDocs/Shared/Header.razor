@@ -1,0 +1,31 @@
+﻿@switch (HeaderLevel)
+{
+    case 1: <h1 @attributes=InputAttributes>@ChildContent</h1> break;
+    case 2: <h2 @attributes=InputAttributes>@ChildContent</h2> break;
+    case 3: <h3 @attributes=InputAttributes>@ChildContent</h3> break;
+    case 4: <h4 @attributes=InputAttributes>@ChildContent</h4> break;
+    case 5: <h5 @attributes=InputAttributes>@ChildContent</h5> break;
+    case 6: <h6 @attributes=InputAttributes>@ChildContent</h6> break;
+    default: throw new NotImplementedException();
+}
+
+@code {
+    [Parameter]
+    public int HeaderLevel { get; set; } = 1;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; } = new();
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (HeaderLevel is not (>= 1 and <= 6))
+        {
+            throw new ArgumentException(null, nameof(HeaderLevel));
+        }
+    }
+}
