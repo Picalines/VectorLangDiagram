@@ -15,12 +15,12 @@
             <section>
                 @if (section is { HeaderTitle: { } sectionTitle, HeaderAnchor: { } sectionAnchor })
                 {
-                    <h4><a @onclick=@(() => FocusOnElement(sectionAnchor)) tabindex="-1">@sectionTitle</a></h4>
+                    <h4><a @onclick=@(() => FocusOnElement(sectionAnchor)) tabindex="0">@sectionTitle</a></h4>
                 }
                 <div class="anchors">
                     @foreach (var anchor in section.Anchors)
                     {
-                        <a @onclick=@(() => FocusOnElement(anchor.Anchor!)) tabindex="-1">@(anchor.Title!)</a>
+                        <a @onclick=@(() => FocusOnElement(anchor.Anchor!)) tabindex="0">@(anchor.Title!)</a>
                     }
                 </div>
             </section>
