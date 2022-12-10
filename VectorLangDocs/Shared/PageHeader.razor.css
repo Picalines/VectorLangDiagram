@@ -1,8 +1,8 @@
 ﻿header {
     width: 100%;
-    height: 5em;
+    height: 5rem;
 
-    padding: 1em;
+    padding: 1rem;
 
     display: flex;
     flex-direction: row;
@@ -19,7 +19,7 @@
 
 header > :nth-child(n+3)::before {
     content: '|';
-    margin: 0 0.5em 0 0.5em;
+    margin: 0 0.5rem 0 0.5rem;
     opacity: 0.5;
 }
 
@@ -27,19 +27,19 @@ header > :nth-child(n+3)::before {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.5em;
+    gap: 0.5rem;
 
     color: var(--p-white);
     text-decoration: none;
 }
 
 #logo-text > img {
-    width: 3em;
-    height: 3em;
+    width: 3rem;
+    height: 3rem;
 }
 
 #burger-menu-open-button {
-    height: 3em;
+    height: 3rem;
     aspect-ratio: 1;
 
     border-radius: 5px;
@@ -79,14 +79,14 @@ header > :nth-child(n+3)::before {
         display: inline-block;
 
         position: absolute;
-        top: 1em;
-        left: 1em;
+        top: 1rem;
+        left: 1rem;
     }
 
     header {
         display: flex;
         flex-direction: column;
-        gap: 2em;
+        gap: 2rem;
     }
 
     nav {
@@ -95,7 +95,7 @@ header > :nth-child(n+3)::before {
         align-items: center;
 
         width: 100%;
-        padding: 1em;
+        padding: 1rem;
         border-radius: 10px;
 
         background: var(--p-purple-4);
@@ -117,7 +117,7 @@ header > :nth-child(n+3)::before {
 
     nav > a {
         width: 100%;
-        padding: 0.5em;
+        padding: 0.5rem;
         border-radius: 10px;
         text-align: center;
 
@@ -125,7 +125,7 @@ header > :nth-child(n+3)::before {
     }
 
     nav > a:nth-child(n+2) {
-        margin-top: 0.5em;
+        margin-top: 0.5rem;
     }
 
     header:focus-within > nav {

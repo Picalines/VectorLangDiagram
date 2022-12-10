@@ -1,6 +1,6 @@
 ﻿article {
     background: var(--p-purple-4);
-    padding: 1em;
+    padding: 1rem;
     border-radius: 10px;
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
     outline: 3px solid transparent;
@@ -22,12 +22,12 @@ article:focus-within {
 }
 
 article > ::deep :not(button):not(:first-child) {
-    margin-top: 1em;
+    margin-top: 1rem;
 }
 
 article > ::deep h4 {
     margin: 0;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -36,7 +36,7 @@ article > ::deep h4 {
 
 article > section > h5 {
     font-style: italic;
-    margin: 0 0 1em 0;
+    margin: 0 0 1rem 0;
     color: var(--p-purple-10);
 }
 
@@ -50,15 +50,15 @@ article > section.parameters > div > .name::after {
 
 article > section.parameters > div > .summary {
     display: block;
-    margin-left: 1.6em;
+    margin-left: 1.6rem;
 }
 
 article > section.parameters > div > .name::before {
     content: counter(parameter-index) '.';
     counter-increment: parameter-index 1;
-    margin-right: 0.4em;
+    margin-right: 0.4rem;
 }
 
 article > section.parameters > div:nth-child(n+1) {
-    margin-top: 0.5em;
+    margin-top: 0.5rem;
 }

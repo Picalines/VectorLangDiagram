@@ -1,21 +1,21 @@
 ﻿h1 {
     margin-top: 0;
-    font-size: 2em;
+    font-size: 2rem;
     position: relative;
     width: fit-content;
 }
 
 #sections {
-    margin-top: 1.5em;
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 3em;
+    gap: 3rem;
 }
 
 #sections > section {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1rem;
 }
 
 #sections > section > ::deep h2 {

@@ -1,8 +1,8 @@
 ﻿section > section {
     position: relative;
-    padding: 1em;
+    padding: 1rem;
     border-radius: 10px;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
 
     background: var(--p-purple-4);
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
@@ -26,5 +26,5 @@ img {
 }
 
 ::deep pre + img {
-    margin-top: 1em;
+    margin-top: 1rem;
 }
