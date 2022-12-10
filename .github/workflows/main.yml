@@ -23,9 +23,6 @@ jobs:
       - name: dotnet publish
         run: dotnet publish VectorLangDocs/VectorLangDocs.csproj -c Release --output release --nologo
           
-      - name: change base-tag in index.html from / to VectorLangDocs
-        run: sed -i 's/<base href="\/" \/>/<base href="VectorLangDiagram\/" \/>/g' release/wwwroot/index.html
-          
       - name: add .nojekyll file
         run: touch release/wwwroot/.nojekyll
         
