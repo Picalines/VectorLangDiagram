@@ -1,9 +1,9 @@
 /* /Pages/Index.razor.rz.scp.css */
 section > section[b-uydb54blc3] {
     position: relative;
-    padding: 1em;
+    padding: 1rem;
     border-radius: 10px;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
 
     background: var(--p-purple-4);
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
@@ -27,33 +27,33 @@ img[b-uydb54blc3] {
 }
 
 [b-uydb54blc3] pre + img {
-    margin-top: 1em;
+    margin-top: 1rem;
 }
 /* /Pages/InstanceTypeDocumentation.razor.rz.scp.css */
 h1[b-ps9aeuly10] {
     margin-top: 0;
-    font-size: 2em;
+    font-size: 2rem;
     position: relative;
     width: fit-content;
 }
 
 span#summary[b-ps9aeuly10] {
     display: block;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
 }
 
 #sections[b-ps9aeuly10] {
-    margin-top: 1.5em;
+    margin-top: 1.5rem;
 
     display: flex;
     flex-direction: column;
-    gap: 3em;
+    gap: 3rem;
 }
 
 #sections > section[b-ps9aeuly10] {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1rem;
 }
 
 #sections > section[b-ps9aeuly10] >  h2 {
@@ -64,22 +64,22 @@ span#summary[b-ps9aeuly10] {
 /* /Pages/LibraryDocumentation.razor.rz.scp.css */
 h1[b-gvzz86nkzr] {
     margin-top: 0;
-    font-size: 2em;
+    font-size: 2rem;
     position: relative;
     width: fit-content;
 }
 
 #sections[b-gvzz86nkzr] {
-    margin-top: 1.5em;
+    margin-top: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 3em;
+    gap: 3rem;
 }
 
 #sections > section[b-gvzz86nkzr] {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 1rem;
 }
 
 #sections > section[b-gvzz86nkzr] >  h2 {
@@ -91,7 +91,7 @@ h1[b-gvzz86nkzr] {
 pre[b-qu04c0134t] {
     position: relative;
 
-    padding: 1em;
+    padding: 1rem;
     margin: 0;
     border-radius: 5px;
 
@@ -143,7 +143,7 @@ button > img[b-wtcvvnz0p0] {
 /* /Shared/DocumentationItemView.razor.rz.scp.css */
 article[b-0sbji4vrci] {
     background: var(--p-purple-4);
-    padding: 1em;
+    padding: 1rem;
     border-radius: 10px;
     box-shadow: rgb(0, 0, 0, 20%) 0px 0px 10px;
     outline: 3px solid transparent;
@@ -165,12 +165,12 @@ article:focus-within[b-0sbji4vrci] {
 }
 
 article[b-0sbji4vrci] >  :not(button):not(:first-child) {
-    margin-top: 1em;
+    margin-top: 1rem;
 }
 
 article[b-0sbji4vrci] >  h4 {
     margin: 0;
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
@@ -179,7 +179,7 @@ article[b-0sbji4vrci] >  h4 {
 
 article > section > h5[b-0sbji4vrci] {
     font-style: italic;
-    margin: 0 0 1em 0;
+    margin: 0 0 1rem 0;
     color: var(--p-purple-10);
 }
 
@@ -193,30 +193,30 @@ article > section.parameters > div > .name[b-0sbji4vrci]::after {
 
 article > section.parameters > div > .summary[b-0sbji4vrci] {
     display: block;
-    margin-left: 1.6em;
+    margin-left: 1.6rem;
 }
 
 article > section.parameters > div > .name[b-0sbji4vrci]::before {
     content: counter(parameter-index) '.';
     counter-increment: parameter-index 1;
-    margin-right: 0.4em;
+    margin-right: 0.4rem;
 }
 
 article > section.parameters > div:nth-child(n+1)[b-0sbji4vrci] {
-    margin-top: 0.5em;
+    margin-top: 0.5rem;
 }
 /* /Shared/InstanceTypeDocumentationAnchor.razor.rz.scp.css */
 a[b-qkd2decvns] {
     border-radius: 5px;
-    padding: 0 0.3em 0 0.3em;
+    padding: 0 0.3rem 0 0.3rem;
     background: rgb(0, 0, 0, 40%);
     text-decoration: none;
     pointer-events: all;
 }
 /* /Shared/MainLayout.razor.rz.scp.css */
 main[b-4uie1we1zd] {
-    padding: 1em;
-    margin-top: 5em;
+    padding: 1rem;
+    margin-top: 5rem;
 
     width: 100%;
     height: fit-content;
@@ -224,7 +224,7 @@ main[b-4uie1we1zd] {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 1.5em;
+    gap: 1.5rem;
 }
 
 main > article[b-4uie1we1zd] {
@@ -234,15 +234,15 @@ main > article[b-4uie1we1zd] {
 @media (max-width: 850px) {
     main[b-4uie1we1zd] {
         flex-direction: column;
-        margin-top: calc(5em + 4em);
+        margin-top: calc(5rem + 4rem);
     }
 }
 /* /Shared/PageHeader.razor.rz.scp.css */
 header[b-20q6dw6ntr] {
     width: 100%;
-    height: 5em;
+    height: 5rem;
 
-    padding: 1em;
+    padding: 1rem;
 
     display: flex;
     flex-direction: row;
@@ -259,7 +259,7 @@ header[b-20q6dw6ntr] {
 
 header > :nth-child(n+3)[b-20q6dw6ntr]::before {
     content: '|';
-    margin: 0 0.5em 0 0.5em;
+    margin: 0 0.5rem 0 0.5rem;
     opacity: 0.5;
 }
 
@@ -267,19 +267,19 @@ header > :nth-child(n+3)[b-20q6dw6ntr]::before {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.5em;
+    gap: 0.5rem;
 
     color: var(--p-white);
     text-decoration: none;
 }
 
 #logo-text > img[b-20q6dw6ntr] {
-    width: 3em;
-    height: 3em;
+    width: 3rem;
+    height: 3rem;
 }
 
 #burger-menu-open-button[b-20q6dw6ntr] {
-    height: 3em;
+    height: 3rem;
     aspect-ratio: 1;
 
     border-radius: 5px;
@@ -319,14 +319,14 @@ header > :nth-child(n+3)[b-20q6dw6ntr]::before {
         display: inline-block;
 
         position: absolute;
-        top: 1em;
-        left: 1em;
+        top: 1rem;
+        left: 1rem;
     }
 
     header[b-20q6dw6ntr] {
         display: flex;
         flex-direction: column;
-        gap: 2em;
+        gap: 2rem;
     }
 
     nav[b-20q6dw6ntr] {
@@ -335,7 +335,7 @@ header > :nth-child(n+3)[b-20q6dw6ntr]::before {
         align-items: center;
 
         width: 100%;
-        padding: 1em;
+        padding: 1rem;
         border-radius: 10px;
 
         background: var(--p-purple-4);
@@ -357,7 +357,7 @@ header > :nth-child(n+3)[b-20q6dw6ntr]::before {
 
     nav > a[b-20q6dw6ntr] {
         width: 100%;
-        padding: 0.5em;
+        padding: 0.5rem;
         border-radius: 10px;
         text-align: center;
 
@@ -365,7 +365,7 @@ header > :nth-child(n+3)[b-20q6dw6ntr]::before {
     }
 
     nav > a:nth-child(n+2)[b-20q6dw6ntr] {
-        margin-top: 0.5em;
+        margin-top: 0.5rem;
     }
 
     header:focus-within > nav[b-20q6dw6ntr] {
@@ -397,13 +397,13 @@ nav[b-0xjleysoe9] {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1em;
+    gap: 1rem;
 
     position: sticky;
-    top: 6em;
+    top: 6rem;
 
     background: var(--p-purple-3);
-    padding: 1em;
+    padding: 1rem;
     border-radius: 10px;
     height: min-content;
     width: fit-content;
@@ -411,7 +411,7 @@ nav[b-0xjleysoe9] {
     box-shadow: rgb(0 0 0 / 35%) 0px 0px 10px;
 
     overflow-y: overlay;
-    max-height: calc(100vh - 3em - 4em);
+    max-height: calc(100vh - 3rem - 4rem);
 
     flex-shrink: 0;
 }
@@ -422,11 +422,11 @@ nav :is(h3, h4)[b-0xjleysoe9] {
 
 nav > h3[b-0xjleysoe9] {
     margin-bottom: 0;
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 nav > section > h4[b-0xjleysoe9] {
-    margin-bottom: 0.5em;
+    margin-bottom: 0.5rem;
     width: fit-content;
     position: relative;
     z-index: 1;
@@ -463,7 +463,7 @@ nav > section > .anchors[b-0xjleysoe9] {
 }
 
 nav > section:has(h4) > .anchors[b-0xjleysoe9] {
-    margin-left: 0.5em;
+    margin-left: 0.5rem;
 }
 
 nav > section > .anchors > a[b-0xjleysoe9] {
@@ -473,13 +473,13 @@ nav > section > .anchors > a[b-0xjleysoe9] {
 @media (max-width: 850px) {
     nav[b-0xjleysoe9] {
         position: absolute;
-        left: 1em;
-        width: calc(100% - 2em);
+        left: 1rem;
+        width: calc(100% - 2rem);
         overflow: hidden;
         z-index: 3;
 
         gap: 0;
-        max-height: 3.325em;
+        max-height: 3.325rem;
 
         transition-property: max-height, gap;
         transition-timing-function: ease-in-out;
@@ -506,7 +506,7 @@ nav > section > .anchors > a[b-0xjleysoe9] {
         width: 100%;
         text-align: center;
         cursor: pointer;
-        margin-bottom: 1em;
+        margin-bottom: 1rem;
 
         transition-property: margin-bottom;
         transition-timing-function: step-end;
@@ -515,7 +515,7 @@ nav > section > .anchors > a[b-0xjleysoe9] {
 
     nav:focus-within[b-0xjleysoe9] {
         max-height: 999vh;
-        gap: 1em;
+        gap: 1rem;
     }
 
     nav:focus-within > section[b-0xjleysoe9] {
@@ -540,8 +540,8 @@ nav > section > .anchors > a[b-0xjleysoe9] {
     nav > section > .anchors[b-0xjleysoe9] {
         flex-direction: row;
         flex-wrap: wrap;
-        column-gap: 1em;
-        row-gap: 0.2em;
+        column-gap: 1rem;
+        row-gap: 0.2rem;
         justify-content: space-evenly;
     }
 
