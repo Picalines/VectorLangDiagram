@@ -10,7 +10,7 @@
             sections.push({ headerTitle: section, headerAnchor: elementId, anchors: [] });
         }
         else if (anchor) {
-            let lastSection = sections.at(-1);
+            let lastSection = sections[sections.length - 1];
 
             if (!lastSection) {
                 lastSection = { headerTitle: null, headerAnchor: null, anchors: [] };
