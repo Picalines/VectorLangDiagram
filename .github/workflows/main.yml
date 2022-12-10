@@ -1,0 +1,39 @@
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: main
+    paths:
+      - "VectorLangDocs/**"
+      - "VectorLang/docs/*.xml"
+  workflow_dispatch:
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+    
+      - name: download .NET 7
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.0.x'
+          include-prerelease: false
+
+      - name: dotnet publish
+        run: dotnet publish VectorLangDocs/VectorLangDocs.csproj -c Release --output release --nologo
+          
+      - name: add .nojekyll file
+        run: touch release/wwwroot/.nojekyll
+        
+      - name: change base-tag in index.html from / to VectorLangDocs
+        run: sed -i 's/<base href="\/" \/>/<base href="\/VectorLangDiagram\/" \/>/g' release/wwwroot/index.html
+        
+      - name: copy index.html to 404.html
+        run: cp release/wwwroot/index.html release/wwwroot/404.html
+        
+      - name: upload files to gh-pages branch
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: release/wwwroot
